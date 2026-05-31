@@ -113,16 +113,33 @@ function InvoiceDetail() {
         {/* Header */}
         <div className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-start sm:justify-between">
           <div>
+            {tenant.logoUrl && (
+              <img
+                src={tenant.logoUrl}
+                alt={tenant.name}
+                className="mb-3 h-9 w-auto max-w-[160px] object-contain"
+              />
+            )}
             <h1 className="text-xl font-semibold text-foreground">
-              {tenant.name}
+              {tenant.legalName?.trim() || tenant.name}
             </h1>
+            {tenant.taxId && (
+              <p className="mt-0.5 text-sm text-muted-foreground">
+                {tenant.taxId}
+              </p>
+            )}
             {location?.address && (
               <p className="mt-1 text-sm text-muted-foreground">
                 {location.address}
               </p>
             )}
-            {location?.phone && (
-              <p className="text-sm text-muted-foreground">{location.phone}</p>
+            {(tenant.phone || location?.phone) && (
+              <p className="text-sm text-muted-foreground">
+                {tenant.phone || location?.phone}
+              </p>
+            )}
+            {tenant.email && (
+              <p className="text-sm text-muted-foreground">{tenant.email}</p>
             )}
           </div>
           <div className="sm:text-right">
