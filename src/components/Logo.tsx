@@ -5,12 +5,14 @@ interface LogoProps {
   className?: string;
   /** Optional dot color (defaults to brand accent). */
   showMark?: boolean;
+  /** Optional tenant logo (base64). When set, it replaces the wordmark. */
+  logoUrl?: string | null;
 }
 
 const LONG_PRESS_MS = 1000;
 
 /** Talleo wordmark — Plus Jakarta Sans 700, monochrome. */
-export function Logo({ className, showMark = true }: LogoProps) {
+export function Logo({ className, showMark = true, logoUrl }: LogoProps) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const start = () => {
@@ -28,6 +30,20 @@ export function Logo({ className, showMark = true }: LogoProps) {
       timer.current = null;
     }
   };
+
+  if (logoUrl) {
+    return (
+      <img
+        src={logoUrl}
+        alt="Logo del taller"
+        onPointerDown={start}
+        onPointerUp={clear}
+        onPointerLeave={clear}
+        onPointerCancel={clear}
+        className={cn("h-7 w-auto max-w-[140px] object-contain select-none", className)}
+      />
+    );
+  }
 
   return (
     <span
