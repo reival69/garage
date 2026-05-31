@@ -55,7 +55,7 @@ function AdminDashboard() {
           icon={Building2}
         />
         <StatCard
-          label="MRR (simulado)"
+          label="MRR"
           value={formatCurrency(stats.mrr)}
           hint="Ingreso mensual recurrente"
           icon={CreditCard}
@@ -75,10 +75,10 @@ function AdminDashboard() {
       <div className="mt-8">
         <DataCard
           title="Métricas globales"
-          description="Datos simulados de la demo local."
+          description="Resumen de la actividad de la plataforma."
         >
           <p className="text-sm text-muted-foreground">
-            Próximamente: evolución de MRR, altas de talleres y uso por plan.
+            No hay métricas adicionales para mostrar todavía.
           </p>
         </DataCard>
       </div>

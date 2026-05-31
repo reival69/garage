@@ -31,7 +31,7 @@ function AdminTalleres() {
         <EmptyState
           icon={Building2}
           title="Sin talleres"
-          description="Próximamente"
+          description="No hay talleres registrados todavía."
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">

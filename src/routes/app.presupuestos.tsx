@@ -7,7 +7,7 @@ export const Route = createFileRoute("/app/presupuestos")({
   component: () => (
     <div>
       <PageHeader title="Presupuestos" description="Presupuestos enviados y pendientes." />
-      <EmptyState icon={FileText} title="Próximamente" description="El editor de presupuestos llegará en el siguiente prompt." />
+      <EmptyState icon={FileText} title="No hay presupuestos" description="Aún no se ha creado ningún presupuesto." />
     </div>
   ),
 });

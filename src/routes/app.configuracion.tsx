@@ -7,7 +7,7 @@ export const Route = createFileRoute("/app/configuracion")({
   component: () => (
     <div>
       <PageHeader title="Configuración" description="Ajustes del taller." />
-      <EmptyState icon={Settings} title="Próximamente" description="La configuración llegará en el siguiente prompt." />
+      <EmptyState icon={Settings} title="Sin ajustes" description="No hay ajustes disponibles todavía." />
     </div>
   ),
 });

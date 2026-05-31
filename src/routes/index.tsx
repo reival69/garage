@@ -111,7 +111,7 @@ function Landing() {
               Reserva en tu taller en segundos
             </h2>
             <p className="mt-1.5 text-sm text-muted-foreground">
-              Maqueta visual. La reserva online estará disponible próximamente.
+              Elige servicio, fecha y hora. Te confirmaremos tu cita lo antes posible.
             </p>
 
             <div className="mt-6 space-y-3">
@@ -132,7 +132,7 @@ function Landing() {
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-6 py-8 text-sm text-muted-foreground sm:flex-row">
           <Logo />
-          <span>Demo local · Datos simulados</span>
+          <span>© {new Date().getFullYear()} Talleo</span>
         </div>
       </footer>
     </div>

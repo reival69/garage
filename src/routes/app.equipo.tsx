@@ -7,7 +7,7 @@ export const Route = createFileRoute("/app/equipo")({
   component: () => (
     <div>
       <PageHeader title="Equipo" description="Usuarios del taller." />
-      <EmptyState icon={UsersRound} title="Próximamente" description="La gestión del equipo llegará en el siguiente prompt." />
+      <EmptyState icon={UsersRound} title="No hay usuarios" description="Todavía no se han añadido miembros al equipo." />
     </div>
   ),
 });

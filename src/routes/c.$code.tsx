@@ -207,11 +207,11 @@ function GuestView() {
         <PlaceholderSection
           icon={FileText}
           title="Presupuesto"
-          body="Podrás ver y aprobar el presupuesto próximamente."
+          body="Aquí podrás ver y aprobar el presupuesto de tu reparación."
         />
 
         <p className="pt-2 text-center text-xs text-muted-foreground">
-          <Logo showMark={false} className="text-xs font-semibold" /> · Demo local
+          <Logo showMark={false} className="text-xs font-semibold" />
         </p>
       </main>
     </div>
@@ -332,13 +332,12 @@ function PlaceholderSection({
   body: string;
 }) {
   return (
-    <section className="rounded-xl border border-dashed border-border bg-card p-5">
+    <section className="rounded-xl border border-border bg-card p-5">
       <div className="flex items-center gap-2 text-muted-foreground">
         <Icon strokeWidth={1.5} className="h-4 w-4" />
         <h2 className="text-sm font-semibold text-foreground">{title}</h2>
       </div>
       <p className="mt-1.5 text-sm text-muted-foreground">{body}</p>
-      <p className="mt-2 text-xs text-muted-foreground">Próximamente</p>
     </section>
   );
 }
