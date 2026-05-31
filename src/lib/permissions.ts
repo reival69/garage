@@ -14,6 +14,7 @@ export type AppModule =
   | "facturacion"
   | "servicios"
   | "recordatorios"
+  | "resenas"
   | "equipo"
   | "configuracion";
 
