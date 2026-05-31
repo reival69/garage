@@ -129,13 +129,11 @@ export function sendQuote(
     updatedAt: now,
   });
 
-  notificationsRepo.create(tenant.id, {
-    tenantId: tenant.id,
+  notify(tenant.id, {
     type: "presupuesto",
     title: "Presupuesto enviado",
     body: `${vehicleLabel(tenant.id, current.vehicleId)} — Presupuesto disponible para el cliente.`,
-    read: false,
-    createdAt: now,
+    link: `/app/ordenes/${current.id}`,
   });
 
   return updated;
