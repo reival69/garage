@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Building2, RotateCcw, Shield, Smartphone, X } from "lucide-react";
+import { Building2, ExternalLink, RotateCcw, Shield, Smartphone, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/auth/AuthContext";
