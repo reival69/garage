@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { VehicleFormDialog } from "@/components/app/VehicleFormDialog";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { customersRepo, vehiclesRepo } from "@/lib/db";
-import type { Customer, Vehicle } from "@/types";
+import type { Customer } from "@/types";
 
 export const Route = createFileRoute("/app/vehiculos/")({
   component: VehiclesPage,
@@ -178,5 +178,3 @@ function VehiclesPage() {
     </div>
   );
 }
-
-void Vehicle;
