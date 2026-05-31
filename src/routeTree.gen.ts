@@ -16,17 +16,15 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as CCodeRouteImport } from './routes/c.$code'
-import { Route as AppVehiculosRouteImport } from './routes/app.vehiculos'
 import { Route as AppServiciosRouteImport } from './routes/app.servicios'
 import { Route as AppPresupuestosRouteImport } from './routes/app.presupuestos'
-import { Route as AppOrdenesRouteImport } from './routes/app.ordenes'
 import { Route as AppFacturacionRouteImport } from './routes/app.facturacion'
 import { Route as AppEquipoRouteImport } from './routes/app.equipo'
 import { Route as AppConfiguracionRouteImport } from './routes/app.configuracion'
-import { Route as AppClientesRouteImport } from './routes/app.clientes'
 import { Route as AppCitasRouteImport } from './routes/app.citas'
 import { Route as AdminTalleresRouteImport } from './routes/admin.talleres'
 import { Route as AdminPlanesRouteImport } from './routes/admin.planes'
+import { Route as AppClientesIndexRouteImport } from './routes/app.clientes.index'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -63,11 +61,6 @@ const CCodeRoute = CCodeRouteImport.update({
   path: '/c/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppVehiculosRoute = AppVehiculosRouteImport.update({
-  id: '/vehiculos',
-  path: '/vehiculos',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppServiciosRoute = AppServiciosRouteImport.update({
   id: '/servicios',
   path: '/servicios',
@@ -76,11 +69,6 @@ const AppServiciosRoute = AppServiciosRouteImport.update({
 const AppPresupuestosRoute = AppPresupuestosRouteImport.update({
   id: '/presupuestos',
   path: '/presupuestos',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppOrdenesRoute = AppOrdenesRouteImport.update({
-  id: '/ordenes',
-  path: '/ordenes',
   getParentRoute: () => AppRoute,
 } as any)
 const AppFacturacionRoute = AppFacturacionRouteImport.update({
@@ -98,11 +86,6 @@ const AppConfiguracionRoute = AppConfiguracionRouteImport.update({
   path: '/configuracion',
   getParentRoute: () => AppRoute,
 } as any)
-const AppClientesRoute = AppClientesRouteImport.update({
-  id: '/clientes',
-  path: '/clientes',
-  getParentRoute: () => AppRoute,
-} as any)
 const AppCitasRoute = AppCitasRouteImport.update({
   id: '/citas',
   path: '/citas',
@@ -118,6 +101,11 @@ const AdminPlanesRoute = AdminPlanesRouteImport.update({
   path: '/planes',
   getParentRoute: () => AdminRoute,
 } as any)
+const AppClientesIndexRoute = AppClientesIndexRouteImport.update({
+  id: '/clientes/',
+  path: '/clientes/',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -127,17 +115,15 @@ export interface FileRoutesByFullPath {
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/talleres': typeof AdminTalleresRoute
   '/app/citas': typeof AppCitasRoute
-  '/app/clientes': typeof AppClientesRoute
   '/app/configuracion': typeof AppConfiguracionRoute
   '/app/equipo': typeof AppEquipoRoute
   '/app/facturacion': typeof AppFacturacionRoute
-  '/app/ordenes': typeof AppOrdenesRoute
   '/app/presupuestos': typeof AppPresupuestosRoute
   '/app/servicios': typeof AppServiciosRoute
-  '/app/vehiculos': typeof AppVehiculosRoute
   '/c/$code': typeof CCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/app/clientes/': typeof AppClientesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -145,17 +131,15 @@ export interface FileRoutesByTo {
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/talleres': typeof AdminTalleresRoute
   '/app/citas': typeof AppCitasRoute
-  '/app/clientes': typeof AppClientesRoute
   '/app/configuracion': typeof AppConfiguracionRoute
   '/app/equipo': typeof AppEquipoRoute
   '/app/facturacion': typeof AppFacturacionRoute
-  '/app/ordenes': typeof AppOrdenesRoute
   '/app/presupuestos': typeof AppPresupuestosRoute
   '/app/servicios': typeof AppServiciosRoute
-  '/app/vehiculos': typeof AppVehiculosRoute
   '/c/$code': typeof CCodeRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
+  '/app/clientes': typeof AppClientesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -166,17 +150,15 @@ export interface FileRoutesById {
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/talleres': typeof AdminTalleresRoute
   '/app/citas': typeof AppCitasRoute
-  '/app/clientes': typeof AppClientesRoute
   '/app/configuracion': typeof AppConfiguracionRoute
   '/app/equipo': typeof AppEquipoRoute
   '/app/facturacion': typeof AppFacturacionRoute
-  '/app/ordenes': typeof AppOrdenesRoute
   '/app/presupuestos': typeof AppPresupuestosRoute
   '/app/servicios': typeof AppServiciosRoute
-  '/app/vehiculos': typeof AppVehiculosRoute
   '/c/$code': typeof CCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
+  '/app/clientes/': typeof AppClientesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -188,17 +170,15 @@ export interface FileRouteTypes {
     | '/admin/planes'
     | '/admin/talleres'
     | '/app/citas'
-    | '/app/clientes'
     | '/app/configuracion'
     | '/app/equipo'
     | '/app/facturacion'
-    | '/app/ordenes'
     | '/app/presupuestos'
     | '/app/servicios'
-    | '/app/vehiculos'
     | '/c/$code'
     | '/admin/'
     | '/app/'
+    | '/app/clientes/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -206,17 +186,15 @@ export interface FileRouteTypes {
     | '/admin/planes'
     | '/admin/talleres'
     | '/app/citas'
-    | '/app/clientes'
     | '/app/configuracion'
     | '/app/equipo'
     | '/app/facturacion'
-    | '/app/ordenes'
     | '/app/presupuestos'
     | '/app/servicios'
-    | '/app/vehiculos'
     | '/c/$code'
     | '/admin'
     | '/app'
+    | '/app/clientes'
   id:
     | '__root__'
     | '/'
@@ -226,17 +204,15 @@ export interface FileRouteTypes {
     | '/admin/planes'
     | '/admin/talleres'
     | '/app/citas'
-    | '/app/clientes'
     | '/app/configuracion'
     | '/app/equipo'
     | '/app/facturacion'
-    | '/app/ordenes'
     | '/app/presupuestos'
     | '/app/servicios'
-    | '/app/vehiculos'
     | '/c/$code'
     | '/admin/'
     | '/app/'
+    | '/app/clientes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -298,13 +274,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app/vehiculos': {
-      id: '/app/vehiculos'
-      path: '/vehiculos'
-      fullPath: '/app/vehiculos'
-      preLoaderRoute: typeof AppVehiculosRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/app/servicios': {
       id: '/app/servicios'
       path: '/servicios'
@@ -317,13 +286,6 @@ declare module '@tanstack/react-router' {
       path: '/presupuestos'
       fullPath: '/app/presupuestos'
       preLoaderRoute: typeof AppPresupuestosRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/ordenes': {
-      id: '/app/ordenes'
-      path: '/ordenes'
-      fullPath: '/app/ordenes'
-      preLoaderRoute: typeof AppOrdenesRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/facturacion': {
@@ -347,13 +309,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppConfiguracionRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/clientes': {
-      id: '/app/clientes'
-      path: '/clientes'
-      fullPath: '/app/clientes'
-      preLoaderRoute: typeof AppClientesRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/app/citas': {
       id: '/app/citas'
       path: '/citas'
@@ -375,6 +330,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPlanesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/app/clientes/': {
+      id: '/app/clientes/'
+      path: '/clientes'
+      fullPath: '/app/clientes/'
+      preLoaderRoute: typeof AppClientesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -394,28 +356,24 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface AppRouteChildren {
   AppCitasRoute: typeof AppCitasRoute
-  AppClientesRoute: typeof AppClientesRoute
   AppConfiguracionRoute: typeof AppConfiguracionRoute
   AppEquipoRoute: typeof AppEquipoRoute
   AppFacturacionRoute: typeof AppFacturacionRoute
-  AppOrdenesRoute: typeof AppOrdenesRoute
   AppPresupuestosRoute: typeof AppPresupuestosRoute
   AppServiciosRoute: typeof AppServiciosRoute
-  AppVehiculosRoute: typeof AppVehiculosRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppClientesIndexRoute: typeof AppClientesIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppCitasRoute: AppCitasRoute,
-  AppClientesRoute: AppClientesRoute,
   AppConfiguracionRoute: AppConfiguracionRoute,
   AppEquipoRoute: AppEquipoRoute,
   AppFacturacionRoute: AppFacturacionRoute,
-  AppOrdenesRoute: AppOrdenesRoute,
   AppPresupuestosRoute: AppPresupuestosRoute,
   AppServiciosRoute: AppServiciosRoute,
-  AppVehiculosRoute: AppVehiculosRoute,
   AppIndexRoute: AppIndexRoute,
+  AppClientesIndexRoute: AppClientesIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -430,3 +388,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
