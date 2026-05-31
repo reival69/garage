@@ -94,6 +94,12 @@ export const plansRepo = globalRepo<Plan>("plans");
 export const tenantsRepo = globalRepo<Tenant>("tenants");
 export const usersRepo = globalRepo<User>("users");
 
+/** Find a tenant by its public slug (used by the public booking page /t/:slug). */
+export function findTenantBySlug(slug: string): Tenant | undefined {
+  const normalized = slug.trim().toLowerCase();
+  return tenantsRepo.list().find((t) => t.slug.toLowerCase() === normalized);
+}
+
 // Tenant-scoped collections
 export const customersRepo = tenantRepo<Customer>("customers");
 export const vehiclesRepo = tenantRepo<Vehicle>("vehicles");

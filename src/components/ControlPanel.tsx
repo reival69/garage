@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Building2, RotateCcw, Shield, Smartphone, X } from "lucide-react";
+import { Building2, ExternalLink, RotateCcw, Shield, Smartphone, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/auth/AuthContext";
@@ -22,7 +22,7 @@ export function openControlPanel() {
   }
 }
 
-type View = "menu" | "taller" | "cliente";
+type View = "menu" | "taller" | "cliente" | "publica";
 
 /**
  * Hidden internal control panel for presentations. No visible trigger.
@@ -85,6 +85,12 @@ export function ControlPanel() {
     navigate({ to: "/c/$code", params: { code } });
   };
 
+  const openPublic = (slug: string) => {
+    close();
+    navigate({ to: "/t/$slug", params: { slug } });
+  };
+
+
   const doReset = () => {
     resetDemo();
     refresh();
@@ -139,6 +145,13 @@ export function ControlPanel() {
                 subtitle="Vista del cliente final"
                 onClick={() => setView("cliente")}
               />
+              <SwitchRow
+                icon={ExternalLink}
+                title="Página pública"
+                subtitle="Reserva online del taller"
+                onClick={() => setView("publica")}
+              />
+
 
               <div className="pt-2">
                 <Button variant="outline" className="w-full" onClick={doReset}>
@@ -179,6 +192,25 @@ export function ControlPanel() {
                   subtitle={`${c.tenantName} · ${c.vehicle}`}
                   mono
                   onClick={() => enterCustomer(c.code)}
+                />
+              ))}
+            </div>
+          )}
+
+          {view === "publica" && (
+            <div className="space-y-2">
+              <BackRow
+                onClick={() => setView("menu")}
+                label="Ver página pública"
+              />
+              {tenants.map((t) => (
+                <SwitchRow
+                  key={t.id}
+                  icon={ExternalLink}
+                  title={t.name}
+                  subtitle={`/t/${t.slug}`}
+                  accent={t.accentColor}
+                  onClick={() => openPublic(t.slug)}
                 />
               ))}
             </div>

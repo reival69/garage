@@ -5,16 +5,20 @@
 import type {
   Appointment,
   AppointmentStatus,
+  Customer,
   Service,
   Tenant,
+  Vehicle,
   WorkOrder,
 } from "@/types";
 import {
   appointmentsRepo,
+  customersRepo,
   servicesRepo,
   vehiclesRepo,
 } from "@/lib/db";
 import { notify } from "@/lib/notifications";
+import { formatDateTime } from "@/lib/format";
 import { createWorkOrder } from "@/lib/orders";
 
 // Linear flow of an appointment. `no_show` is an alternative terminal outcome.
@@ -102,9 +106,10 @@ interface AppointmentInput {
   serviceIds: string[];
   scheduledAt: string;
   notes?: string;
+  source?: Appointment["source"];
 }
 
-/** Create a new appointment in `programada`, source `manual`. */
+/** Create a new appointment in `programada` (source `manual` by default). */
 export function createAppointment(
   tenant: Tenant,
   input: AppointmentInput,
@@ -117,9 +122,92 @@ export function createAppointment(
     serviceIds: input.serviceIds,
     scheduledAt: input.scheduledAt,
     status: "programada",
-    source: "manual",
+    source: input.source ?? "manual",
     notes: input.notes?.trim() || undefined,
   } as Omit<Appointment, "id">);
+  return appt;
+}
+
+interface OnlineBookingInput {
+  name: string;
+  phone: string;
+  email?: string;
+  plate?: string;
+  make?: string;
+  model?: string;
+  serviceIds: string[];
+  scheduledAt: string;
+  notes?: string;
+}
+
+/**
+ * Public booking flow (/t/:slug). Reuses or creates the customer (matched by
+ * phone), creates the vehicle when a plate is provided, then creates an online
+ * appointment and fires a notification linking back to the agenda.
+ */
+export function requestOnlineAppointment(
+  tenant: Tenant,
+  input: OnlineBookingInput,
+): Appointment {
+  const phone = input.phone.trim();
+  const name = input.name.trim();
+
+  // Customer: reuse by phone within the tenant, otherwise create.
+  let customer = customersRepo
+    .list(tenant.id)
+    .find((c) => c.phone.replace(/\s+/g, "") === phone.replace(/\s+/g, ""));
+  if (!customer) {
+    customer = customersRepo.create(tenant.id, {
+      tenantId: tenant.id,
+      name,
+      phone,
+      email: input.email?.trim() || undefined,
+      createdAt: new Date().toISOString(),
+    } as Omit<Customer, "id">);
+  }
+
+  // Vehicle: create when a plate is given and it doesn't exist yet.
+  let vehicleId: string | undefined;
+  const plate = input.plate?.trim();
+  if (plate) {
+    const existing = vehiclesRepo
+      .list(tenant.id)
+      .find((v) => v.plate.replace(/\s+/g, "").toUpperCase() === plate.replace(/\s+/g, "").toUpperCase());
+    if (existing) {
+      vehicleId = existing.id;
+    } else {
+      const vehicle = vehiclesRepo.create(tenant.id, {
+        tenantId: tenant.id,
+        customerId: customer.id,
+        plate: plate.toUpperCase(),
+        make: input.make?.trim() || "—",
+        model: input.model?.trim() || "—",
+        year: new Date().getFullYear(),
+        km: 0,
+      } as Omit<Vehicle, "id">);
+      vehicleId = vehicle.id;
+    }
+  }
+
+  const appt = appointmentsRepo.create(tenant.id, {
+    tenantId: tenant.id,
+    locationId: tenant.locations[0]?.id ?? "",
+    customerId: customer.id,
+    vehicleId,
+    serviceIds: input.serviceIds,
+    scheduledAt: input.scheduledAt,
+    status: "programada",
+    source: "online",
+    notes: input.notes?.trim() || undefined,
+  } as Omit<Appointment, "id">);
+
+  notify(tenant.id, {
+    type: "cita",
+    title: "Nueva cita online",
+    body: `${name} — ${plate ? plate.toUpperCase() : "sin vehículo"} · ${formatDateTime(input.scheduledAt)}`,
+    link: "/app/citas",
+  });
+
   return appt;
 }
 

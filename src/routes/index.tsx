@@ -4,7 +4,6 @@ import {
   MessageSquareText,
   ScanLine,
   ArrowRight,
-  Calendar,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
@@ -73,10 +72,8 @@ function Landing() {
                   Acceder <ArrowRight strokeWidth={1.5} />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
-                <a href="#pedir-cita">Pedir cita</a>
-              </Button>
             </div>
+
           </div>
         </section>
 
@@ -99,34 +96,6 @@ function Landing() {
             ))}
           </div>
         </section>
-
-        {/* Pedir cita (mock) */}
-        <section id="pedir-cita" className="mx-auto max-w-6xl px-6 py-20">
-          <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6 sm:p-8">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Calendar strokeWidth={1.5} className="h-4 w-4" />
-              <span className="text-xs font-medium">Pedir cita online</span>
-            </div>
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
-              Reserva en tu taller en segundos
-            </h2>
-            <p className="mt-1.5 text-sm text-muted-foreground">
-              Elige servicio, fecha y hora. Te confirmaremos tu cita lo antes posible.
-            </p>
-
-            <div className="mt-6 space-y-3">
-              <MockField label="Servicio" placeholder="Cambio de aceite" />
-              <div className="grid grid-cols-2 gap-3">
-                <MockField label="Fecha" placeholder="Hoy" />
-                <MockField label="Hora" placeholder="10:00" />
-              </div>
-              <MockField label="Matrícula" placeholder="1234 ABC" />
-              <Button className="w-full" disabled>
-                Solicitar cita
-              </Button>
-            </div>
-          </div>
-        </section>
       </main>
 
       <footer className="border-t border-border">
@@ -139,19 +108,3 @@ function Landing() {
   );
 }
 
-function MockField({
-  label,
-  placeholder,
-}: {
-  label: string;
-  placeholder: string;
-}) {
-  return (
-    <div className="space-y-1.5">
-      <label className="text-xs font-medium text-foreground">{label}</label>
-      <div className="flex h-10 items-center rounded-md border border-border bg-background px-3 text-sm text-muted-foreground">
-        {placeholder}
-      </div>
-    </div>
-  );
-}
