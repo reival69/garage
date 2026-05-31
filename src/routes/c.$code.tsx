@@ -6,7 +6,8 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { findWorkOrderByAccessCode, vehiclesRepo } from "@/lib/db";
 import { PHOTO_LABEL_TEXT } from "@/lib/orders";
 import { formatDateTime } from "@/lib/format";
-import type { Tenant, Vehicle, WorkOrder, WorkOrderStatus } from "@/types";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import type { Photo, Tenant, Vehicle, WorkOrder, WorkOrderStatus } from "@/types";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/c/$code")({
@@ -70,6 +71,14 @@ function GuestView() {
 
   const { order, tenant, vehicle } = state;
   const currentIdx = TIMELINE.findIndex((s) => s.status === order.status);
+
+  // Photos visible to the customer: all labels (recepción incluida).
+  const photos = order.photos;
+  // Customer timeline: only shop-authored messages, chronological.
+  const shopMessages = order.messages
+    .filter((m) => m.from === "shop")
+    .slice()
+    .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
 
   return (
     <div
@@ -183,12 +192,13 @@ function GuestView() {
           </ol>
         </section>
 
-        {/* Placeholders for next prompt */}
-        <PlaceholderSection
-          icon={Camera}
-          title="Fotos del vehículo"
-          body="Aquí verás las fotos de tu coche."
-        />
+        {/* Photos — real gallery, read only */}
+        <PhotoGallery photos={photos} />
+
+        {/* Messages — real shop timeline, read only */}
+        <MessagesTimeline messages={shopMessages} />
+
+        {/* Placeholders for next prompts */}
         <PlaceholderSection
           icon={ScanLine}
           title="Inspección"
@@ -205,6 +215,110 @@ function GuestView() {
         </p>
       </main>
     </div>
+  );
+}
+
+function PhotoGallery({ photos }: { photos: Photo[] }) {
+  const [active, setActive] = useState<Photo | null>(null);
+
+  return (
+    <section className="rounded-xl border border-border bg-card p-5">
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <Camera strokeWidth={1.5} className="h-4 w-4" />
+        <h2 className="text-sm font-semibold text-foreground">Fotos del vehículo</h2>
+      </div>
+
+      {photos.length === 0 ? (
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          Tu taller aún no ha subido fotos.
+        </p>
+      ) : (
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {photos.map((photo) => (
+            <button
+              key={photo.id}
+              type="button"
+              onClick={() => setActive(photo)}
+              className="group flex flex-col gap-1.5 text-left"
+            >
+              <span className="block aspect-square overflow-hidden rounded-lg border border-border bg-background-muted">
+                <img
+                  src={photo.url}
+                  alt={PHOTO_LABEL_TEXT[photo.label]}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                />
+              </span>
+              <span className="text-xs font-medium text-muted-foreground">
+                {PHOTO_LABEL_TEXT[photo.label]}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      <Dialog open={!!active} onOpenChange={(open) => !open && setActive(null)}>
+        <DialogContent className="max-w-lg overflow-hidden p-0">
+          {active && (
+            <figure className="space-y-0">
+              <img
+                src={active.url}
+                alt={PHOTO_LABEL_TEXT[active.label]}
+                className="max-h-[70vh] w-full object-contain bg-background-muted"
+              />
+              <figcaption className="flex items-center justify-between gap-3 border-t border-border px-4 py-3">
+                <span className="text-sm font-medium text-foreground">
+                  {PHOTO_LABEL_TEXT[active.label]}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {formatDateTime(active.createdAt)}
+                </span>
+              </figcaption>
+              {active.note && (
+                <p className="border-t border-border px-4 py-3 text-sm text-muted-foreground">
+                  {active.note}
+                </p>
+              )}
+            </figure>
+          )}
+        </DialogContent>
+      </Dialog>
+    </section>
+  );
+}
+
+function MessagesTimeline({
+  messages,
+}: {
+  messages: WorkOrder["messages"];
+}) {
+  return (
+    <section className="rounded-xl border border-border bg-card p-5">
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <MessageSquare strokeWidth={1.5} className="h-4 w-4" />
+        <h2 className="text-sm font-semibold text-foreground">Mensajes del taller</h2>
+      </div>
+
+      {messages.length === 0 ? (
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          Aún no hay mensajes de tu taller.
+        </p>
+      ) : (
+        <ol className="mt-4 space-y-3">
+          {messages.map((m) => (
+            <li
+              key={m.id}
+              className="rounded-lg border border-border bg-background-subtle p-3"
+            >
+              <p className="text-sm text-foreground">{m.text}</p>
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                {formatDateTime(m.createdAt)}
+              </p>
+            </li>
+          ))}
+        </ol>
+      )}
+    </section>
   );
 }
 
