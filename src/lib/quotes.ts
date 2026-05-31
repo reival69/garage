@@ -9,7 +9,9 @@ import {
   vehiclesRepo,
   workOrdersRepo,
 } from "@/lib/db";
-import { PIPELINE, changeOrderStatus } from "@/lib/orders";
+import { PIPELINE, changeOrderStatus, quoteTotals } from "@/lib/orders";
+
+export type ApprovalDecision = "approved" | "rejected";
 
 export interface QuoteItemInput {
   type: QuoteItem["type"];
