@@ -22,7 +22,7 @@ export function openControlPanel() {
   }
 }
 
-type View = "menu" | "taller" | "cliente";
+type View = "menu" | "taller" | "cliente" | "publica";
 
 /**
  * Hidden internal control panel for presentations. No visible trigger.
