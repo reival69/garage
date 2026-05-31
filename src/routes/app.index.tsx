@@ -96,6 +96,13 @@ function AppDashboard() {
             icon={BellRing}
           />
         </Link>
+        <Link to="/app/resenas" className="rounded-xl">
+          <StatCard
+            label="Valoración media"
+            value={stats.avgRating > 0 ? `${stats.avgRating.toFixed(1)} / 5` : "—"}
+            icon={Star}
+          />
+        </Link>
       </div>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-2">
