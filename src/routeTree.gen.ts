@@ -16,6 +16,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as TSlugRouteImport } from './routes/t.$slug'
 import { Route as CCodeRouteImport } from './routes/c.$code'
 import { Route as AppServiciosRouteImport } from './routes/app.servicios'
 import { Route as AppPresupuestosRouteImport } from './routes/app.presupuestos'
@@ -67,6 +68,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const TSlugRoute = TSlugRouteImport.update({
+  id: '/t/$slug',
+  path: '/t/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CCodeRoute = CCodeRouteImport.update({
   id: '/c/$code',
@@ -163,6 +169,7 @@ export interface FileRoutesByFullPath {
   '/app/presupuestos': typeof AppPresupuestosRoute
   '/app/servicios': typeof AppServiciosRoute
   '/c/$code': typeof CCodeRoute
+  '/t/$slug': typeof TSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/app/presupuestos': typeof AppPresupuestosRoute
   '/app/servicios': typeof AppServiciosRoute
   '/c/$code': typeof CCodeRoute
+  '/t/$slug': typeof TSlugRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
@@ -212,6 +220,7 @@ export interface FileRoutesById {
   '/app/presupuestos': typeof AppPresupuestosRoute
   '/app/servicios': typeof AppServiciosRoute
   '/c/$code': typeof CCodeRoute
+  '/t/$slug': typeof TSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
@@ -239,6 +248,7 @@ export interface FileRouteTypes {
     | '/app/presupuestos'
     | '/app/servicios'
     | '/c/$code'
+    | '/t/$slug'
     | '/admin/'
     | '/app/'
     | '/app/clientes/$id'
@@ -262,6 +272,7 @@ export interface FileRouteTypes {
     | '/app/presupuestos'
     | '/app/servicios'
     | '/c/$code'
+    | '/t/$slug'
     | '/admin'
     | '/app'
     | '/app/clientes/$id'
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/app/presupuestos'
     | '/app/servicios'
     | '/c/$code'
+    | '/t/$slug'
     | '/admin/'
     | '/app/'
     | '/app/clientes/$id'
@@ -306,6 +318,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PanelRoute: typeof PanelRoute
   CCodeRoute: typeof CCodeRoute
+  TSlugRoute: typeof TSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -358,6 +371,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/t/$slug': {
+      id: '/t/$slug'
+      path: '/t/$slug'
+      fullPath: '/t/$slug'
+      preLoaderRoute: typeof TSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/c/$code': {
       id: '/c/$code'
@@ -531,6 +551,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PanelRoute: PanelRoute,
   CCodeRoute: CCodeRoute,
+  TSlugRoute: TSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
