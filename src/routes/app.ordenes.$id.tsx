@@ -511,7 +511,7 @@ function BillingCard({
   );
 }
 
-
+function ShareCard({
   order,
   tenantName,
 }: {
