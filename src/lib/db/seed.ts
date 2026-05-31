@@ -28,6 +28,8 @@ import {
 import { clearAll, readRaw, uid, writeRaw } from "./storage";
 
 const SEED_FLAG = "seeded";
+// Bump when the seed shape changes to force a clean reseed of the demo.
+const SEED_VERSION = "2";
 
 // Tiny base64 placeholder images (kept small to respect the ~5MB quota).
 const PHOTO_A =
@@ -167,7 +169,23 @@ const PROBLEMS = [
   "Mantenimiento general",
 ];
 
-function seedTenant(tenant: Tenant): void {
+interface SeedOpts {
+  /** Number of customers to create. */
+  customers?: number;
+  /** Number of vehicles to create. */
+  vehicles?: number;
+  /** Pipeline (one work order per entry). */
+  pipeline?: WorkOrderStatus[];
+  /** Multiplier applied to catalog & quote prices (e.g. ~20 for MXN). */
+  priceFactor?: number;
+}
+
+function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
+  const customerCount = opts.customers ?? 6;
+  const vehicleCount = opts.vehicles ?? 7;
+  const pipeline = opts.pipeline ?? PIPELINE;
+  const f = opts.priceFactor ?? 1;
+
   tenantsRepo.create(tenant);
   const t = tenant.id;
   const locationId = tenant.locations[0].id;
@@ -195,22 +213,27 @@ function seedTenant(tenant: Tenant): void {
     locationId,
   } as Omit<User, "id">);
 
-  // Services & parts
+  // Services & parts (prices scaled by the tenant currency factor)
   SERVICE_NAMES.forEach(([name, basePrice, estimatedMinutes]) =>
     servicesRepo.create(t, {
       tenantId: t,
       name,
-      basePrice,
+      basePrice: Math.round(basePrice * f),
       estimatedMinutes,
     } as Omit<Service, "id">),
   );
   PART_NAMES.forEach(([name, price, sku]) =>
-    partsRepo.create(t, { tenantId: t, name, price, sku } as Omit<Part, "id">),
+    partsRepo.create(t, {
+      tenantId: t,
+      name,
+      price: Math.round(price * f),
+      sku,
+    } as Omit<Part, "id">),
   );
 
   // Customers
   const customers: Customer[] = [];
-  const count = 6;
+  const count = customerCount;
   for (let i = 0; i < count; i++) {
     const name = `${FIRST_NAMES[i % FIRST_NAMES.length]} ${LAST_NAMES[i % LAST_NAMES.length]}`;
     const c = customersRepo.create(t, {
@@ -225,7 +248,7 @@ function seedTenant(tenant: Tenant): void {
 
   // Vehicles (one or two per customer-ish, 7 total)
   const vehicles: Vehicle[] = [];
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < vehicleCount; i++) {
     const [make, model, year] = VEHICLES[i % VEHICLES.length];
     const owner_c = customers[i % customers.length];
     const v = vehiclesRepo.create(t, {
@@ -241,8 +264,8 @@ function seedTenant(tenant: Tenant): void {
     vehicles.push(v);
   }
 
-  // Work orders across the whole pipeline
-  PIPELINE.forEach((status, i) => {
+  // Work orders across the pipeline
+  pipeline.forEach((status, i) => {
     const v = vehicles[i % vehicles.length];
     const hasQuote =
       status !== "recibido" && status !== "diagnostico";
@@ -253,7 +276,7 @@ function seedTenant(tenant: Tenant): void {
             type: "labor" as const,
             description: "Mano de obra",
             qty: 2,
-            unitPrice: 45,
+            unitPrice: Math.round(45 * f),
             approval:
               status === "aprobado" ||
               status === "en_reparacion" ||
@@ -267,7 +290,7 @@ function seedTenant(tenant: Tenant): void {
             type: "part" as const,
             description: "Pastillas de freno delanteras",
             qty: 1,
-            unitPrice: 48,
+            unitPrice: Math.round(48 * f),
             approval:
               status === "aprobado" ||
               status === "en_reparacion" ||
@@ -371,7 +394,10 @@ function seedTenant(tenant: Tenant): void {
 
 export function seedIfEmpty(): void {
   if (typeof window === "undefined") return;
-  if (readRaw(SEED_FLAG) === "1") return;
+  // Version-aware: when the seed shape changes we wipe & reseed so the demo
+  // always reflects the latest data (e.g. the third MXN shop).
+  if (readRaw(SEED_FLAG) === SEED_VERSION) return;
+  clearAll();
   doSeed();
 }
 
@@ -386,6 +412,7 @@ function doSeed(): void {
     role: "superadmin",
   } as Omit<User, "id">);
 
+  // García — Spain (EUR), Pro plan.
   seedTenant({
     id: "tnt_garcia",
     name: "Taller García",
@@ -407,12 +434,13 @@ function doSeed(): void {
     createdAt: hoursAgo(24 * 60),
   });
 
+  // AutoNorte — Spain (EUR), Básico plan.
   seedTenant({
     id: "tnt_autonorte",
     name: "AutoNorte",
     slug: "autonorte",
     accentColor: "#0F766E",
-    planId: "plan_premium",
+    planId: "plan_basico",
     status: "active",
     currency: "EUR",
     taxRate: 0.21,
@@ -428,7 +456,44 @@ function doSeed(): void {
     createdAt: hoursAgo(24 * 90),
   });
 
-  writeRaw(SEED_FLAG, "1");
+  // Taller Reyes — México (MXN, IVA 16%), Premium plan. Lighter seed and
+  // prices scaled (~x20) so the quotes read as credible pesos.
+  seedTenant(
+    {
+      id: "tnt_reyes",
+      name: "Taller Reyes",
+      slug: "reyes",
+      accentColor: "#B45309",
+      planId: "plan_premium",
+      status: "active",
+      currency: "MXN",
+      taxRate: 0.16,
+      locations: [
+        {
+          id: "loc_reyes_1",
+          tenantId: "tnt_reyes",
+          name: "Ciudad de México",
+          address: "Av. Insurgentes Sur 1234, CDMX",
+          phone: "55 1234 5678",
+        },
+      ],
+      createdAt: hoursAgo(24 * 30),
+    },
+    {
+      customers: 4,
+      vehicles: 5,
+      pipeline: [
+        "recibido",
+        "presupuesto_enviado",
+        "aprobado",
+        "en_reparacion",
+        "entregado",
+      ],
+      priceFactor: 20,
+    },
+  );
+
+  writeRaw(SEED_FLAG, SEED_VERSION);
 }
 
 export function resetDemo(): void {
