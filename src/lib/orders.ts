@@ -222,6 +222,32 @@ export function addShopMessage(
   });
 }
 
+/** Append a customer message to the order timeline (from the guest view). */
+export function addCustomerMessage(
+  tenantId: string,
+  order: WorkOrder,
+  text: string,
+): WorkOrder | undefined {
+  const now = new Date().toISOString();
+  const messages = [
+    ...order.messages,
+    { id: uid("m"), from: "customer" as const, text, createdAt: now },
+  ];
+  const updated = workOrdersRepo.update(tenantId, order.id, {
+    messages,
+    updatedAt: now,
+  });
+  notificationsRepo.create(tenantId, {
+    tenantId,
+    type: "estado",
+    title: "Mensaje del cliente",
+    body: `${vehicleLabel(tenantId, order.vehicleId)} — ${text}`,
+    read: false,
+    createdAt: now,
+  });
+  return updated;
+}
+
 /** Append a photo (compressed base64) to the order. */
 export function addOrderPhoto(
   tenantId: string,
