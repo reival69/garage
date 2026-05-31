@@ -1,12 +1,16 @@
-// Talleo — Ficha de factura. Datos del taller/cliente/vehículo, líneas, totales
-// y estado de cobro. Botón «Imprimir / Guardar PDF» usa window.print() con CSS
-// de impresión que oculta el resto de la interfaz. Todo local y simulado.
+// Talleo — Ficha de factura. Reutiliza el componente compartido InvoiceDocument
+// para el cuerpo imprimible (datos fiscales/cliente/vehículo/líneas/totales) y
+// añade el control de estado de cobro. Botón «Imprimir / Guardar PDF» aísla la
+// hoja con printInvoiceDocument. Todo local y simulado.
 
 import { useMemo, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Printer } from "lucide-react";
 import { EmptyState } from "@/components/base/EmptyState";
-import { StatusBadge } from "@/components/base/StatusBadge";
+import {
+  InvoiceDocument,
+  printInvoiceDocument,
+} from "@/components/InvoiceDocument";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -22,8 +26,7 @@ import {
   vehiclesRepo,
   workOrdersRepo,
 } from "@/lib/db";
-import { INVOICE_STATUS_LABELS, setInvoiceStatus } from "@/lib/invoices";
-import { formatCurrencyCents, formatDate } from "@/lib/format";
+import { setInvoiceStatus } from "@/lib/invoices";
 import type { Invoice } from "@/types";
 
 export const Route = createFileRoute("/app/facturacion/$id")({
