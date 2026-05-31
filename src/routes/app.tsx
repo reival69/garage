@@ -65,12 +65,25 @@ function AppLayout() {
     }
   }, [ready, user, tenant, navigate]);
 
+  // Permission guard: if the current role can't access this module, send it
+  // back to the dashboard. Owner/superadmin are never restricted.
+  useEffect(() => {
+    if (!ready || !user || !tenant) return;
+    const mod = moduleForPath(pathname);
+    if (mod && !can(user.role, mod)) {
+      navigate({ to: "/app" });
+    }
+  }, [ready, user, tenant, pathname, navigate]);
+
   if (!ready) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background" />
     );
   }
   if (!user || !tenant) return null;
+
+  const navItems = NAV.filter((item) => can(user.role, item.module));
+  const bottomItems = BOTTOM.filter((item) => can(user.role, item.module));
 
   const accentStyle = tenant
     ? ({ ["--talleo-accent" as string]: tenant.accentColor } as React.CSSProperties)
