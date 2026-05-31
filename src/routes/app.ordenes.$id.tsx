@@ -66,7 +66,7 @@ const MAX_PHOTOS = 12;
 
 function OrderDetail() {
   const { id } = Route.useParams();
-  const { ready, tenant } = useAuth();
+  const { ready, user, tenant } = useAuth();
   const [version, setVersion] = useState(0);
   const bump = () => setVersion((v) => v + 1);
 
