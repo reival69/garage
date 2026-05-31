@@ -12,12 +12,12 @@ import type {
 } from "@/types";
 import {
   listAllAccessCodes,
-  notificationsRepo,
   uid,
   usersRepo,
   vehiclesRepo,
   workOrdersRepo,
 } from "@/lib/db";
+import { notify } from "@/lib/notifications";
 
 // Customer-facing pipeline (does not include `cancelado`, handled apart).
 export const PIPELINE: WorkOrderStatus[] = [
@@ -163,13 +163,11 @@ export function createWorkOrder(
     updatedAt: now,
   } as Omit<WorkOrder, "id">);
 
-  notificationsRepo.create(tenant.id, {
-    tenantId: tenant.id,
+  notify(tenant.id, {
     type: "estado",
     title: "Nueva orden creada",
     body: `${vehicleLabel(tenant.id, order.vehicleId)} — Recibido (${order.accessCode}).`,
-    read: false,
-    createdAt: now,
+    link: `/app/ordenes/${order.id}`,
   });
 
   return order;
@@ -194,13 +192,11 @@ export function changeOrderStatus(
     messages,
   });
 
-  notificationsRepo.create(tenant.id, {
-    tenantId: tenant.id,
+  notify(tenant.id, {
     type: "estado",
     title: `Estado: ${STATUS_LABELS[next]}`,
     body: `${vehicleLabel(tenant.id, order.vehicleId)} — ${STATUS_LABELS[next]}.`,
-    read: false,
-    createdAt: now,
+    link: `/app/ordenes/${order.id}`,
   });
 
   return updated;
@@ -238,13 +234,11 @@ export function addCustomerMessage(
     messages,
     updatedAt: now,
   });
-  notificationsRepo.create(tenantId, {
-    tenantId,
+  notify(tenantId, {
     type: "estado",
     title: "Mensaje del cliente",
     body: `${vehicleLabel(tenantId, order.vehicleId)} — ${text}`,
-    read: false,
-    createdAt: now,
+    link: `/app/ordenes/${order.id}`,
   });
   return updated;
 }

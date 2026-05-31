@@ -4,11 +4,11 @@
 
 import type { QuoteItem, Tenant, WorkOrder } from "@/types";
 import {
-  notificationsRepo,
   uid,
   vehiclesRepo,
   workOrdersRepo,
 } from "@/lib/db";
+import { notify } from "@/lib/notifications";
 import { PIPELINE, changeOrderStatus, quoteTotals } from "@/lib/orders";
 
 export type ApprovalDecision = "approved" | "rejected";
@@ -129,13 +129,11 @@ export function sendQuote(
     updatedAt: now,
   });
 
-  notificationsRepo.create(tenant.id, {
-    tenantId: tenant.id,
+  notify(tenant.id, {
     type: "presupuesto",
     title: "Presupuesto enviado",
     body: `${vehicleLabel(tenant.id, current.vehicleId)} — Presupuesto disponible para el cliente.`,
-    read: false,
-    createdAt: now,
+    link: `/app/ordenes/${current.id}`,
   });
 
   return updated;
@@ -209,13 +207,11 @@ export function confirmQuoteApproval(
       updatedAt: now,
     }) ?? updated;
 
-  notificationsRepo.create(tenant.id, {
-    tenantId: tenant.id,
+  notify(tenant.id, {
     type: "presupuesto",
     title: "Decisión del cliente",
     body: `${vehicleLabel(tenant.id, updated.vehicleId)} — ${text}`,
-    read: false,
-    createdAt: now,
+    link: `/app/ordenes/${updated.id}`,
   });
 
   return updated;

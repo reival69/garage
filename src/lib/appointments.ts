@@ -11,10 +11,10 @@ import type {
 } from "@/types";
 import {
   appointmentsRepo,
-  notificationsRepo,
   servicesRepo,
   vehiclesRepo,
 } from "@/lib/db";
+import { notify } from "@/lib/notifications";
 import { createWorkOrder } from "@/lib/orders";
 
 // Linear flow of an appointment. `no_show` is an alternative terminal outcome.
@@ -145,13 +145,11 @@ export function changeAppointmentStatus(
   next: AppointmentStatus,
 ): Appointment | undefined {
   const updated = appointmentsRepo.update(tenant.id, appt.id, { status: next });
-  notificationsRepo.create(tenant.id, {
-    tenantId: tenant.id,
+  notify(tenant.id, {
     type: "cita",
     title: `Cita: ${APPOINTMENT_STATUS_LABELS[next]}`,
     body: vehicleLabel(tenant.id, appt.vehicleId),
-    read: false,
-    createdAt: new Date().toISOString(),
+    link: "/app/citas",
   });
   return updated;
 }

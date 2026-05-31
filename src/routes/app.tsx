@@ -22,6 +22,7 @@ import {
   Home,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { NotificationBell } from "@/components/app/NotificationBell";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { can, moduleForPath } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
@@ -93,13 +94,16 @@ function AppLayout() {
     <div className="flex min-h-screen bg-background" style={accentStyle}>
       {/* Desktop sidebar */}
       <aside className="hidden w-60 shrink-0 flex-col border-r border-border bg-sidebar md:flex">
-        <div className="px-5 py-5">
-          <Logo className="text-base" logoUrl={tenant.logoUrl} />
-          {tenant && (
-            <p className="mt-1 truncate text-xs text-muted-foreground">
-              {tenant.name}
-            </p>
-          )}
+        <div className="flex items-start justify-between px-5 py-5">
+          <div className="min-w-0">
+            <Logo className="text-base" logoUrl={tenant.logoUrl} />
+            {tenant && (
+              <p className="mt-1 truncate text-xs text-muted-foreground">
+                {tenant.name}
+              </p>
+            )}
+          </div>
+          <NotificationBell variant="popover" />
         </div>
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2">
           {navItems.map((item) => {
@@ -139,12 +143,16 @@ function AppLayout() {
         {/* Mobile header */}
         <header className="flex items-center justify-between border-b border-border px-4 py-3 md:hidden">
           <Logo className="text-base" logoUrl={tenant.logoUrl} />
-          {tenant && (
-            <span className="truncate text-xs text-muted-foreground">
-              {tenant.name}
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {tenant && (
+              <span className="max-w-[40vw] truncate text-xs text-muted-foreground">
+                {tenant.name}
+              </span>
+            )}
+            <NotificationBell variant="sheet" />
+          </div>
         </header>
+
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-24 sm:px-6 md:pb-8">
           <Outlet />

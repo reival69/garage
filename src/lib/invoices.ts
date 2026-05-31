@@ -4,7 +4,8 @@
 // no component touches localStorage directly. 100% local & simulated.
 
 import type { Invoice, Tenant, WorkOrder } from "@/types";
-import { invoicesRepo, notificationsRepo, vehiclesRepo } from "@/lib/db";
+import { invoicesRepo, vehiclesRepo } from "@/lib/db";
+import { notify } from "@/lib/notifications";
 import { quoteTotals } from "@/lib/orders";
 
 /** Find the invoice generated for a given work order, if any. */
@@ -67,13 +68,11 @@ export function generateInvoiceFromOrder(
     createdAt: now,
   });
 
-  notificationsRepo.create(tenant.id, {
-    tenantId: tenant.id,
+  notify(tenant.id, {
     type: "presupuesto",
     title: "Factura generada",
     body: `${invoice.number} — ${vehicleLabel(tenant.id, order.vehicleId)}.`,
-    read: false,
-    createdAt: now,
+    link: `/app/facturacion/${invoice.id}`,
   });
 
   return invoice;
