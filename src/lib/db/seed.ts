@@ -211,17 +211,22 @@ function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
     locationId,
   } as Omit<User, "id">);
 
-  // Services & parts
+  // Services & parts (prices scaled by the tenant currency factor)
   SERVICE_NAMES.forEach(([name, basePrice, estimatedMinutes]) =>
     servicesRepo.create(t, {
       tenantId: t,
       name,
-      basePrice,
+      basePrice: Math.round(basePrice * f),
       estimatedMinutes,
     } as Omit<Service, "id">),
   );
   PART_NAMES.forEach(([name, price, sku]) =>
-    partsRepo.create(t, { tenantId: t, name, price, sku } as Omit<Part, "id">),
+    partsRepo.create(t, {
+      tenantId: t,
+      name,
+      price: Math.round(price * f),
+      sku,
+    } as Omit<Part, "id">),
   );
 
   // Customers
