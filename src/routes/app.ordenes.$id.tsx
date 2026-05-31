@@ -93,6 +93,8 @@ function OrderDetail() {
   const customer = customersRepo.getById(tenant.id, order.customerId);
   const mechanics = listMechanics(tenant.id);
   const transitions = nextStatuses(order.status);
+  const canQuote = can(user.role, "presupuestos");
+  const canBill = can(user.role, "facturacion");
 
   const move = (next: string) => {
     changeOrderStatus(tenant, order, next as WorkOrder["status"]);
