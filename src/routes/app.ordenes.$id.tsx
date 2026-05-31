@@ -16,6 +16,7 @@ import {
   Loader2,
   Trash2,
   Receipt,
+  BellRing,
 } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { EmptyState } from "@/components/base/EmptyState";
