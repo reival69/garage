@@ -161,6 +161,7 @@ function ConfigPage() {
       taxRate,
       accentColor,
       logoUrl,
+      googleReviewUrl: googleReviewUrl.trim() || undefined,
       businessHours: hours,
       locations,
     });
