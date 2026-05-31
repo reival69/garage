@@ -143,12 +143,16 @@ function AppLayout() {
         {/* Mobile header */}
         <header className="flex items-center justify-between border-b border-border px-4 py-3 md:hidden">
           <Logo className="text-base" logoUrl={tenant.logoUrl} />
-          {tenant && (
-            <span className="truncate text-xs text-muted-foreground">
-              {tenant.name}
-            </span>
-          )}
+          <div className="flex items-center gap-2">
+            {tenant && (
+              <span className="max-w-[40vw] truncate text-xs text-muted-foreground">
+                {tenant.name}
+              </span>
+            )}
+            <NotificationBell variant="sheet" />
+          </div>
         </header>
+
 
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-24 sm:px-6 md:pb-8">
           <Outlet />
