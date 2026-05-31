@@ -52,8 +52,24 @@ const BOTTOM = [
 ] as const;
 
 function AppLayout() {
-  const { tenant, logout } = useAuth();
+  const { ready, user, tenant, logout } = useAuth();
+  const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // Session guard: redirect to /login when there is no active session/tenant
+  // (covers a full page reload landing directly on /app/*).
+  useEffect(() => {
+    if (ready && (!user || !tenant)) {
+      navigate({ to: "/login" });
+    }
+  }, [ready, user, tenant, navigate]);
+
+  if (!ready) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background" />
+    );
+  }
+  if (!user || !tenant) return null;
 
   const accentStyle = tenant
     ? ({ ["--talleo-accent" as string]: tenant.accentColor } as React.CSSProperties)
