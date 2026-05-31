@@ -288,7 +288,7 @@ function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
             type: "part" as const,
             description: "Pastillas de freno delanteras",
             qty: 1,
-            unitPrice: 48,
+            unitPrice: Math.round(48 * f),
             approval:
               status === "aprobado" ||
               status === "en_reparacion" ||
