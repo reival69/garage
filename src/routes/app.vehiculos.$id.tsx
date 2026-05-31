@@ -283,7 +283,7 @@ function VehicleDetail() {
           <DataCard
             title="Recordatorios"
             bodyClassName="p-0"
-            action={
+            actions={
               remindersEditable ? (
                 <Button
                   variant="outline"
