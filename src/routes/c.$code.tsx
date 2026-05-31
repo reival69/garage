@@ -31,6 +31,7 @@ import {
 import {
   approvedTotals,
   confirmQuoteApproval,
+  warrantyLabel,
   type ApprovalDecision,
 } from "@/lib/quotes";
 import { getInvoiceByWorkOrderId } from "@/lib/invoices";
