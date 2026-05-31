@@ -4,11 +4,11 @@
 
 import type { QuoteItem, Tenant, WorkOrder } from "@/types";
 import {
-  notificationsRepo,
   uid,
   vehiclesRepo,
   workOrdersRepo,
 } from "@/lib/db";
+import { notify } from "@/lib/notifications";
 import { PIPELINE, changeOrderStatus, quoteTotals } from "@/lib/orders";
 
 export type ApprovalDecision = "approved" | "rejected";
