@@ -132,6 +132,12 @@ export function QuoteEditor({
                 <p className="text-xs text-muted-foreground">
                   {it.qty} × {formatCurrencyCents(it.unitPrice, tenant.currency)}
                 </p>
+                {warrantyLabel(it) && (
+                  <p className="mt-1 inline-flex items-center gap-1 rounded-md bg-background-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                    <ShieldCheck strokeWidth={1.5} className="h-3 w-3" />
+                    Garantía: {warrantyLabel(it)}
+                  </p>
+                )}
               </div>
               <div className="flex items-center justify-between gap-3 sm:justify-end">
                 <span className="text-sm font-medium text-foreground">
