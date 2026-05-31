@@ -447,6 +447,42 @@ function VehicleDetail() {
         defaultVehicleId={vehicle.id}
         onCreated={() => setVersion((v) => v + 1)}
       />
+
+      <ReminderFormDialog
+        open={reminderOpen}
+        onOpenChange={(o) => {
+          setReminderOpen(o);
+          if (!o) setEditingReminder(null);
+        }}
+        tenantId={tenant.id}
+        vehicleId={vehicle.id}
+        customerId={vehicle.customerId}
+        reminder={editingReminder}
+        onSaved={bump}
+      />
+
+      <AlertDialog
+        open={!!reminderToDelete}
+        onOpenChange={(o) => !o && setReminderToDelete(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Eliminar recordatorio</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteReminder}
+              className="bg-[var(--destructive)] text-white hover:bg-[var(--destructive)]/90"
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
