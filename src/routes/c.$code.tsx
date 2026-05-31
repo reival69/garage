@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Check,
   Car,
@@ -18,8 +18,10 @@ import {
   ChevronDown,
   ShieldCheck,
   Star,
+  ExternalLink,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { VehicleHistory } from "@/components/VehicleHistory";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { customersRepo, findWorkOrderByAccessCode, vehiclesRepo } from "@/lib/db";
 import {
