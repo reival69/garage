@@ -12,16 +12,26 @@ import {
   MessageSquare,
   Send,
   PenLine,
+  Printer,
+  ReceiptText,
+  History,
+  ChevronDown,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { findWorkOrderByAccessCode, vehiclesRepo } from "@/lib/db";
-import { PHOTO_LABEL_TEXT, addCustomerMessage, quoteTotals } from "@/lib/orders";
+import { customersRepo, findWorkOrderByAccessCode, vehiclesRepo } from "@/lib/db";
+import {
+  PHOTO_LABEL_TEXT,
+  addCustomerMessage,
+  listOrdersByVehicleId,
+  quoteTotals,
+} from "@/lib/orders";
 import {
   approvedTotals,
   confirmQuoteApproval,
   type ApprovalDecision,
 } from "@/lib/quotes";
+import { getInvoiceByWorkOrderId } from "@/lib/invoices";
 import { inspectionSummary } from "@/lib/inspection";
 import { formatCurrencyCents, formatDate, formatDateTime } from "@/lib/format";
 import {
@@ -34,8 +44,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { SignaturePad } from "@/components/base/SignaturePad";
+import { StatusBadge } from "@/components/base/StatusBadge";
+import {
+  InvoiceDocument,
+  printInvoiceDocument,
+} from "@/components/InvoiceDocument";
 import type {
+  Customer,
   InspectionItem,
+  Invoice,
   Photo,
   QuoteItem,
   Tenant,
