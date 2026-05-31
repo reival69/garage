@@ -33,6 +33,7 @@ function AppDashboard() {
     todayAppointments: 0,
     pendingQuotes: 0,
     monthRevenue: 0,
+    overdueReminders: 0,
   });
 
   useEffect(() => {
