@@ -192,13 +192,11 @@ export function changeOrderStatus(
     messages,
   });
 
-  notificationsRepo.create(tenant.id, {
-    tenantId: tenant.id,
+  notify(tenant.id, {
     type: "estado",
     title: `Estado: ${STATUS_LABELS[next]}`,
     body: `${vehicleLabel(tenant.id, order.vehicleId)} — ${STATUS_LABELS[next]}.`,
-    read: false,
-    createdAt: now,
+    link: `/app/ordenes/${order.id}`,
   });
 
   return updated;
