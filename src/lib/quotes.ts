@@ -18,6 +18,8 @@ export interface QuoteItemInput {
   description: string;
   qty: number;
   unitPrice: number;
+  warrantyMonths?: number;
+  warrantyKm?: number;
 }
 
 /** Per-line amount = qty × unitPrice. */
