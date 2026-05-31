@@ -15,6 +15,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as CCodeRouteImport } from './routes/c.$code'
 import { Route as AppVehiculosRouteImport } from './routes/app.vehiculos'
 import { Route as AppServiciosRouteImport } from './routes/app.servicios'
 import { Route as AppPresupuestosRouteImport } from './routes/app.presupuestos'
@@ -56,6 +57,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const CCodeRoute = CCodeRouteImport.update({
+  id: '/c/$code',
+  path: '/c/$code',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppVehiculosRoute = AppVehiculosRouteImport.update({
   id: '/vehiculos',
@@ -129,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/app/presupuestos': typeof AppPresupuestosRoute
   '/app/servicios': typeof AppServiciosRoute
   '/app/vehiculos': typeof AppVehiculosRoute
+  '/c/$code': typeof CCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
 }
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/app/presupuestos': typeof AppPresupuestosRoute
   '/app/servicios': typeof AppServiciosRoute
   '/app/vehiculos': typeof AppVehiculosRoute
+  '/c/$code': typeof CCodeRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
 }
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/app/presupuestos': typeof AppPresupuestosRoute
   '/app/servicios': typeof AppServiciosRoute
   '/app/vehiculos': typeof AppVehiculosRoute
+  '/c/$code': typeof CCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
 }
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/app/presupuestos'
     | '/app/servicios'
     | '/app/vehiculos'
+    | '/c/$code'
     | '/admin/'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
     | '/app/presupuestos'
     | '/app/servicios'
     | '/app/vehiculos'
+    | '/c/$code'
     | '/admin'
     | '/app'
   id:
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | '/app/presupuestos'
     | '/app/servicios'
     | '/app/vehiculos'
+    | '/c/$code'
     | '/admin/'
     | '/app/'
   fileRoutesById: FileRoutesById
@@ -232,6 +244,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
+  CCodeRoute: typeof CCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -277,6 +290,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/c/$code': {
+      id: '/c/$code'
+      path: '/c/$code'
+      fullPath: '/c/$code'
+      preLoaderRoute: typeof CCodeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/app/vehiculos': {
       id: '/app/vehiculos'
@@ -405,6 +425,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
+  CCodeRoute: CCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
