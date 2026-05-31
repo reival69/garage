@@ -525,14 +525,7 @@ function InfoRow({
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between text-muted-foreground">
-      <span>{label}</span>
-      <span>{value}</span>
-    </div>
-  );
-}
+
 
 function Placeholder({
   icon: Icon,
