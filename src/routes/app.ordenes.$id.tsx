@@ -212,8 +212,11 @@ function OrderDetail() {
           <Messages order={order} tenantId={tenant.id} onSaved={bump} />
           <Photos order={order} tenantId={tenant.id} onSaved={bump} />
 
-          {/* Quote editor */}
-          <QuoteEditor order={order} tenant={tenant} onSaved={bump} />
+          {/* Quote editor — hidden for roles without quote access (mechanic) */}
+          {canQuote && (
+            <QuoteEditor order={order} tenant={tenant} onSaved={bump} />
+          )}
+
 
 
           {/* Digital inspection */}
