@@ -145,6 +145,13 @@ export function ControlPanel() {
                 subtitle="Vista del cliente final"
                 onClick={() => setView("cliente")}
               />
+              <SwitchRow
+                icon={ExternalLink}
+                title="Página pública"
+                subtitle="Reserva online del taller"
+                onClick={() => setView("publica")}
+              />
+
 
               <div className="pt-2">
                 <Button variant="outline" className="w-full" onClick={doReset}>
