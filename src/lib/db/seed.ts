@@ -2,23 +2,30 @@
 
 import type {
   Appointment,
+  AppNotification,
   Customer,
+  Invoice,
+  MaintenanceReminder,
   Part,
   Plan,
+  QuoteItem,
+  Review,
   Service,
   Tenant,
   User,
   Vehicle,
   WorkOrder,
   WorkOrderStatus,
-  AppNotification,
 } from "@/types";
 import {
   appointmentsRepo,
   customersRepo,
+  invoicesRepo,
   notificationsRepo,
   partsRepo,
   plansRepo,
+  remindersRepo,
+  reviewsRepo,
   servicesRepo,
   tenantsRepo,
   usersRepo,
@@ -26,10 +33,11 @@ import {
   workOrdersRepo,
 } from "./repos";
 import { clearAll, readRaw, uid, writeRaw } from "./storage";
+import { quoteTotals } from "@/lib/orders";
 
 const SEED_FLAG = "seeded";
 // Bump when the seed shape changes to force a clean reseed of the demo.
-const SEED_VERSION = "2";
+const SEED_VERSION = "3";
 
 // Tiny base64 placeholder images (kept small to respect the ~5MB quota).
 const PHOTO_A =
@@ -41,6 +49,12 @@ const PHOTO_B =
   "data:image/svg+xml;base64," +
   btoaSafe(
     `<svg xmlns='http://www.w3.org/2000/svg' width='160' height='120'><rect width='100%' height='100%' fill='#d4d4d8'/><text x='50%' y='52%' font-family='sans-serif' font-size='14' fill='#52525b' text-anchor='middle'>Detalle</text></svg>`,
+  );
+// Tiny placeholder "signature" (a small scribble) kept as light base64.
+const SIGNATURE =
+  "data:image/svg+xml;base64," +
+  btoaSafe(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='180' height='60'><path d='M8 44 C28 8, 44 52, 62 28 S92 8, 110 40 S150 18, 172 34' fill='none' stroke='#101010' stroke-width='2'/></svg>`,
   );
 
 function btoaSafe(s: string): string {
@@ -64,6 +78,10 @@ function daysFromNow(days: number, hour = 10, minute = 0): string {
 
 function hoursAgo(h: number): string {
   return new Date(Date.now() - h * 3600_000).toISOString();
+}
+
+function daysAgo(d: number): string {
+  return new Date(Date.now() - d * 24 * 3600_000).toISOString();
 }
 
 // ---- Plans -----------------------------------------------------------------
@@ -92,15 +110,16 @@ const PLANS: Plan[] = [
   },
 ];
 
-// ---- Static catalogs -------------------------------------------------------
+// ---- Catalog (prices are scaled by the tenant currency factor) -------------
 
 const SERVICE_NAMES: Array<[string, number, number]> = [
   ["Cambio de aceite y filtro", 65, 45],
   ["Revisión de frenos", 90, 60],
-  ["Cambio de neumáticos", 50, 40],
+  ["Cambio de embrague", 480, 240],
   ["Diagnóstico electrónico", 45, 30],
   ["Alineación y equilibrado", 70, 50],
   ["Cambio de batería", 40, 25],
+  ["Distribución (correa)", 350, 180],
 ];
 
 const PART_NAMES: Array<[string, number, string]> = [
@@ -109,111 +128,151 @@ const PART_NAMES: Array<[string, number, string]> = [
   ["Aceite sintético 5W30 (1L)", 9.9, "AC-5W30"],
   ["Batería 70Ah", 95.0, "BAT-70"],
   ["Neumático 205/55 R16", 78.0, "NE-2055"],
-  ["Bujías (juego x4)", 32.0, "BJ-X4"],
+  ["Kit de embrague", 210.0, "EMB-KIT"],
 ];
 
-const FIRST_NAMES = [
-  "Lucía",
-  "Marcos",
-  "Elena",
-  "Javier",
-  "Carmen",
-  "Diego",
-  "Sara",
-  "Pablo",
-];
-const LAST_NAMES = [
-  "García",
-  "Fernández",
-  "López",
-  "Martín",
-  "Sánchez",
-  "Romero",
-  "Torres",
-  "Vidal",
-];
-const VEHICLES: Array<[string, string, number, string]> = [
-  ["Seat", "León", 2019, "1234 KLM"],
-  ["Volkswagen", "Golf", 2017, "5678 BNP"],
-  ["Renault", "Mégane", 2020, "9012 RST"],
-  ["Peugeot", "308", 2018, "3456 DGH"],
-  ["Toyota", "Corolla", 2021, "7890 JKL"],
-  ["Ford", "Focus", 2016, "2345 MNB"],
-  ["Citroën", "C4", 2019, "6789 VCX"],
-  ["BMW", "Serie 1", 2020, "1357 ZAQ"],
-];
+// ---- Per-tenant seed shapes ------------------------------------------------
 
-const PIPELINE: WorkOrderStatus[] = [
-  "recibido",
-  "diagnostico",
-  "presupuesto_enviado",
-  "aprobado",
-  "en_reparacion",
-  "listo",
-  "entregado",
-  "recibido",
-  "diagnostico",
-  "presupuesto_enviado",
-];
-
-const PROBLEMS = [
-  "Ruido al frenar y vibración en el volante",
-  "Revisión de los 60.000 km",
-  "Testigo de motor encendido",
-  "Cambio de aceite y filtros",
-  "Pérdida de potencia en aceleración",
-  "Aire acondicionado no enfría",
-  "Cambio de neumáticos delanteros",
-  "Ruido en suspensión delantera",
-  "Batería se descarga",
-  "Mantenimiento general",
-];
-
-interface SeedOpts {
-  /** Number of customers to create. */
-  customers?: number;
-  /** Number of vehicles to create. */
-  vehicles?: number;
-  /** Pipeline (one work order per entry). */
-  pipeline?: WorkOrderStatus[];
-  /** Multiplier applied to catalog & quote prices (e.g. ~20 for MXN). */
-  priceFactor?: number;
+interface CustomerSeed {
+  name: string;
+  phone: string;
+  email: string;
 }
 
-function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
-  const customerCount = opts.customers ?? 6;
-  const vehicleCount = opts.vehicles ?? 7;
-  const pipeline = opts.pipeline ?? PIPELINE;
-  const f = opts.priceFactor ?? 1;
+interface VehicleSeed {
+  make: string;
+  model: string;
+  year: number;
+  plate: string;
+  km: number;
+  color: string;
+  customerIdx: number;
+}
 
+interface QuoteLineSeed {
+  type: "labor" | "part";
+  description: string;
+  qty: number;
+  unitPrice: number; // in base EUR; scaled by the tenant factor
+  rejected?: boolean; // becomes "rejected" once the customer decides
+  warrantyMonths?: number;
+  warrantyKm?: number;
+}
+
+interface OrderSeed {
+  vehicleIdx: number;
+  status: WorkOrderStatus;
+  problem: string;
+  lines?: QuoteLineSeed[];
+  inspection?: Array<["ok" | "atencion" | "critico", string, string?]>;
+  checkin?: { km: number; fuel: number; damage?: boolean };
+  invoiceStatus?: Invoice["status"]; // delivered orders only
+  review?: { rating: number; comment?: string };
+  customerMessage?: string;
+}
+
+interface ReminderSeed {
+  vehicleIdx: number;
+  label: string;
+  dueInDays?: number; // negative = overdue
+  dueKmDelta?: number; // negative = already past (overdue)
+  note?: string;
+}
+
+interface TenantSeed {
+  tenant: Tenant;
+  accent: string;
+  ownerName: string;
+  customers: CustomerSeed[];
+  vehicles: VehicleSeed[];
+  orders: OrderSeed[];
+  reminders: ReminderSeed[];
+  priceFactor: number; // 1 for EUR, ~20 for MXN
+}
+
+// Shared inspection presets reused across orders.
+const INSP_MIXED: Array<["ok" | "atencion" | "critico", string, string?]> = [
+  ["ok", "Niveles de líquidos"],
+  ["atencion", "Pastillas de freno traseras", "Al 30%, vigilar"],
+  ["critico", "Pastillas de freno delanteras", "Sustitución urgente"],
+  ["ok", "Neumáticos"],
+  ["atencion", "Batería", "Carga baja"],
+];
+
+const INSP_OK: Array<["ok" | "atencion" | "critico", string, string?]> = [
+  ["ok", "Niveles de líquidos"],
+  ["ok", "Frenos"],
+  ["atencion", "Filtro de aire", "Recomendado cambio próxima revisión"],
+  ["ok", "Iluminación"],
+];
+
+// ---- Builders --------------------------------------------------------------
+
+function quoteApproved(status: WorkOrderStatus): boolean {
+  return (
+    status === "aprobado" ||
+    status === "en_reparacion" ||
+    status === "listo" ||
+    status === "entregado"
+  );
+}
+
+function buildItems(
+  lines: QuoteLineSeed[] | undefined,
+  status: WorkOrderStatus,
+  f: number,
+): QuoteItem[] {
+  if (!lines) return [];
+  const decided = quoteApproved(status);
+  return lines.map((l) => ({
+    id: uid("qi"),
+    type: l.type,
+    description: l.description,
+    qty: l.qty,
+    unitPrice: Math.round(l.unitPrice * f),
+    approval: l.rejected
+      ? ("rejected" as const)
+      : decided
+        ? ("approved" as const)
+        : ("pending" as const),
+    ...(l.warrantyMonths ? { warrantyMonths: l.warrantyMonths } : {}),
+    ...(l.warrantyKm ? { warrantyKm: l.warrantyKm } : {}),
+  }));
+}
+
+function seedTenant(ts: TenantSeed): void {
+  const { tenant, f } = { tenant: ts.tenant, f: ts.priceFactor };
   tenantsRepo.create(tenant);
   const t = tenant.id;
   const locationId = tenant.locations[0].id;
 
-  // Users
-  const owner = usersRepo.create({
+  // Users — owner (full access), staff (reception), mechanic.
+  usersRepo.create({
     tenantId: t,
-    name: "Owner " + tenant.name,
-    email: `owner@${tenant.slug}.es`,
+    name: ts.ownerName,
+    email: `owner@${tenant.slug}.app`,
     role: "owner",
     locationId,
+    active: true,
   } as Omit<User, "id">);
   usersRepo.create({
     tenantId: t,
     name: "Recepción",
-    email: `recepcion@${tenant.slug}.es`,
+    email: `recepcion@${tenant.slug}.app`,
     role: "staff",
     locationId,
+    active: true,
   } as Omit<User, "id">);
   const mechanic = usersRepo.create({
     tenantId: t,
-    name: "Mecánico",
-    email: `taller@${tenant.slug}.es`,
+    name: "Taller",
+    email: `taller@${tenant.slug}.app`,
     role: "mechanic",
     locationId,
+    active: true,
   } as Omit<User, "id">);
 
-  // Services & parts (prices scaled by the tenant currency factor)
+  // Services & parts (scaled by currency factor).
   SERVICE_NAMES.forEach(([name, basePrice, estimatedMinutes]) =>
     servicesRepo.create(t, {
       tenantId: t,
@@ -232,100 +291,73 @@ function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
   );
 
   // Customers
-  const customers: Customer[] = [];
-  const count = customerCount;
-  for (let i = 0; i < count; i++) {
-    const name = `${FIRST_NAMES[i % FIRST_NAMES.length]} ${LAST_NAMES[i % LAST_NAMES.length]}`;
-    const c = customersRepo.create(t, {
+  const customers: Customer[] = ts.customers.map((c, i) =>
+    customersRepo.create(t, {
       tenantId: t,
-      name,
-      phone: `6${(10000000 + i * 137).toString().slice(0, 8)}`,
-      email: `${name.split(" ")[0].toLowerCase()}@email.es`,
-      createdAt: hoursAgo(200 + i * 12),
-    } as Omit<Customer, "id">);
-    customers.push(c);
-  }
+      name: c.name,
+      phone: c.phone,
+      email: c.email,
+      createdAt: daysAgo(40 + i * 9),
+    } as Omit<Customer, "id">),
+  );
 
-  // Vehicles (one or two per customer-ish, 7 total)
-  const vehicles: Vehicle[] = [];
-  for (let i = 0; i < vehicleCount; i++) {
-    const [make, model, year] = VEHICLES[i % VEHICLES.length];
-    const owner_c = customers[i % customers.length];
-    const v = vehiclesRepo.create(t, {
+  // Vehicles
+  const vehicles: Vehicle[] = ts.vehicles.map((v) =>
+    vehiclesRepo.create(t, {
       tenantId: t,
-      customerId: owner_c.id,
-      plate: `${1000 + i * 111} ${["KLM", "BNP", "RST", "DGH", "JKL", "MNB", "VCX"][i]}`,
-      make,
-      model,
-      year,
-      km: 30000 + i * 9000,
-      color: ["Gris", "Blanco", "Negro", "Azul"][i % 4],
-    } as Omit<Vehicle, "id">);
-    vehicles.push(v);
-  }
+      customerId: customers[v.customerIdx % customers.length].id,
+      plate: v.plate,
+      make: v.make,
+      model: v.model,
+      year: v.year,
+      km: v.km,
+      color: v.color,
+    } as Omit<Vehicle, "id">),
+  );
 
-  // Work orders across the pipeline
-  pipeline.forEach((status, i) => {
-    const v = vehicles[i % vehicles.length];
-    const hasQuote =
-      status !== "recibido" && status !== "diagnostico";
-    const items = hasQuote
-      ? [
-          {
-            id: uid("qi"),
-            type: "labor" as const,
-            description: "Mano de obra",
-            qty: 2,
-            unitPrice: Math.round(45 * f),
-            approval:
-              status === "aprobado" ||
-              status === "en_reparacion" ||
-              status === "listo" ||
-              status === "entregado"
-                ? ("approved" as const)
-                : ("pending" as const),
-          },
-          {
-            id: uid("qi"),
-            type: "part" as const,
-            description: "Pastillas de freno delanteras",
-            qty: 1,
-            unitPrice: Math.round(48 * f),
-            approval:
-              status === "aprobado" ||
-              status === "en_reparacion" ||
-              status === "listo" ||
-              status === "entregado"
-                ? ("approved" as const)
-                : ("pending" as const),
-          },
-        ]
-      : [];
-    workOrdersRepo.create(t, {
+  // Work orders
+  ts.orders.forEach((spec, i) => {
+    const v = vehicles[spec.vehicleIdx % vehicles.length];
+    const items = buildItems(spec.lines, spec.status, f);
+    const decided = quoteApproved(spec.status);
+
+    const order = workOrdersRepo.create(t, {
       tenantId: t,
       locationId,
       customerId: v.customerId,
       vehicleId: v.id,
       mechanicId: mechanic.id,
-      status,
-      problemDescription: PROBLEMS[i % PROBLEMS.length],
+      status: spec.status,
+      problemDescription: spec.problem,
       internalNotes: "Cliente avisado por teléfono.",
       accessCode: code6(),
       items,
       photos: [
-        {
-          id: uid("ph"),
-          url: PHOTO_A,
-          label: "recepcion",
-          createdAt: hoursAgo(48 - i),
-        },
-        {
-          id: uid("ph"),
-          url: PHOTO_B,
-          label: "detalle",
-          createdAt: hoursAgo(40 - i),
-        },
+        { id: uid("ph"), url: PHOTO_A, label: "recepcion", createdAt: hoursAgo(48 - i) },
+        { id: uid("ph"), url: PHOTO_B, label: "detalle", createdAt: hoursAgo(40 - i) },
       ],
+      checkIn: spec.checkin
+        ? {
+            km: spec.checkin.km,
+            fuelLevel: spec.checkin.fuel,
+            bodyDamage: spec.checkin.damage
+              ? [{ x: 0.32, y: 0.45, note: "Rayón en puerta delantera" }]
+              : [],
+            customerSignature: SIGNATURE,
+            createdAt: hoursAgo(47 - i),
+          }
+        : undefined,
+      inspection: spec.inspection
+        ? {
+            items: spec.inspection.map(([status, name, note]) => ({
+              id: uid("ins"),
+              name,
+              status,
+              note,
+            })),
+            createdAt: hoursAgo(44 - i),
+          }
+        : undefined,
       messages: [
         {
           id: uid("m"),
@@ -333,32 +365,67 @@ function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
           text: "Hemos recibido su vehículo, le mantendremos informado.",
           createdAt: hoursAgo(46 - i),
         },
-        ...(status === "presupuesto_enviado"
+        ...(spec.customerMessage
           ? [
               {
                 id: uid("m"),
                 from: "customer" as const,
-                text: "¿El precio incluye IVA?",
+                text: spec.customerMessage,
                 createdAt: hoursAgo(20),
               },
             ]
           : []),
       ],
+      quoteApproval: decided
+        ? { signature: SIGNATURE, decidedAt: hoursAgo(30 - i) }
+        : undefined,
       estimatedReadyAt: daysFromNow((i % 3) + 1, 18),
       createdAt: hoursAgo(50 - i * 2),
       updatedAt: hoursAgo(2 + i),
     } as Omit<WorkOrder, "id">);
+
+    // Invoice for delivered orders (mix of paid/pending).
+    if (spec.status === "entregado" && spec.invoiceStatus) {
+      const approved = order.items.filter((it) => it.approval === "approved");
+      if (approved.length) {
+        const { subtotal, tax, total } = quoteTotals(approved, tenant.taxRate);
+        invoicesRepo.create(t, {
+          tenantId: t,
+          workOrderId: order.id,
+          number: nextNumber(t),
+          items: approved.map((it) => ({ ...it })),
+          subtotal,
+          tax,
+          total,
+          status: spec.invoiceStatus,
+          createdAt: hoursAgo(24 - i),
+        } as Omit<Invoice, "id">);
+      }
+    }
+
+    // Review for delivered orders that left feedback.
+    if (spec.status === "entregado" && spec.review) {
+      reviewsRepo.create(t, {
+        tenantId: t,
+        orderId: order.id,
+        customerId: order.customerId,
+        vehicleId: order.vehicleId,
+        rating: spec.review.rating,
+        comment: spec.review.comment,
+        createdAt: hoursAgo(12 - i),
+      } as Omit<Review, "id">);
+    }
   });
 
-  // Appointments — today and upcoming
-  const appts: Array<[number, number, Appointment["status"]]> = [
-    [0, 9, "confirmada"],
-    [0, 12, "programada"],
-    [0, 16, "en_taller"],
-    [1, 10, "programada"],
-    [2, 11, "confirmada"],
+  // Appointments — today and upcoming, including online bookings.
+  const appts: Array<[number, number, Appointment["status"], "online" | "manual"]> = [
+    [0, 9, "confirmada", "online"],
+    [0, 12, "programada", "manual"],
+    [0, 16, "en_taller", "online"],
+    [1, 10, "programada", "online"],
+    [2, 11, "confirmada", "manual"],
   ];
-  appts.forEach(([d, h, status], i) => {
+  appts.forEach(([d, h, status, source], i) => {
     const v = vehicles[i % vehicles.length];
     appointmentsRepo.create(t, {
       tenantId: t,
@@ -368,52 +435,69 @@ function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
       serviceIds: [],
       scheduledAt: daysFromNow(d, h),
       status,
-      source: i % 2 === 0 ? "online" : "manual",
+      source,
     } as Omit<Appointment, "id">);
   });
 
-  // Notifications
-  const notifs: Array<[AppNotification["type"], string, string]> = [
-    ["cita", "Nueva cita online", "Se ha reservado una cita para mañana."],
-    ["presupuesto", "Presupuesto pendiente", "Un cliente no ha respondido al presupuesto."],
-    ["estado", "Vehículo listo", "Un vehículo está listo para entrega."],
+  // Reminders — a mix of overdue and upcoming (drive dashboard + bell activity).
+  ts.reminders.forEach((r) => {
+    const v = vehicles[r.vehicleIdx % vehicles.length];
+    remindersRepo.create(t, {
+      tenantId: t,
+      vehicleId: v.id,
+      customerId: v.customerId,
+      label: r.label,
+      dueDate: r.dueInDays != null ? daysFromNow(r.dueInDays, 9) : undefined,
+      dueKm: r.dueKmDelta != null ? v.km + r.dueKmDelta : undefined,
+      note: r.note,
+      status: "pending",
+      notified: false,
+      createdAt: daysAgo(15),
+    } as Omit<MaintenanceReminder, "id">);
+  });
+
+  // Notifications — several unread so the bell shows activity.
+  const notifs: Array<[AppNotification["type"], string, string, boolean]> = [
+    ["cita", "Nueva cita online", "Se ha reservado una cita para hoy.", false],
+    ["presupuesto", "Presupuesto pendiente", "Un cliente no ha respondido al presupuesto.", false],
+    ["resena", "Nueva reseña", "Has recibido una nueva valoración.", false],
+    ["estado", "Vehículo listo", "Un vehículo está listo para entrega.", true],
   ];
-  notifs.forEach(([type, title, body], i) =>
+  notifs.forEach(([type, title, body, read], i) =>
     notificationsRepo.create(t, {
       tenantId: t,
       type,
       title,
       body,
-      read: i === 2,
+      read,
       createdAt: hoursAgo(i * 5 + 1),
     } as Omit<AppNotification, "id">),
   );
-
-  void owner;
 }
 
-export function seedIfEmpty(): void {
-  if (typeof window === "undefined") return;
-  // Version-aware: when the seed shape changes we wipe & reseed so the demo
-  // always reflects the latest data (e.g. the third MXN shop).
-  if (readRaw(SEED_FLAG) === SEED_VERSION) return;
-  clearAll();
-  doSeed();
+// Per-tenant sequential invoice number, scoped to the current year.
+function nextNumber(tenantId: string): string {
+  const year = new Date().getFullYear();
+  const prefix = `F-${year}-`;
+  const existing = invoicesRepo.list(tenantId).filter((i) => i.number.startsWith(prefix));
+  let max = 0;
+  for (const inv of existing) {
+    const n = parseInt(inv.number.slice(prefix.length), 10);
+    if (!Number.isNaN(n) && n > max) max = n;
+  }
+  return `${prefix}${String(max + 1).padStart(4, "0")}`;
 }
 
-function doSeed(): void {
-  PLANS.forEach((p) => plansRepo.create(p));
+// ---- Tenant datasets -------------------------------------------------------
 
-  // System superadmin (global users collection)
-  usersRepo.create({
-    tenantId: null,
-    name: "Superadmin",
-    email: "admin@talleo.app",
-    role: "superadmin",
-  } as Omit<User, "id">);
+const BRAKE_WARRANTY = { warrantyMonths: 12, warrantyKm: 20000 };
 
-  // García — Spain (EUR), Pro plan.
-  seedTenant({
+// Taller García — Madrid (EUR, IVA 21%), Pro.
+const GARCIA: TenantSeed = {
+  priceFactor: 1,
+  accent: "#2F6FED",
+  ownerName: "Carlos García",
+  tenant: {
     id: "tnt_garcia",
     name: "Taller García",
     slug: "garcia",
@@ -422,20 +506,136 @@ function doSeed(): void {
     status: "active",
     currency: "EUR",
     taxRate: 0.21,
+    legalName: "Talleres García e Hijos S.L.",
+    taxId: "B-87654321",
+    email: "info@tallergarcia.es",
+    phone: "910 234 567",
+    googleReviewUrl: "https://g.page/r/taller-garcia-madrid/review",
+    businessHours: weekHours("08:30", "19:00", "09:00", "14:00"),
     locations: [
       {
         id: "loc_garcia_1",
         tenantId: "tnt_garcia",
         name: "Madrid Centro",
-        address: "C/ Alcalá 120, Madrid",
-        phone: "910 000 111",
+        address: "C/ Alcalá 120, 28009 Madrid",
+        phone: "910 234 567",
       },
     ],
-    createdAt: hoursAgo(24 * 60),
-  });
+    createdAt: daysAgo(420),
+  },
+  customers: [
+    { name: "Lucía Moreno", phone: "612 345 678", email: "lucia.moreno@email.es" },
+    { name: "Javier Castaño", phone: "615 987 321", email: "javier.castano@email.es" },
+    { name: "Carmen Ruiz", phone: "699 112 233", email: "carmen.ruiz@email.es" },
+    { name: "Diego Herrero", phone: "627 445 889", email: "diego.herrero@email.es" },
+    { name: "Marta Gil", phone: "634 778 990", email: "marta.gil@email.es" },
+  ],
+  vehicles: [
+    { make: "Seat", model: "León", year: 2019, plate: "1234 KLM", km: 78400, color: "Gris", customerIdx: 0 },
+    { make: "Volkswagen", model: "Golf", year: 2017, plate: "5678 BNP", km: 112300, color: "Blanco", customerIdx: 1 },
+    { make: "Renault", model: "Mégane", year: 2020, plate: "9012 RST", km: 54100, color: "Azul", customerIdx: 2 },
+    { make: "Peugeot", model: "308", year: 2018, plate: "3456 DGH", km: 89600, color: "Negro", customerIdx: 3 },
+    { make: "Toyota", model: "Corolla", year: 2021, plate: "7890 JKL", km: 32000, color: "Gris", customerIdx: 4 },
+    { make: "Audi", model: "A3", year: 2019, plate: "2345 MNB", km: 67200, color: "Negro", customerIdx: 0 },
+  ],
+  orders: [
+    {
+      vehicleIdx: 0,
+      status: "recibido",
+      problem: "Ruido al frenar y vibración en el volante",
+      checkin: { km: 78400, fuel: 60, damage: true },
+    },
+    {
+      vehicleIdx: 1,
+      status: "diagnostico",
+      problem: "Testigo de motor encendido",
+      checkin: { km: 112300, fuel: 35 },
+      inspection: INSP_OK,
+    },
+    {
+      vehicleIdx: 2,
+      status: "presupuesto_enviado",
+      problem: "Revisión de frenos completa",
+      customerMessage: "¿El precio incluye IVA?",
+      checkin: { km: 54100, fuel: 80 },
+      inspection: INSP_MIXED,
+      lines: [
+        { type: "labor", description: "Mano de obra — frenos", qty: 2, unitPrice: 45 },
+        { type: "part", description: "Pastillas de freno delanteras", qty: 1, unitPrice: 48, ...BRAKE_WARRANTY },
+        { type: "part", description: "Discos de freno delanteros", qty: 2, unitPrice: 65, ...BRAKE_WARRANTY },
+      ],
+    },
+    {
+      vehicleIdx: 3,
+      status: "aprobado",
+      problem: "Cambio de embrague por patinamiento",
+      checkin: { km: 89600, fuel: 50 },
+      inspection: INSP_MIXED,
+      lines: [
+        { type: "labor", description: "Mano de obra — embrague", qty: 4, unitPrice: 45 },
+        { type: "part", description: "Kit de embrague", qty: 1, unitPrice: 210, warrantyMonths: 24 },
+      ],
+    },
+    {
+      vehicleIdx: 4,
+      status: "en_reparacion",
+      problem: "Distribución a los 90.000 km",
+      checkin: { km: 32000, fuel: 70 },
+      lines: [
+        { type: "labor", description: "Mano de obra — distribución", qty: 3, unitPrice: 45 },
+        { type: "part", description: "Kit de distribución", qty: 1, unitPrice: 180, warrantyMonths: 24, warrantyKm: 60000 },
+      ],
+    },
+    {
+      vehicleIdx: 5,
+      status: "listo",
+      problem: "Cambio de aceite y filtros",
+      checkin: { km: 67200, fuel: 45 },
+      lines: [
+        { type: "labor", description: "Mano de obra — mantenimiento", qty: 1, unitPrice: 45 },
+        { type: "part", description: "Aceite sintético 5W30 (4L)", qty: 4, unitPrice: 10 },
+        { type: "part", description: "Filtro de aceite", qty: 1, unitPrice: 12 },
+      ],
+    },
+    {
+      vehicleIdx: 0,
+      status: "entregado",
+      problem: "Sustitución de pastillas y discos",
+      checkin: { km: 76000, fuel: 55 },
+      inspection: INSP_OK,
+      invoiceStatus: "paid",
+      review: { rating: 5, comment: "Rápidos y muy honestos. Repetiré sin duda." },
+      lines: [
+        { type: "labor", description: "Mano de obra — frenos", qty: 2, unitPrice: 45, ...BRAKE_WARRANTY },
+        { type: "part", description: "Pastillas de freno delanteras", qty: 1, unitPrice: 48, ...BRAKE_WARRANTY },
+      ],
+    },
+    {
+      vehicleIdx: 2,
+      status: "entregado",
+      problem: "Cambio de batería",
+      invoiceStatus: "pending",
+      review: { rating: 4 },
+      lines: [
+        { type: "labor", description: "Mano de obra", qty: 1, unitPrice: 30 },
+        { type: "part", description: "Batería 70Ah", qty: 1, unitPrice: 95, warrantyMonths: 24 },
+      ],
+    },
+  ],
+  reminders: [
+    { vehicleIdx: 0, label: "Cambio de aceite", dueInDays: -8, note: "Cada 15.000 km" },
+    { vehicleIdx: 1, label: "Revisión de los 120.000 km", dueKmDelta: -3000 },
+    { vehicleIdx: 4, label: "Próxima ITV", dueInDays: 25 },
+    { vehicleIdx: 2, label: "Rotación de neumáticos", dueInDays: 40 },
+  ],
+};
 
-  // AutoNorte — Spain (EUR), Básico plan.
-  seedTenant({
+// AutoNorte — A Coruña (EUR, IVA 21%), Básico.
+const AUTONORTE: TenantSeed = {
+  priceFactor: 1,
+  accent: "#0F766E",
+  ownerName: "Manuel Rilo",
+  tenant: {
     id: "tnt_autonorte",
     name: "AutoNorte",
     slug: "autonorte",
@@ -444,54 +644,257 @@ function doSeed(): void {
     status: "active",
     currency: "EUR",
     taxRate: 0.21,
+    legalName: "AutoNorte Reparaciones S.L.U.",
+    taxId: "B-15123456",
+    email: "contacto@autonorte.es",
+    phone: "981 456 789",
+    googleReviewUrl: "https://g.page/r/autonorte-coruna/review",
+    businessHours: weekHours("09:00", "18:30", "10:00", "13:30"),
     locations: [
       {
         id: "loc_autonorte_1",
         tenantId: "tnt_autonorte",
         name: "A Coruña",
-        address: "Av. Finisterre 45, A Coruña",
-        phone: "981 000 222",
+        address: "Av. Finisterre 45, 15004 A Coruña",
+        phone: "981 456 789",
       },
     ],
-    createdAt: hoursAgo(24 * 90),
-  });
+    createdAt: daysAgo(640),
+  },
+  customers: [
+    { name: "Brais Castro", phone: "636 101 202", email: "brais.castro@email.es" },
+    { name: "Antía Souto", phone: "639 303 404", email: "antia.souto@email.es" },
+    { name: "Noa Pérez", phone: "688 505 606", email: "noa.perez@email.es" },
+    { name: "Iago Ferreiro", phone: "655 707 808", email: "iago.ferreiro@email.es" },
+  ],
+  vehicles: [
+    { make: "Citroën", model: "C4", year: 2018, plate: "4521 HBV", km: 95200, color: "Gris", customerIdx: 0 },
+    { make: "Ford", model: "Focus", year: 2016, plate: "8834 GLC", km: 134800, color: "Azul", customerIdx: 1 },
+    { make: "Dacia", model: "Sandero", year: 2020, plate: "1290 JTR", km: 41300, color: "Blanco", customerIdx: 2 },
+    { make: "Opel", model: "Corsa", year: 2019, plate: "6677 KDP", km: 58900, color: "Rojo", customerIdx: 3 },
+  ],
+  orders: [
+    {
+      vehicleIdx: 0,
+      status: "recibido",
+      problem: "Mantenimiento general y revisión",
+      checkin: { km: 95200, fuel: 40 },
+    },
+    {
+      vehicleIdx: 1,
+      status: "presupuesto_enviado",
+      problem: "Ruido en suspensión delantera",
+      checkin: { km: 134800, fuel: 25, damage: true },
+      inspection: INSP_MIXED,
+      lines: [
+        { type: "labor", description: "Mano de obra — suspensión", qty: 2, unitPrice: 40 },
+        { type: "part", description: "Amortiguadores delanteros (par)", qty: 1, unitPrice: 140, warrantyMonths: 12 },
+      ],
+    },
+    {
+      vehicleIdx: 2,
+      status: "en_reparacion",
+      problem: "Cambio de aceite y filtros",
+      checkin: { km: 41300, fuel: 65 },
+      lines: [
+        { type: "labor", description: "Mano de obra", qty: 1, unitPrice: 40 },
+        { type: "part", description: "Aceite sintético 5W30 (4L)", qty: 4, unitPrice: 10 },
+        { type: "part", description: "Filtro de aceite", qty: 1, unitPrice: 12 },
+      ],
+    },
+    {
+      vehicleIdx: 3,
+      status: "entregado",
+      problem: "Revisión de frenos y pastillas",
+      checkin: { km: 58000, fuel: 50 },
+      inspection: INSP_OK,
+      invoiceStatus: "paid",
+      review: { rating: 5, comment: "Trato cercano y precio justo." },
+      lines: [
+        { type: "labor", description: "Mano de obra — frenos", qty: 2, unitPrice: 40, ...BRAKE_WARRANTY },
+        { type: "part", description: "Pastillas de freno delanteras", qty: 1, unitPrice: 48, ...BRAKE_WARRANTY },
+      ],
+    },
+    {
+      vehicleIdx: 0,
+      status: "entregado",
+      problem: "Cambio de batería",
+      invoiceStatus: "pending",
+      review: { rating: 3, comment: "Bien, aunque tardaron más de lo previsto." },
+      lines: [
+        { type: "labor", description: "Mano de obra", qty: 1, unitPrice: 25 },
+        { type: "part", description: "Batería 70Ah", qty: 1, unitPrice: 95, warrantyMonths: 24 },
+      ],
+    },
+  ],
+  reminders: [
+    { vehicleIdx: 1, label: "Revisión de los 135.000 km", dueKmDelta: -200 },
+    { vehicleIdx: 0, label: "Cambio de aceite", dueInDays: -3 },
+    { vehicleIdx: 2, label: "Próxima ITV", dueInDays: 30 },
+  ],
+};
 
-  // Taller Reyes — México (MXN, IVA 16%), Premium plan. Lighter seed and
-  // prices scaled (~x20) so the quotes read as credible pesos.
-  seedTenant(
+// Taller Reyes — CDMX (MXN, IVA 16%), Premium. Prices scaled ~x20.
+const REYES: TenantSeed = {
+  priceFactor: 20,
+  accent: "#B45309",
+  ownerName: "Ricardo Reyes",
+  tenant: {
+    id: "tnt_reyes",
+    name: "Taller Reyes",
+    slug: "reyes",
+    accentColor: "#B45309",
+    planId: "plan_premium",
+    status: "active",
+    currency: "MXN",
+    taxRate: 0.16,
+    legalName: "Servicio Automotriz Reyes S.A. de C.V.",
+    taxId: "SAR240115AB9",
+    email: "contacto@tallerreyes.mx",
+    phone: "55 1234 5678",
+    googleReviewUrl: "https://g.page/r/taller-reyes-cdmx/review",
+    businessHours: weekHours("08:00", "19:00", "09:00", "15:00"),
+    locations: [
+      {
+        id: "loc_reyes_1",
+        tenantId: "tnt_reyes",
+        name: "Ciudad de México",
+        address: "Av. Insurgentes Sur 1234, Col. Del Valle, 03100 CDMX",
+        phone: "55 1234 5678",
+      },
+    ],
+    createdAt: daysAgo(300),
+  },
+  customers: [
+    { name: "José Luis Hernández", phone: "55 8123 4567", email: "joseluis.hernandez@email.mx" },
+    { name: "María Fernanda Cruz", phone: "55 8234 5678", email: "mariafernanda.cruz@email.mx" },
+    { name: "Ricardo Mendoza", phone: "55 8345 6789", email: "ricardo.mendoza@email.mx" },
+    { name: "Alejandra Ramírez", phone: "55 8456 7890", email: "alejandra.ramirez@email.mx" },
+  ],
+  vehicles: [
+    { make: "Nissan", model: "Versa", year: 2020, plate: "NXP-12-34", km: 62500, color: "Gris", customerIdx: 0 },
+    { make: "Chevrolet", model: "Aveo", year: 2019, plate: "MVR-78-90", km: 88200, color: "Blanco", customerIdx: 1 },
+    { make: "Volkswagen", model: "Jetta", year: 2021, plate: "PKL-45-67", km: 35400, color: "Negro", customerIdx: 2 },
+    { make: "Toyota", model: "Hilux", year: 2018, plate: "NCT-23-45", km: 110600, color: "Plata", customerIdx: 3 },
+    { make: "Kia", model: "Rio", year: 2022, plate: "RST-89-01", km: 21800, color: "Rojo", customerIdx: 0 },
+  ],
+  orders: [
     {
-      id: "tnt_reyes",
-      name: "Taller Reyes",
-      slug: "reyes",
-      accentColor: "#B45309",
-      planId: "plan_premium",
-      status: "active",
-      currency: "MXN",
-      taxRate: 0.16,
-      locations: [
-        {
-          id: "loc_reyes_1",
-          tenantId: "tnt_reyes",
-          name: "Ciudad de México",
-          address: "Av. Insurgentes Sur 1234, CDMX",
-          phone: "55 1234 5678",
-        },
-      ],
-      createdAt: hoursAgo(24 * 30),
+      vehicleIdx: 0,
+      status: "recibido",
+      problem: "Servicio mayor de los 60.000 km",
+      checkin: { km: 62500, fuel: 50 },
     },
     {
-      customers: 4,
-      vehicles: 5,
-      pipeline: [
-        "recibido",
-        "presupuesto_enviado",
-        "aprobado",
-        "en_reparacion",
-        "entregado",
+      vehicleIdx: 1,
+      status: "presupuesto_enviado",
+      problem: "Frenos rechinando al frenar",
+      customerMessage: "¿Tienen garantía las balatas?",
+      checkin: { km: 88200, fuel: 30 },
+      inspection: INSP_MIXED,
+      lines: [
+        { type: "labor", description: "Mano de obra — frenos", qty: 2, unitPrice: 45 },
+        { type: "part", description: "Balatas delanteras", qty: 1, unitPrice: 48, ...BRAKE_WARRANTY },
       ],
-      priceFactor: 20,
     },
-  );
+    {
+      vehicleIdx: 2,
+      status: "aprobado",
+      problem: "Cambio de clutch por desgaste",
+      checkin: { km: 35400, fuel: 70, damage: true },
+      inspection: INSP_OK,
+      lines: [
+        { type: "labor", description: "Mano de obra — clutch", qty: 4, unitPrice: 45 },
+        { type: "part", description: "Kit de clutch", qty: 1, unitPrice: 210, warrantyMonths: 24 },
+      ],
+    },
+    {
+      vehicleIdx: 3,
+      status: "en_reparacion",
+      problem: "Afinación mayor y cambio de aceite",
+      checkin: { km: 110600, fuel: 45 },
+      lines: [
+        { type: "labor", description: "Mano de obra — afinación", qty: 2, unitPrice: 45 },
+        { type: "part", description: "Aceite sintético 5W30 (5L)", qty: 5, unitPrice: 10 },
+        { type: "part", description: "Bujías (juego x4)", qty: 1, unitPrice: 32 },
+      ],
+    },
+    {
+      vehicleIdx: 4,
+      status: "entregado",
+      problem: "Cambio de balatas delanteras",
+      checkin: { km: 21000, fuel: 60 },
+      inspection: INSP_OK,
+      invoiceStatus: "paid",
+      review: { rating: 5, comment: "Excelente servicio, muy profesionales." },
+      lines: [
+        { type: "labor", description: "Mano de obra — frenos", qty: 2, unitPrice: 45, ...BRAKE_WARRANTY },
+        { type: "part", description: "Balatas delanteras", qty: 1, unitPrice: 48, ...BRAKE_WARRANTY },
+      ],
+    },
+    {
+      vehicleIdx: 0,
+      status: "entregado",
+      problem: "Servicio menor",
+      invoiceStatus: "pending",
+      review: { rating: 4, comment: "Todo bien." },
+      lines: [
+        { type: "labor", description: "Mano de obra", qty: 1, unitPrice: 45 },
+        { type: "part", description: "Filtro de aceite", qty: 1, unitPrice: 12 },
+      ],
+    },
+  ],
+  reminders: [
+    { vehicleIdx: 3, label: "Afinación mayor", dueInDays: -10, note: "Cada 20.000 km" },
+    { vehicleIdx: 0, label: "Servicio de los 65.000 km", dueKmDelta: -1500 },
+    { vehicleIdx: 2, label: "Verificación vehicular", dueInDays: 20 },
+  ],
+};
+
+// Build a 7-day business-hours array (Mon–Sun). Saturday uses the short range,
+// Sunday is closed.
+function weekHours(
+  open: string,
+  close: string,
+  satOpen: string,
+  satClose: string,
+) {
+  return [
+    { open: true, from: open, to: close }, // Mon
+    { open: true, from: open, to: close }, // Tue
+    { open: true, from: open, to: close }, // Wed
+    { open: true, from: open, to: close }, // Thu
+    { open: true, from: open, to: close }, // Fri
+    { open: true, from: satOpen, to: satClose }, // Sat
+    { open: false, from: "00:00", to: "00:00" }, // Sun
+  ];
+}
+
+// ---- Entry points ----------------------------------------------------------
+
+export function seedIfEmpty(): void {
+  if (typeof window === "undefined") return;
+  // Version-aware: when the seed shape changes we wipe & reseed so the demo
+  // always reflects the latest data.
+  if (readRaw(SEED_FLAG) === SEED_VERSION) return;
+  clearAll();
+  doSeed();
+}
+
+function doSeed(): void {
+  PLANS.forEach((p) => plansRepo.create(p));
+
+  // System superadmin (global users collection).
+  usersRepo.create({
+    tenantId: null,
+    name: "Superadmin",
+    email: "admin@talleo.app",
+    role: "superadmin",
+  } as Omit<User, "id">);
+
+  seedTenant(GARCIA);
+  seedTenant(AUTONORTE);
+  seedTenant(REYES);
 
   writeRaw(SEED_FLAG, SEED_VERSION);
 }
