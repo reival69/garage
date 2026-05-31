@@ -42,6 +42,7 @@ const NAV = [
   { to: "/app/presupuestos", label: "Presupuestos", icon: FileText, exact: false, module: "presupuestos" },
   { to: "/app/facturacion", label: "Facturación", icon: Receipt, exact: false, module: "facturacion" },
   { to: "/app/servicios", label: "Servicios", icon: Wrench, exact: false, module: "servicios" },
+  { to: "/app/recordatorios", label: "Recordatorios", icon: BellRing, exact: false, module: "recordatorios" },
   { to: "/app/equipo", label: "Equipo", icon: UsersRound, exact: false, module: "equipo" },
   { to: "/app/configuracion", label: "Configuración", icon: Settings, exact: false, module: "configuracion" },
 ] as const;
