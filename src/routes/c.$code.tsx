@@ -283,6 +283,16 @@ function GuestView() {
         {/* Invoice for this order (read only, printable) */}
         <OrderInvoiceSection order={order} tenant={tenant} vehicle={vehicle} />
 
+        {/* Post-delivery review (only when delivered) */}
+        {order.status === "entregado" && (
+          <ReviewSection
+            order={order}
+            tenant={tenant}
+            accent={tenant.accentColor}
+            onChanged={load}
+          />
+        )}
+
         {/* Vehicle service history */}
         <VehicleHistorySection
           order={order}
