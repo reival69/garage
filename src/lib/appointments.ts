@@ -145,13 +145,11 @@ export function changeAppointmentStatus(
   next: AppointmentStatus,
 ): Appointment | undefined {
   const updated = appointmentsRepo.update(tenant.id, appt.id, { status: next });
-  notificationsRepo.create(tenant.id, {
-    tenantId: tenant.id,
+  notify(tenant.id, {
     type: "cita",
     title: `Cita: ${APPOINTMENT_STATUS_LABELS[next]}`,
     body: vehicleLabel(tenant.id, appt.vehicleId),
-    read: false,
-    createdAt: new Date().toISOString(),
+    link: "/app/citas",
   });
   return updated;
 }
