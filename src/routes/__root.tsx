@@ -11,6 +11,8 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { AuthProvider } from "../lib/auth/AuthContext";
+import { DemoSwitcher } from "../components/DemoSwitcher";
 
 function NotFoundComponent() {
   return (
@@ -77,16 +79,34 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Talleo — Software para talleres mecánicos" },
+      {
+        name: "description",
+        content:
+          "Talleo es el software multitaller para gestionar órdenes, citas y la comunicación con tus clientes.",
+      },
+      { name: "author", content: "Talleo" },
+      { property: "og:title", content: "Talleo — Software para talleres mecánicos" },
+      {
+        property: "og:description",
+        content:
+          "Gestiona órdenes de reparación, citas e inspección digital. Tus clientes siguen su coche con un código.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@Talleo" },
     ],
     links: [
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap",
+      },
       {
         rel: "stylesheet",
         href: appCss,
@@ -118,8 +138,11 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <AuthProvider>
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+        <DemoSwitcher />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
