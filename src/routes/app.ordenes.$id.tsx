@@ -49,13 +49,14 @@ import {
 import { QuoteEditor } from "@/components/app/QuoteEditor";
 import { InspectionEditor } from "@/components/app/InspectionEditor";
 import { CheckInEditor } from "@/components/app/CheckInEditor";
+import { ReminderFormDialog } from "@/components/app/ReminderFormDialog";
 import {
   generateInvoiceFromOrder,
   getInvoiceByWorkOrderId,
 } from "@/lib/invoices";
 import { compressImage } from "@/lib/image";
 import { formatDateTime } from "@/lib/format";
-import { can } from "@/lib/permissions";
+import { can, canEdit } from "@/lib/permissions";
 import type { Photo, Tenant, WorkOrder } from "@/types";
 import { toast } from "sonner";
 
