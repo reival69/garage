@@ -234,13 +234,11 @@ export function addCustomerMessage(
     messages,
     updatedAt: now,
   });
-  notificationsRepo.create(tenantId, {
-    tenantId,
+  notify(tenantId, {
     type: "estado",
     title: "Mensaje del cliente",
     body: `${vehicleLabel(tenantId, order.vehicleId)} — ${text}`,
-    read: false,
-    createdAt: now,
+    link: `/app/ordenes/${order.id}`,
   });
   return updated;
 }
