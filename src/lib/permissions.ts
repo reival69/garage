@@ -32,6 +32,7 @@ const ACCESS: Record<Role, AppModule[] | "all"> = {
     "facturacion",
     "servicios",
     "recordatorios",
+    "resenas",
   ],
   mechanic: ["dashboard", "ordenes", "citas", "clientes", "vehiculos", "recordatorios"],
 };
