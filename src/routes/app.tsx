@@ -80,7 +80,7 @@ function AppLayout() {
       {/* Desktop sidebar */}
       <aside className="hidden w-60 shrink-0 flex-col border-r border-border bg-sidebar md:flex">
         <div className="px-5 py-5">
-          <Logo className="text-base" />
+          <Logo className="text-base" logoUrl={tenant.logoUrl} />
           {tenant && (
             <p className="mt-1 truncate text-xs text-muted-foreground">
               {tenant.name}
