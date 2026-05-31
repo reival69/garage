@@ -15,6 +15,7 @@ import {
   FileText,
   Receipt,
   Wrench,
+  BellRing,
   UsersRound,
   Settings,
   LogOut,
@@ -25,6 +26,7 @@ import { Logo } from "@/components/Logo";
 import { NotificationBell } from "@/components/app/NotificationBell";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { can, moduleForPath } from "@/lib/permissions";
+import { evaluateReminders } from "@/lib/reminders";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/app")({
@@ -40,6 +42,7 @@ const NAV = [
   { to: "/app/presupuestos", label: "Presupuestos", icon: FileText, exact: false, module: "presupuestos" },
   { to: "/app/facturacion", label: "Facturación", icon: Receipt, exact: false, module: "facturacion" },
   { to: "/app/servicios", label: "Servicios", icon: Wrench, exact: false, module: "servicios" },
+  { to: "/app/recordatorios", label: "Recordatorios", icon: BellRing, exact: false, module: "recordatorios" },
   { to: "/app/equipo", label: "Equipo", icon: UsersRound, exact: false, module: "equipo" },
   { to: "/app/configuracion", label: "Configuración", icon: Settings, exact: false, module: "configuracion" },
 ] as const;
@@ -75,6 +78,13 @@ function AppLayout() {
       navigate({ to: "/app" });
     }
   }, [ready, user, tenant, pathname, navigate]);
+
+  // Maintenance reminders: on shop load, fire notifications for overdue
+  // reminders that haven't notified yet (once each).
+  useEffect(() => {
+    if (!ready || !tenant) return;
+    evaluateReminders(tenant.id);
+  }, [ready, tenant]);
 
   if (!ready) {
     return (

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Car, Calendar, FileText, Banknote } from "lucide-react";
+import { Car, Calendar, FileText, Banknote, BellRing } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { StatCard } from "@/components/base/StatCard";
 import { DataCard } from "@/components/base/DataCard";
@@ -10,6 +10,7 @@ import {
   invoicesRepo,
   workOrdersRepo,
 } from "@/lib/db";
+import { dueReminders } from "@/lib/reminders";
 import { formatCurrency, isToday } from "@/lib/format";
 
 export const Route = createFileRoute("/app/")({
@@ -32,6 +33,7 @@ function AppDashboard() {
     todayAppointments: 0,
     pendingQuotes: 0,
     monthRevenue: 0,
+    overdueReminders: 0,
   });
 
   useEffect(() => {
@@ -55,6 +57,7 @@ function AppDashboard() {
           );
         })
         .reduce((s, i) => s + i.total, 0),
+      overdueReminders: dueReminders(tenant.id).length,
     });
   }, [ready, tenant]);
 
@@ -83,6 +86,13 @@ function AppDashboard() {
           value={formatCurrency(stats.monthRevenue, tenant?.currency)}
           icon={Banknote}
         />
+        <Link to="/app/recordatorios" className="rounded-xl">
+          <StatCard
+            label="Recordatorios vencidos"
+            value={stats.overdueReminders}
+            icon={BellRing}
+          />
+        </Link>
       </div>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-2">

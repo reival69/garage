@@ -19,6 +19,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TSlugRouteImport } from './routes/t.$slug'
 import { Route as CCodeRouteImport } from './routes/c.$code'
 import { Route as AppServiciosRouteImport } from './routes/app.servicios'
+import { Route as AppRecordatoriosRouteImport } from './routes/app.recordatorios'
 import { Route as AppPresupuestosRouteImport } from './routes/app.presupuestos'
 import { Route as AppEquipoRouteImport } from './routes/app.equipo'
 import { Route as AppConfiguracionRouteImport } from './routes/app.configuracion'
@@ -82,6 +83,11 @@ const CCodeRoute = CCodeRouteImport.update({
 const AppServiciosRoute = AppServiciosRouteImport.update({
   id: '/servicios',
   path: '/servicios',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRecordatoriosRoute = AppRecordatoriosRouteImport.update({
+  id: '/recordatorios',
+  path: '/recordatorios',
   getParentRoute: () => AppRoute,
 } as any)
 const AppPresupuestosRoute = AppPresupuestosRouteImport.update({
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/app/configuracion': typeof AppConfiguracionRoute
   '/app/equipo': typeof AppEquipoRoute
   '/app/presupuestos': typeof AppPresupuestosRoute
+  '/app/recordatorios': typeof AppRecordatoriosRoute
   '/app/servicios': typeof AppServiciosRoute
   '/c/$code': typeof CCodeRoute
   '/t/$slug': typeof TSlugRoute
@@ -191,6 +198,7 @@ export interface FileRoutesByTo {
   '/app/configuracion': typeof AppConfiguracionRoute
   '/app/equipo': typeof AppEquipoRoute
   '/app/presupuestos': typeof AppPresupuestosRoute
+  '/app/recordatorios': typeof AppRecordatoriosRoute
   '/app/servicios': typeof AppServiciosRoute
   '/c/$code': typeof CCodeRoute
   '/t/$slug': typeof TSlugRoute
@@ -218,6 +226,7 @@ export interface FileRoutesById {
   '/app/configuracion': typeof AppConfiguracionRoute
   '/app/equipo': typeof AppEquipoRoute
   '/app/presupuestos': typeof AppPresupuestosRoute
+  '/app/recordatorios': typeof AppRecordatoriosRoute
   '/app/servicios': typeof AppServiciosRoute
   '/c/$code': typeof CCodeRoute
   '/t/$slug': typeof TSlugRoute
@@ -246,6 +255,7 @@ export interface FileRouteTypes {
     | '/app/configuracion'
     | '/app/equipo'
     | '/app/presupuestos'
+    | '/app/recordatorios'
     | '/app/servicios'
     | '/c/$code'
     | '/t/$slug'
@@ -270,6 +280,7 @@ export interface FileRouteTypes {
     | '/app/configuracion'
     | '/app/equipo'
     | '/app/presupuestos'
+    | '/app/recordatorios'
     | '/app/servicios'
     | '/c/$code'
     | '/t/$slug'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/app/configuracion'
     | '/app/equipo'
     | '/app/presupuestos'
+    | '/app/recordatorios'
     | '/app/servicios'
     | '/c/$code'
     | '/t/$slug'
@@ -391,6 +403,13 @@ declare module '@tanstack/react-router' {
       path: '/servicios'
       fullPath: '/app/servicios'
       preLoaderRoute: typeof AppServiciosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/recordatorios': {
+      id: '/app/recordatorios'
+      path: '/recordatorios'
+      fullPath: '/app/recordatorios'
+      preLoaderRoute: typeof AppRecordatoriosRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/presupuestos': {
@@ -513,6 +532,7 @@ interface AppRouteChildren {
   AppConfiguracionRoute: typeof AppConfiguracionRoute
   AppEquipoRoute: typeof AppEquipoRoute
   AppPresupuestosRoute: typeof AppPresupuestosRoute
+  AppRecordatoriosRoute: typeof AppRecordatoriosRoute
   AppServiciosRoute: typeof AppServiciosRoute
   AppIndexRoute: typeof AppIndexRoute
   AppClientesIdRoute: typeof AppClientesIdRoute
@@ -530,6 +550,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppConfiguracionRoute: AppConfiguracionRoute,
   AppEquipoRoute: AppEquipoRoute,
   AppPresupuestosRoute: AppPresupuestosRoute,
+  AppRecordatoriosRoute: AppRecordatoriosRoute,
   AppServiciosRoute: AppServiciosRoute,
   AppIndexRoute: AppIndexRoute,
   AppClientesIdRoute: AppClientesIdRoute,

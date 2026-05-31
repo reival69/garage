@@ -13,6 +13,7 @@ export type AppModule =
   | "presupuestos"
   | "facturacion"
   | "servicios"
+  | "recordatorios"
   | "equipo"
   | "configuracion";
 
@@ -29,13 +30,14 @@ const ACCESS: Record<Role, AppModule[] | "all"> = {
     "presupuestos",
     "facturacion",
     "servicios",
+    "recordatorios",
   ],
-  mechanic: ["dashboard", "ordenes", "citas", "clientes", "vehiculos"],
+  mechanic: ["dashboard", "ordenes", "citas", "clientes", "vehiculos", "recordatorios"],
 };
 
 // Modules a role can see but only read (no create/edit/delete).
 const READ_ONLY: Partial<Record<Role, AppModule[]>> = {
-  mechanic: ["citas", "clientes", "vehiculos"],
+  mechanic: ["citas", "clientes", "vehiculos", "recordatorios"],
 };
 
 /** Can this role access (open) the given module at all? */
@@ -63,6 +65,7 @@ export function moduleForPath(pathname: string): AppModule | null {
   if (p.startsWith("/app/presupuestos")) return "presupuestos";
   if (p.startsWith("/app/facturacion")) return "facturacion";
   if (p.startsWith("/app/servicios")) return "servicios";
+  if (p.startsWith("/app/recordatorios")) return "recordatorios";
   if (p.startsWith("/app/equipo")) return "equipo";
   if (p.startsWith("/app/configuracion")) return "configuracion";
   return null;
