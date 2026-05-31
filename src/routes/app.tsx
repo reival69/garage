@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { can, moduleForPath } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/app")({
@@ -30,25 +31,25 @@ export const Route = createFileRoute("/app")({
 });
 
 const NAV = [
-  { to: "/app", label: "Inicio", icon: LayoutDashboard, exact: true },
-  { to: "/app/citas", label: "Citas", icon: Calendar, exact: false },
-  { to: "/app/clientes", label: "Clientes", icon: Users, exact: false },
-  { to: "/app/vehiculos", label: "Vehículos", icon: Car, exact: false },
-  { to: "/app/ordenes", label: "Órdenes", icon: ClipboardList, exact: false },
-  { to: "/app/presupuestos", label: "Presupuestos", icon: FileText, exact: false },
-  { to: "/app/facturacion", label: "Facturación", icon: Receipt, exact: false },
-  { to: "/app/servicios", label: "Servicios", icon: Wrench, exact: false },
-  { to: "/app/equipo", label: "Equipo", icon: UsersRound, exact: false },
-  { to: "/app/configuracion", label: "Configuración", icon: Settings, exact: false },
+  { to: "/app", label: "Inicio", icon: LayoutDashboard, exact: true, module: "dashboard" },
+  { to: "/app/citas", label: "Citas", icon: Calendar, exact: false, module: "citas" },
+  { to: "/app/clientes", label: "Clientes", icon: Users, exact: false, module: "clientes" },
+  { to: "/app/vehiculos", label: "Vehículos", icon: Car, exact: false, module: "vehiculos" },
+  { to: "/app/ordenes", label: "Órdenes", icon: ClipboardList, exact: false, module: "ordenes" },
+  { to: "/app/presupuestos", label: "Presupuestos", icon: FileText, exact: false, module: "presupuestos" },
+  { to: "/app/facturacion", label: "Facturación", icon: Receipt, exact: false, module: "facturacion" },
+  { to: "/app/servicios", label: "Servicios", icon: Wrench, exact: false, module: "servicios" },
+  { to: "/app/equipo", label: "Equipo", icon: UsersRound, exact: false, module: "equipo" },
+  { to: "/app/configuracion", label: "Configuración", icon: Settings, exact: false, module: "configuracion" },
 ] as const;
 
 // Mobile bottom bar: key shortcuts only.
 const BOTTOM = [
-  { to: "/app", label: "Inicio", icon: Home, exact: true },
-  { to: "/app/ordenes", label: "Órdenes", icon: ClipboardList, exact: false },
-  { to: "/app/citas", label: "Citas", icon: Calendar, exact: false },
-  { to: "/app/clientes", label: "Clientes", icon: Users, exact: false },
-  { to: "/app/configuracion", label: "Más", icon: MoreHorizontal, exact: false },
+  { to: "/app", label: "Inicio", icon: Home, exact: true, module: "dashboard" },
+  { to: "/app/ordenes", label: "Órdenes", icon: ClipboardList, exact: false, module: "ordenes" },
+  { to: "/app/citas", label: "Citas", icon: Calendar, exact: false, module: "citas" },
+  { to: "/app/clientes", label: "Clientes", icon: Users, exact: false, module: "clientes" },
+  { to: "/app/configuracion", label: "Más", icon: MoreHorizontal, exact: false, module: "configuracion" },
 ] as const;
 
 function AppLayout() {
