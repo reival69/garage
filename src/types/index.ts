@@ -54,6 +54,7 @@ export interface User {
   email: string;
   role: Role;
   locationId?: string;
+  active?: boolean; // default true; inactive users cannot log in or be assigned
 }
 
 export interface Customer {

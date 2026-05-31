@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { usersRepo } from "@/lib/db";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -25,12 +26,18 @@ function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const match = usersRepo.list().find((u) => u.email === email.trim());
+    if (match && match.active === false) {
+      toast.error("Esta cuenta está desactivada. Contacta con el taller.");
+      return;
+    }
     if (match && match.role !== "superadmin") {
       login(match);
       navigate({ to: "/app" });
       return;
     }
-    const owner = usersRepo.list().find((u) => u.role === "owner");
+    const owner = usersRepo
+      .list()
+      .find((u) => u.role === "owner" && u.active !== false);
     if (owner) login(owner);
     navigate({ to: "/app" });
   };

@@ -54,6 +54,7 @@ import {
 } from "@/lib/invoices";
 import { compressImage } from "@/lib/image";
 import { formatDateTime } from "@/lib/format";
+import { can } from "@/lib/permissions";
 import type { Photo, Tenant, WorkOrder } from "@/types";
 import { toast } from "sonner";
 
@@ -65,7 +66,7 @@ const MAX_PHOTOS = 12;
 
 function OrderDetail() {
   const { id } = Route.useParams();
-  const { ready, tenant } = useAuth();
+  const { ready, user, tenant } = useAuth();
   const [version, setVersion] = useState(0);
   const bump = () => setVersion((v) => v + 1);
 
@@ -75,7 +76,7 @@ function OrderDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, tenant, id, version]);
 
-  if (!tenant) return null;
+  if (!tenant || !user) return null;
   if (!order) {
     return (
       <div>
@@ -92,6 +93,8 @@ function OrderDetail() {
   const customer = customersRepo.getById(tenant.id, order.customerId);
   const mechanics = listMechanics(tenant.id);
   const transitions = nextStatuses(order.status);
+  const canQuote = can(user.role, "presupuestos");
+  const canBill = can(user.role, "facturacion");
 
   const move = (next: string) => {
     changeOrderStatus(tenant, order, next as WorkOrder["status"]);
@@ -209,8 +212,11 @@ function OrderDetail() {
           <Messages order={order} tenantId={tenant.id} onSaved={bump} />
           <Photos order={order} tenantId={tenant.id} onSaved={bump} />
 
-          {/* Quote editor */}
-          <QuoteEditor order={order} tenant={tenant} onSaved={bump} />
+          {/* Quote editor — hidden for roles without quote access (mechanic) */}
+          {canQuote && (
+            <QuoteEditor order={order} tenant={tenant} onSaved={bump} />
+          )}
+
 
 
           {/* Digital inspection */}
@@ -222,7 +228,7 @@ function OrderDetail() {
 
         {/* Sidebar: billing + share */}
         <div className="space-y-4 lg:col-span-1">
-          <BillingCard order={order} tenant={tenant} onSaved={bump} />
+          {canBill && <BillingCard order={order} tenant={tenant} onSaved={bump} />}
           <ShareCard order={order} tenantName={tenant.name} />
         </div>
       </div>
