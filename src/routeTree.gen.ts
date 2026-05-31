@@ -24,6 +24,7 @@ import { Route as AppConfiguracionRouteImport } from './routes/app.configuracion
 import { Route as AppCitasRouteImport } from './routes/app.citas'
 import { Route as AdminTalleresRouteImport } from './routes/admin.talleres'
 import { Route as AdminPlanesRouteImport } from './routes/admin.planes'
+import { Route as AppVehiculosIndexRouteImport } from './routes/app.vehiculos.index'
 import { Route as AppClientesIndexRouteImport } from './routes/app.clientes.index'
 import { Route as AppClientesIdRouteImport } from './routes/app.clientes.$id'
 
@@ -102,6 +103,11 @@ const AdminPlanesRoute = AdminPlanesRouteImport.update({
   path: '/planes',
   getParentRoute: () => AdminRoute,
 } as any)
+const AppVehiculosIndexRoute = AppVehiculosIndexRouteImport.update({
+  id: '/vehiculos/',
+  path: '/vehiculos/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppClientesIndexRoute = AppClientesIndexRouteImport.update({
   id: '/clientes/',
   path: '/clientes/',
@@ -131,6 +137,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
+  '/app/vehiculos/': typeof AppVehiculosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
   '/app/clientes': typeof AppClientesIndexRoute
+  '/app/vehiculos': typeof AppVehiculosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
+  '/app/vehiculos/': typeof AppVehiculosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -189,6 +198,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/clientes/$id'
     | '/app/clientes/'
+    | '/app/vehiculos/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/clientes/$id'
     | '/app/clientes'
+    | '/app/vehiculos'
   id:
     | '__root__'
     | '/'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/clientes/$id'
     | '/app/clientes/'
+    | '/app/vehiculos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -342,6 +354,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPlanesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/app/vehiculos/': {
+      id: '/app/vehiculos/'
+      path: '/vehiculos'
+      fullPath: '/app/vehiculos/'
+      preLoaderRoute: typeof AppVehiculosIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/clientes/': {
       id: '/app/clientes/'
       path: '/clientes'
@@ -383,6 +402,7 @@ interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppClientesIdRoute: typeof AppClientesIdRoute
   AppClientesIndexRoute: typeof AppClientesIndexRoute
+  AppVehiculosIndexRoute: typeof AppVehiculosIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -395,6 +415,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppClientesIdRoute: AppClientesIdRoute,
   AppClientesIndexRoute: AppClientesIndexRoute,
+  AppVehiculosIndexRoute: AppVehiculosIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -409,3 +430,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
