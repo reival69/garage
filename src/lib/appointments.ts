@@ -82,6 +82,20 @@ export function listServiceNames(
   return serviceIds.map((id) => byId.get(id)?.name).filter(Boolean) as string[];
 }
 
+/**
+ * Like {@link listServiceNames}, but keeps orphaned ids visible with a neutral
+ * "Servicio eliminado" label so deleting a service never makes an appointment
+ * look empty or crash the view.
+ */
+export function listServiceLabels(
+  tenantId: string,
+  serviceIds: string[],
+): string[] {
+  const byId = new Map<string, Service>();
+  servicesRepo.list(tenantId).forEach((s) => byId.set(s.id, s));
+  return serviceIds.map((id) => byId.get(id)?.name ?? "Servicio eliminado");
+}
+
 interface AppointmentInput {
   customerId?: string;
   vehicleId?: string;
