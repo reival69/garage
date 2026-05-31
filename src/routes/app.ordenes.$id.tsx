@@ -16,6 +16,7 @@ import {
   Loader2,
   Trash2,
   Receipt,
+  BellRing,
 } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { EmptyState } from "@/components/base/EmptyState";
@@ -48,13 +49,14 @@ import {
 import { QuoteEditor } from "@/components/app/QuoteEditor";
 import { InspectionEditor } from "@/components/app/InspectionEditor";
 import { CheckInEditor } from "@/components/app/CheckInEditor";
+import { ReminderFormDialog } from "@/components/app/ReminderFormDialog";
 import {
   generateInvoiceFromOrder,
   getInvoiceByWorkOrderId,
 } from "@/lib/invoices";
 import { compressImage } from "@/lib/image";
 import { formatDateTime } from "@/lib/format";
-import { can } from "@/lib/permissions";
+import { can, canEdit } from "@/lib/permissions";
 import type { Photo, Tenant, WorkOrder } from "@/types";
 import { toast } from "sonner";
 
@@ -68,6 +70,7 @@ function OrderDetail() {
   const { id } = Route.useParams();
   const { ready, user, tenant } = useAuth();
   const [version, setVersion] = useState(0);
+  const [reminderOpen, setReminderOpen] = useState(false);
   const bump = () => setVersion((v) => v + 1);
 
   const order = useMemo(() => {
@@ -95,6 +98,10 @@ function OrderDetail() {
   const transitions = nextStatuses(order.status);
   const canQuote = can(user.role, "presupuestos");
   const canBill = can(user.role, "facturacion");
+  const canScheduleReminder =
+    order.status === "entregado" &&
+    !!vehicle &&
+    canEdit(user.role, "recordatorios");
 
   const move = (next: string) => {
     changeOrderStatus(tenant, order, next as WorkOrder["status"]);
@@ -229,9 +236,35 @@ function OrderDetail() {
         {/* Sidebar: billing + share */}
         <div className="space-y-4 lg:col-span-1">
           {canBill && <BillingCard order={order} tenant={tenant} onSaved={bump} />}
+          {canScheduleReminder && (
+            <DataCard title="Mantenimiento">
+              <p className="text-sm text-muted-foreground">
+                Programa la próxima revisión de este vehículo.
+              </p>
+              <Button
+                size="sm"
+                className="mt-3 w-full"
+                onClick={() => setReminderOpen(true)}
+              >
+                <BellRing strokeWidth={1.5} />
+                Programar próxima revisión
+              </Button>
+            </DataCard>
+          )}
           <ShareCard order={order} tenantName={tenant.name} />
         </div>
       </div>
+
+      {vehicle && (
+        <ReminderFormDialog
+          open={reminderOpen}
+          onOpenChange={setReminderOpen}
+          tenantId={tenant.id}
+          vehicleId={vehicle.id}
+          customerId={order.customerId}
+          onSaved={bump}
+        />
+      )}
     </div>
   );
 }
