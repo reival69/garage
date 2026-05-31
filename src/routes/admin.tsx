@@ -22,8 +22,28 @@ const NAV = [
 ] as const;
 
 function AdminLayout() {
-  const { logout } = useAuth();
+  const { ready, user, logout } = useAuth();
+  const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // Session guard: require a logged-in superadmin. No session -> /login;
+  // logged in but not superadmin -> /app.
+  useEffect(() => {
+    if (!ready) return;
+    if (!user) {
+      navigate({ to: "/login" });
+    } else if (user.role !== "superadmin") {
+      navigate({ to: "/app" });
+    }
+  }, [ready, user, navigate]);
+
+  if (!ready) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background" />
+    );
+  }
+  if (!user || user.role !== "superadmin") return null;
+
 
   return (
     <div className="flex min-h-screen bg-background">
