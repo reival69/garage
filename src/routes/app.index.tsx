@@ -1,18 +1,32 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Car, Calendar, FileText, Banknote, BellRing, Star } from "lucide-react";
+import {
+  Car,
+  Calendar,
+  FileText,
+  Banknote,
+  BellRing,
+  Star,
+  Activity,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { StatCard } from "@/components/base/StatCard";
 import { DataCard } from "@/components/base/DataCard";
+import { StatusBadge } from "@/components/base/StatusBadge";
 import { averageRating } from "@/lib/reviews";
 import { useAuth } from "@/lib/auth/AuthContext";
 import {
   appointmentsRepo,
+  customersRepo,
   invoicesRepo,
+  vehiclesRepo,
   workOrdersRepo,
 } from "@/lib/db";
 import { dueReminders } from "@/lib/reminders";
-import { formatCurrency, isToday } from "@/lib/format";
+import { listNotifications, relativeTime } from "@/lib/notifications";
+import { formatCurrency, formatTime, isToday } from "@/lib/format";
+import type { Appointment, AppNotification } from "@/types";
 
 export const Route = createFileRoute("/app/")({
   component: AppDashboard,
@@ -27,6 +41,14 @@ const IN_SHOP = new Set([
   "listo",
 ]);
 
+const NOTIF_ICON: Record<AppNotification["type"], LucideIcon> = {
+  cita: Calendar,
+  presupuesto: FileText,
+  estado: Activity,
+  recordatorio: BellRing,
+  resena: Star,
+};
+
 function AppDashboard() {
   const { ready, tenant } = useAuth();
   const [stats, setStats] = useState({
@@ -37,6 +59,8 @@ function AppDashboard() {
     overdueReminders: 0,
     avgRating: 0,
   });
+  const [agenda, setAgenda] = useState<Appointment[]>([]);
+  const [activity, setActivity] = useState<AppNotification[]>([]);
 
   useEffect(() => {
     if (!ready || !tenant) return;
@@ -62,7 +86,27 @@ function AppDashboard() {
       overdueReminders: dueReminders(tenant.id).length,
       avgRating: averageRating(tenant.id),
     });
+    setAgenda(
+      appts
+        .filter((a) => isToday(a.scheduledAt))
+        .sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt)),
+    );
+    setActivity(listNotifications(tenant.id).slice(0, 6));
   }, [ready, tenant]);
+
+  const labelFor = (a: Appointment) => {
+    if (!tenant) return { customer: "—", vehicle: "—" };
+    const customer = a.customerId
+      ? customersRepo.getById(tenant.id, a.customerId)
+      : undefined;
+    const vehicle = a.vehicleId
+      ? vehiclesRepo.getById(tenant.id, a.vehicleId)
+      : undefined;
+    return {
+      customer: customer?.name ?? "Cita sin cliente",
+      vehicle: vehicle ? `${vehicle.make} ${vehicle.model} · ${vehicle.plate}` : "—",
+    };
+  };
 
   return (
     <div>
@@ -107,14 +151,80 @@ function AppDashboard() {
 
       <div className="mt-8 grid gap-4 lg:grid-cols-2">
         <DataCard title="Actividad reciente">
-          <p className="text-sm text-muted-foreground">
-            No hay actividad reciente todavía.
-          </p>
+          {activity.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No hay actividad reciente todavía.
+            </p>
+          ) : (
+            <ul className="-my-1 divide-y divide-border-subtle">
+              {activity.map((n) => {
+                const Icon = NOTIF_ICON[n.type] ?? Activity;
+                const row = (
+                  <div className="flex items-start gap-3 py-3">
+                    <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-background-subtle text-muted-foreground">
+                      <Icon strokeWidth={1.5} className="h-4 w-4" />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium text-foreground">
+                        {n.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {relativeTime(n.createdAt)}
+                      </p>
+                    </div>
+                  </div>
+                );
+                return (
+                  <li key={n.id}>
+                    {n.link ? (
+                      <Link
+                        to={n.link}
+                        className="block rounded-lg transition-colors hover:bg-background-muted"
+                      >
+                        {row}
+                      </Link>
+                    ) : (
+                      row
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </DataCard>
         <DataCard title="Agenda de hoy">
-          <p className="text-sm text-muted-foreground">
-            No tienes citas ni entregas previstas para hoy.
-          </p>
+          {agenda.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No tienes citas ni entregas previstas para hoy.
+            </p>
+          ) : (
+            <ul className="-my-1 divide-y divide-border-subtle">
+              {agenda.map((a) => {
+                const { customer, vehicle } = labelFor(a);
+                return (
+                  <li key={a.id}>
+                    <Link
+                      to="/app/citas"
+                      className="flex items-center gap-3 rounded-lg py-3 transition-colors hover:bg-background-muted"
+                    >
+                      <span className="shrink-0 font-mono text-sm tabular-nums text-foreground">
+                        {formatTime(a.scheduledAt)}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium text-foreground">
+                          {customer}
+                        </p>
+                        <p className="truncate text-xs text-muted-foreground">
+                          {vehicle}
+                        </p>
+                      </div>
+                      <StatusBadge status={a.status} />
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </DataCard>
       </div>
     </div>
