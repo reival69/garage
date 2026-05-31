@@ -6,6 +6,7 @@ import type {
   Appointment,
   Customer,
   Invoice,
+  MaintenanceReminder,
   Part,
   Plan,
   Service,
