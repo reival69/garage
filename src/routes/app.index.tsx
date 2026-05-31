@@ -60,6 +60,7 @@ function AppDashboard() {
         })
         .reduce((s, i) => s + i.total, 0),
       overdueReminders: dueReminders(tenant.id).length,
+      avgRating: averageRating(tenant.id),
     });
   }, [ready, tenant]);
 
