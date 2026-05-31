@@ -12,12 +12,12 @@ import type {
 } from "@/types";
 import {
   listAllAccessCodes,
-  notificationsRepo,
   uid,
   usersRepo,
   vehiclesRepo,
   workOrdersRepo,
 } from "@/lib/db";
+import { notify } from "@/lib/notifications";
 
 // Customer-facing pipeline (does not include `cancelado`, handled apart).
 export const PIPELINE: WorkOrderStatus[] = [
