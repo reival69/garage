@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import {
   createFileRoute,
   Link,
   Outlet,
+  useNavigate,
   useRouterState,
 } from "@tanstack/react-router";
 import { LayoutDashboard, Building2, CreditCard, LogOut } from "lucide-react";
