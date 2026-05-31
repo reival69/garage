@@ -745,6 +745,7 @@ function QuoteLine({
   currency: string;
   children?: React.ReactNode;
 }) {
+  const warranty = warrantyLabel(item);
   return (
     <div className="rounded-lg border border-border p-3">
       <div className="flex items-start justify-between gap-3">
@@ -753,6 +754,12 @@ function QuoteLine({
           <p className="text-xs text-muted-foreground">
             {item.qty} × {formatCurrencyCents(item.unitPrice, currency)}
           </p>
+          {warranty && (
+            <span className="mt-1 inline-flex items-center gap-1 rounded-md border border-border bg-background-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+              <ShieldCheck strokeWidth={1.5} className="h-3 w-3" />
+              Garantía {warranty}
+            </span>
+          )}
         </div>
         <span className="shrink-0 text-sm font-medium text-foreground">
           {formatCurrencyCents(item.qty * item.unitPrice, currency)}
