@@ -274,7 +274,7 @@ function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
             type: "labor" as const,
             description: "Mano de obra",
             qty: 2,
-            unitPrice: 45,
+            unitPrice: Math.round(45 * f),
             approval:
               status === "aprobado" ||
               status === "en_reparacion" ||
