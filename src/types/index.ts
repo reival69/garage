@@ -143,6 +143,8 @@ export interface WorkOrder {
   checkIn?: CheckIn;
   inspection?: Inspection;
   messages: OrderMessage[];
+  // Customer's signed decision on the quote (approval view).
+  quoteApproval?: { signature: string; decidedAt: string };
   estimatedReadyAt?: string;
   createdAt: string;
   updatedAt: string;
