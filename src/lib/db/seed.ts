@@ -37,13 +37,13 @@ import { quoteTotals } from "@/lib/orders";
 
 const SEED_FLAG = "seeded";
 // Bump when the seed shape changes to force a clean reseed of the demo.
-const SEED_VERSION = "4";
+const SEED_VERSION = "5";
 
 // Tiny base64 placeholder images (kept small to respect the ~5MB quota).
 const PHOTO_A =
   "data:image/svg+xml;base64," +
   btoaSafe(
-    `<svg xmlns='http://www.w3.org/2000/svg' width='160' height='120'><rect width='100%' height='100%' fill='#e4e4e7'/><text x='50%' y='52%' font-family='sans-serif' font-size='14' fill='#71717a' text-anchor='middle'>Recepción</text></svg>`,
+    `<svg xmlns='http://www.w3.org/2000/svg' width='160' height='120'><rect width='100%' height='100%' fill='#e4e4e7'/><text x='50%' y='52%' font-family='sans-serif' font-size='14' fill='#71717a' text-anchor='middle'>Recepcion</text></svg>`,
   );
 const PHOTO_B =
   "data:image/svg+xml;base64," +
