@@ -13,8 +13,6 @@ import {
   Camera,
   Copy,
   Share2,
-  ScanLine,
-  ClipboardCheck,
   Loader2,
   Trash2,
 } from "lucide-react";
