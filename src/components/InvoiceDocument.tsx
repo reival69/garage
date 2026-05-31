@@ -167,6 +167,11 @@ export function InvoiceDocument({
                     <span className="ml-2 text-xs text-muted-foreground">
                       {it.type === "labor" ? "Mano de obra" : "Pieza"}
                     </span>
+                    {warrantyLabel(it) && (
+                      <span className="mt-0.5 block text-xs text-muted-foreground">
+                        Garantía: {warrantyLabel(it)}
+                      </span>
+                    )}
                   </td>
                   <td className="py-2.5 text-center text-muted-foreground">
                     {it.qty}

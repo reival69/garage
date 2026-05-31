@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Car, Calendar, FileText, Banknote, BellRing } from "lucide-react";
+import { Car, Calendar, FileText, Banknote, BellRing, Star } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { StatCard } from "@/components/base/StatCard";
 import { DataCard } from "@/components/base/DataCard";
+import { averageRating } from "@/lib/reviews";
 import { useAuth } from "@/lib/auth/AuthContext";
 import {
   appointmentsRepo,
@@ -34,6 +35,7 @@ function AppDashboard() {
     pendingQuotes: 0,
     monthRevenue: 0,
     overdueReminders: 0,
+    avgRating: 0,
   });
 
   useEffect(() => {
@@ -58,6 +60,7 @@ function AppDashboard() {
         })
         .reduce((s, i) => s + i.total, 0),
       overdueReminders: dueReminders(tenant.id).length,
+      avgRating: averageRating(tenant.id),
     });
   }, [ready, tenant]);
 
@@ -91,6 +94,13 @@ function AppDashboard() {
             label="Recordatorios vencidos"
             value={stats.overdueReminders}
             icon={BellRing}
+          />
+        </Link>
+        <Link to="/app/resenas" className="rounded-xl">
+          <StatCard
+            label="Valoración media"
+            value={stats.avgRating > 0 ? `${stats.avgRating.toFixed(1)} / 5` : "—"}
+            icon={Star}
           />
         </Link>
       </div>

@@ -112,6 +112,9 @@ function ConfigPage() {
   );
   const [accentColor, setAccentColor] = useState(tenant?.accentColor ?? "#101010");
   const [logoUrl, setLogoUrl] = useState<string | undefined>(tenant?.logoUrl);
+  const [googleReviewUrl, setGoogleReviewUrl] = useState(
+    tenant?.googleReviewUrl ?? "",
+  );
   const [hours, setHours] = useState<BusinessDay[]>(
     tenant?.businessHours && tenant.businessHours.length === 7
       ? tenant.businessHours
@@ -158,6 +161,7 @@ function ConfigPage() {
       taxRate,
       accentColor,
       logoUrl,
+      googleReviewUrl: googleReviewUrl.trim() || undefined,
       businessHours: hours,
       locations,
     });
@@ -341,6 +345,22 @@ function ConfigPage() {
             </div>
           </Field>
         </Section>
+
+        <Section
+          title="Reseñas"
+          description="Enlace de Google que se ofrece a los clientes satisfechos (valoración alta) en su vista."
+        >
+          <Field label="Enlace de reseña de Google">
+            <Input
+              type="url"
+              value={googleReviewUrl}
+              onChange={(e) => setGoogleReviewUrl(e.target.value)}
+              placeholder="https://g.page/r/..."
+            />
+          </Field>
+        </Section>
+
+
 
         <Section
           title="Horario de atención"

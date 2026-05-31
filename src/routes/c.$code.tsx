@@ -16,6 +16,8 @@ import {
   ReceiptText,
   History,
   ChevronDown,
+  ShieldCheck,
+  Star,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/auth/AuthContext";
@@ -29,9 +31,11 @@ import {
 import {
   approvedTotals,
   confirmQuoteApproval,
+  warrantyLabel,
   type ApprovalDecision,
 } from "@/lib/quotes";
 import { getInvoiceByWorkOrderId } from "@/lib/invoices";
+import { createReview, getReviewByOrderId } from "@/lib/reviews";
 import { inspectionSummary } from "@/lib/inspection";
 import { formatCurrencyCents, formatDate, formatDateTime } from "@/lib/format";
 import {
@@ -278,6 +282,16 @@ function GuestView() {
 
         {/* Invoice for this order (read only, printable) */}
         <OrderInvoiceSection order={order} tenant={tenant} vehicle={vehicle} />
+
+        {/* Post-delivery review (only when delivered) */}
+        {order.status === "entregado" && (
+          <ReviewSection
+            order={order}
+            tenant={tenant}
+            accent={tenant.accentColor}
+            onChanged={load}
+          />
+        )}
 
         {/* Vehicle service history */}
         <VehicleHistorySection
@@ -745,6 +759,7 @@ function QuoteLine({
   currency: string;
   children?: React.ReactNode;
 }) {
+  const warranty = warrantyLabel(item);
   return (
     <div className="rounded-lg border border-border p-3">
       <div className="flex items-start justify-between gap-3">
@@ -753,6 +768,12 @@ function QuoteLine({
           <p className="text-xs text-muted-foreground">
             {item.qty} × {formatCurrencyCents(item.unitPrice, currency)}
           </p>
+          {warranty && (
+            <span className="mt-1 inline-flex items-center gap-1 rounded-md border border-border bg-background-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+              <ShieldCheck strokeWidth={1.5} className="h-3 w-3" />
+              Garantía {warranty}
+            </span>
+          )}
         </div>
         <span className="shrink-0 text-sm font-medium text-foreground">
           {formatCurrencyCents(item.qty * item.unitPrice, currency)}
@@ -864,6 +885,186 @@ function MessagesTimeline({
           <Send strokeWidth={1.5} />
         </Button>
       </div>
+    </section>
+  );
+}
+
+/* ----------------------------- Review ----------------------------- */
+
+function StarRating({
+  value,
+  onChange,
+  size = "lg",
+}: {
+  value: number;
+  onChange?: (v: number) => void;
+  size?: "sm" | "lg";
+}) {
+  const dim = size === "lg" ? "h-7 w-7" : "h-4 w-4";
+  return (
+    <div className="flex items-center gap-1">
+      {[1, 2, 3, 4, 5].map((n) => {
+        const filled = n <= value;
+        const star = (
+          <Star
+            strokeWidth={1.5}
+            className={cn(dim, filled ? "text-foreground" : "text-muted-foreground")}
+            fill={filled ? "currentColor" : "none"}
+          />
+        );
+        return onChange ? (
+          <button
+            key={n}
+            type="button"
+            onClick={() => onChange(n)}
+            aria-label={`${n} estrella${n > 1 ? "s" : ""}`}
+            className="transition-transform hover:scale-110"
+          >
+            {star}
+          </button>
+        ) : (
+          <span key={n}>{star}</span>
+        );
+      })}
+    </div>
+  );
+}
+
+function ReviewSection({
+  order,
+  tenant,
+  accent,
+  onChanged,
+}: {
+  order: WorkOrder;
+  tenant: Tenant;
+  accent: string;
+  onChanged: () => void;
+}) {
+  const existing = getReviewByOrderId(tenant.id, order.id);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [sent, setSent] = useState<number | null>(null);
+
+  // Already reviewed (persisted) → thank-you with the saved stars.
+  if (existing) {
+    return (
+      <section className="rounded-xl border border-border bg-card p-5">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Star strokeWidth={1.5} className="h-4 w-4" />
+          <h2 className="text-sm font-semibold text-foreground">
+            Tu valoración
+          </h2>
+        </div>
+        <p className="mt-3 text-sm text-foreground">Gracias por tu valoración.</p>
+        <div className="mt-2">
+          <StarRating value={existing.rating} size="sm" />
+        </div>
+        {existing.comment && (
+          <p className="mt-2 text-sm text-muted-foreground">{existing.comment}</p>
+        )}
+      </section>
+    );
+  }
+
+  // Just submitted in this session → confirmation + conditional CTA.
+  if (sent != null) {
+    const high = sent >= 4;
+    return (
+      <section className="rounded-xl border border-border bg-card p-5">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Star strokeWidth={1.5} className="h-4 w-4" />
+          <h2 className="text-sm font-semibold text-foreground">
+            ¡Gracias por tu valoración!
+          </h2>
+        </div>
+        <div className="mt-3">
+          <StarRating value={sent} size="sm" />
+        </div>
+        {high ? (
+          tenant.googleReviewUrl ? (
+            <>
+              <p className="mt-3 text-sm text-muted-foreground">
+                ¿Nos ayudas a crecer? Comparte tu experiencia en Google.
+              </p>
+              <Button
+                asChild
+                className="mt-3 w-full text-primary-foreground"
+                style={{ backgroundColor: accent }}
+              >
+                <a
+                  href={tenant.googleReviewUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Star strokeWidth={1.5} />
+                  Déjanos una reseña en Google
+                </a>
+              </Button>
+            </>
+          ) : (
+            <p className="mt-3 text-sm text-muted-foreground">
+              ¡Nos alegra que tu experiencia haya sido positiva!
+            </p>
+          )
+        ) : (
+          <p className="mt-3 text-sm text-muted-foreground">
+            Gracias por tu sinceridad. El taller revisará tu valoración para
+            mejorar.
+          </p>
+        )}
+      </section>
+    );
+  }
+
+  const submit = () => {
+    if (rating < 1) {
+      toast.error("Elige una valoración de 1 a 5 estrellas.");
+      return;
+    }
+    createReview(tenant.id, {
+      orderId: order.id,
+      customerId: order.customerId,
+      vehicleId: order.vehicleId,
+      rating,
+      comment,
+    });
+    toast.success("¡Gracias por tu valoración!");
+    setSent(rating);
+    onChanged();
+  };
+
+  return (
+    <section className="rounded-xl border border-border bg-card p-5">
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <Star strokeWidth={1.5} className="h-4 w-4" />
+        <h2 className="text-sm font-semibold text-foreground">
+          ¿Cómo fue tu experiencia?
+        </h2>
+      </div>
+      <p className="mt-1.5 text-sm text-muted-foreground">
+        Tu opinión ayuda al taller a mejorar.
+      </p>
+
+      <div className="mt-4">
+        <StarRating value={rating} onChange={setRating} />
+      </div>
+
+      <Textarea
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        placeholder="Cuéntanos qué tal fue (opcional)…"
+        className="mt-4 min-h-[80px]"
+        maxLength={500}
+      />
+
+      <Button
+        className="mt-4 w-full text-primary-foreground"
+        style={{ backgroundColor: accent }}
+        onClick={submit}
+      >
+        Enviar valoración
+      </Button>
     </section>
   );
 }
