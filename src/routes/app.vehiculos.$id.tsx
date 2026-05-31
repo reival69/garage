@@ -64,12 +64,17 @@ export const Route = createFileRoute("/app/vehiculos/$id")({
 
 function VehicleDetail() {
   const { id } = Route.useParams();
-  const { ready, tenant } = useAuth();
+  const { ready, user, tenant } = useAuth();
   const router = useRouter();
 
   const [version, setVersion] = useState(0);
   const [editOpen, setEditOpen] = useState(false);
   const [orderOpen, setOrderOpen] = useState(false);
+  const [reminderOpen, setReminderOpen] = useState(false);
+  const [editingReminder, setEditingReminder] =
+    useState<MaintenanceReminder | null>(null);
+  const [reminderToDelete, setReminderToDelete] =
+    useState<MaintenanceReminder | null>(null);
 
   const data = useMemo(() => {
     if (!ready || !tenant) return null;
@@ -86,7 +91,8 @@ function VehicleDetail() {
         photos.push({ ...p, orderCode: o.accessCode, orderId: o.id }),
       ),
     );
-    return { vehicle, customer, orders, photos };
+    const reminders = listVehicleReminders(tenant.id, id);
+    return { vehicle, customer, orders, photos, reminders };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, tenant, id, version]);
 
