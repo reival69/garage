@@ -45,6 +45,7 @@ export interface Tenant {
   phone?: string;
   logoUrl?: string; // base64 image; falls back to the "Talleo" wordmark
   businessHours?: BusinessDay[]; // length 7, Monday → Sunday
+  googleReviewUrl?: string; // public Google review link offered to happy customers
 }
 
 export interface User {
