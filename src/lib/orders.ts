@@ -163,13 +163,11 @@ export function createWorkOrder(
     updatedAt: now,
   } as Omit<WorkOrder, "id">);
 
-  notificationsRepo.create(tenant.id, {
-    tenantId: tenant.id,
+  notify(tenant.id, {
     type: "estado",
     title: "Nueva orden creada",
     body: `${vehicleLabel(tenant.id, order.vehicleId)} — Recibido (${order.accessCode}).`,
-    read: false,
-    createdAt: now,
+    link: `/app/ordenes/${order.id}`,
   });
 
   return order;
