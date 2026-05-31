@@ -13,8 +13,6 @@ import {
   Camera,
   Copy,
   Share2,
-  ScanLine,
-  ClipboardCheck,
   Loader2,
   Trash2,
 } from "lucide-react";
@@ -48,6 +46,7 @@ import {
 } from "@/lib/orders";
 import { QuoteEditor } from "@/components/app/QuoteEditor";
 import { InspectionEditor } from "@/components/app/InspectionEditor";
+import { CheckInEditor } from "@/components/app/CheckInEditor";
 import { compressImage } from "@/lib/image";
 import { formatDateTime } from "@/lib/format";
 import type { Photo, WorkOrder } from "@/types";
@@ -212,13 +211,8 @@ function OrderDetail() {
           {/* Digital inspection */}
           <InspectionEditor order={order} tenant={tenant} onSaved={bump} />
 
-          {/* Placeholder */}
-          <DataCard title="Check-in de recepción">
-            <Placeholder
-              icon={ClipboardCheck}
-              text="El check-in con firma llegará en el siguiente prompt."
-            />
-          </DataCard>
+          {/* Reception check-in */}
+          <CheckInEditor order={order} tenant={tenant} onSaved={bump} />
         </div>
 
         {/* Sidebar: share */}
@@ -523,22 +517,6 @@ function InfoRow({
   );
 }
 
-
-
-function Placeholder({
-  icon: Icon,
-  text,
-}: {
-  icon: typeof ScanLine;
-  text: string;
-}) {
-  return (
-    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-      <Icon strokeWidth={1.5} className="h-4 w-4" />
-      {text}
-    </div>
-  );
-}
 
 function BackLink() {
   return (
