@@ -518,22 +518,6 @@ function InfoRow({
 }
 
 
-
-function Placeholder({
-  icon: Icon,
-  text,
-}: {
-  icon: typeof ScanLine;
-  text: string;
-}) {
-  return (
-    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-      <Icon strokeWidth={1.5} className="h-4 w-4" />
-      {text}
-    </div>
-  );
-}
-
 function BackLink() {
   return (
     <Link
