@@ -86,6 +86,13 @@ function AppDashboard() {
           value={formatCurrency(stats.monthRevenue, tenant?.currency)}
           icon={Banknote}
         />
+        <Link to="/app/recordatorios" className="rounded-xl">
+          <StatCard
+            label="Recordatorios vencidos"
+            value={stats.overdueReminders}
+            icon={BellRing}
+          />
+        </Link>
       </div>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-2">
