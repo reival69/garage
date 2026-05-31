@@ -28,6 +28,7 @@ import { Route as AppVehiculosIndexRouteImport } from './routes/app.vehiculos.in
 import { Route as AppOrdenesIndexRouteImport } from './routes/app.ordenes.index'
 import { Route as AppClientesIndexRouteImport } from './routes/app.clientes.index'
 import { Route as AppVehiculosIdRouteImport } from './routes/app.vehiculos.$id'
+import { Route as AppOrdenesIdRouteImport } from './routes/app.ordenes.$id'
 import { Route as AppClientesIdRouteImport } from './routes/app.clientes.$id'
 
 const LoginRoute = LoginRouteImport.update({
@@ -125,6 +126,11 @@ const AppVehiculosIdRoute = AppVehiculosIdRouteImport.update({
   path: '/vehiculos/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppOrdenesIdRoute = AppOrdenesIdRouteImport.update({
+  id: '/ordenes/$id',
+  path: '/ordenes/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppClientesIdRoute = AppClientesIdRouteImport.update({
   id: '/clientes/$id',
   path: '/clientes/$id',
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
+  '/app/ordenes/$id': typeof AppOrdenesIdRoute
   '/app/vehiculos/$id': typeof AppVehiculosIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
   '/app/ordenes/': typeof AppOrdenesIndexRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
+  '/app/ordenes/$id': typeof AppOrdenesIdRoute
   '/app/vehiculos/$id': typeof AppVehiculosIdRoute
   '/app/clientes': typeof AppClientesIndexRoute
   '/app/ordenes': typeof AppOrdenesIndexRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
+  '/app/ordenes/$id': typeof AppOrdenesIdRoute
   '/app/vehiculos/$id': typeof AppVehiculosIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
   '/app/ordenes/': typeof AppOrdenesIndexRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/app/'
     | '/app/clientes/$id'
+    | '/app/ordenes/$id'
     | '/app/vehiculos/$id'
     | '/app/clientes/'
     | '/app/ordenes/'
@@ -235,6 +245,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/app'
     | '/app/clientes/$id'
+    | '/app/ordenes/$id'
     | '/app/vehiculos/$id'
     | '/app/clientes'
     | '/app/ordenes'
@@ -257,6 +268,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/app/'
     | '/app/clientes/$id'
+    | '/app/ordenes/$id'
     | '/app/vehiculos/$id'
     | '/app/clientes/'
     | '/app/ordenes/'
@@ -406,6 +418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppVehiculosIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/ordenes/$id': {
+      id: '/app/ordenes/$id'
+      path: '/ordenes/$id'
+      fullPath: '/app/ordenes/$id'
+      preLoaderRoute: typeof AppOrdenesIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/clientes/$id': {
       id: '/app/clientes/$id'
       path: '/clientes/$id'
@@ -439,6 +458,7 @@ interface AppRouteChildren {
   AppServiciosRoute: typeof AppServiciosRoute
   AppIndexRoute: typeof AppIndexRoute
   AppClientesIdRoute: typeof AppClientesIdRoute
+  AppOrdenesIdRoute: typeof AppOrdenesIdRoute
   AppVehiculosIdRoute: typeof AppVehiculosIdRoute
   AppClientesIndexRoute: typeof AppClientesIndexRoute
   AppOrdenesIndexRoute: typeof AppOrdenesIndexRoute
@@ -454,6 +474,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppServiciosRoute: AppServiciosRoute,
   AppIndexRoute: AppIndexRoute,
   AppClientesIdRoute: AppClientesIdRoute,
+  AppOrdenesIdRoute: AppOrdenesIdRoute,
   AppVehiculosIdRoute: AppVehiculosIdRoute,
   AppClientesIndexRoute: AppClientesIndexRoute,
   AppOrdenesIndexRoute: AppOrdenesIndexRoute,
@@ -472,3 +493,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
