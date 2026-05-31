@@ -43,12 +43,12 @@ import {
   changeOrderStatus,
   listMechanics,
   nextStatuses,
-  quoteTotals,
   removeOrderPhoto,
   updateOrder,
 } from "@/lib/orders";
+import { QuoteEditor } from "@/components/app/QuoteEditor";
 import { compressImage } from "@/lib/image";
-import { formatCurrencyCents, formatDateTime } from "@/lib/format";
+import { formatDateTime } from "@/lib/format";
 import type { Photo, WorkOrder } from "@/types";
 import { toast } from "sonner";
 
@@ -87,7 +87,6 @@ function OrderDetail() {
   const customer = customersRepo.getById(tenant.id, order.customerId);
   const mechanics = listMechanics(tenant.id);
   const transitions = nextStatuses(order.status);
-  const totals = quoteTotals(order.items, tenant.taxRate);
 
   const move = (next: string) => {
     changeOrderStatus(tenant, order, next as WorkOrder["status"]);
@@ -205,45 +204,9 @@ function OrderDetail() {
           <Messages order={order} tenantId={tenant.id} onSaved={bump} />
           <Photos order={order} tenantId={tenant.id} onSaved={bump} />
 
-          {/* Quote summary (read only) */}
-          <DataCard title="Presupuesto">
-            {order.items.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                Aún no hay líneas de presupuesto.
-              </p>
-            ) : (
-              <div className="space-y-2 text-sm">
-                {order.items.map((it) => (
-                  <div
-                    key={it.id}
-                    className="flex items-center justify-between gap-2"
-                  >
-                    <span className="text-foreground">
-                      {it.description}{" "}
-                      <span className="text-muted-foreground">×{it.qty}</span>
-                    </span>
-                    <span className="text-muted-foreground">
-                      {formatCurrencyCents(it.qty * it.unitPrice, tenant.currency)}
-                    </span>
-                  </div>
-                ))}
-                <div className="mt-2 space-y-1 border-t border-border pt-2">
-                  <Row label="Subtotal" value={formatCurrencyCents(totals.subtotal, tenant.currency)} />
-                  <Row
-                    label={`IVA (${Math.round(tenant.taxRate * 100)}%)`}
-                    value={formatCurrencyCents(totals.tax, tenant.currency)}
-                  />
-                  <div className="flex items-center justify-between pt-1 text-base font-semibold text-foreground">
-                    <span>Total</span>
-                    <span>{formatCurrencyCents(totals.total, tenant.currency)}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-            <p className="mt-4 rounded-lg border border-dashed border-border px-3 py-2 text-xs text-muted-foreground">
-              Editar presupuesto (próximamente)
-            </p>
-          </DataCard>
+          {/* Quote editor */}
+          <QuoteEditor order={order} tenant={tenant} onSaved={bump} />
+
 
           {/* Placeholders */}
           <DataCard title="Inspección (DVI)">
@@ -562,14 +525,7 @@ function InfoRow({
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between text-muted-foreground">
-      <span>{label}</span>
-      <span>{value}</span>
-    </div>
-  );
-}
+
 
 function Placeholder({
   icon: Icon,

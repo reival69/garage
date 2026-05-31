@@ -28,6 +28,9 @@ const STATUS_MAP: Record<string, StatusMeta> = {
   pending: { label: "Pendiente", tone: "warning" },
   paid: { label: "Pagada", tone: "success" },
   partial: { label: "Parcial", tone: "warning" },
+  // Quote line approval
+  approved: { label: "Aprobada", tone: "success" },
+  rejected: { label: "Rechazada", tone: "danger" },
   // Tenant / generic
   active: { label: "Activo", tone: "success" },
   suspended: { label: "Suspendido", tone: "danger" },
