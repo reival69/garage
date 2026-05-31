@@ -4,7 +4,7 @@
 // presupuesto al cliente (simulado). Todo pasa por src/lib/quotes.ts.
 
 import { useMemo, useState } from "react";
-import { Plus, Pencil, Trash2, Send } from "lucide-react";
+import { Plus, Pencil, Trash2, Send, ShieldCheck } from "lucide-react";
 import { DataCard } from "@/components/base/DataCard";
 import { StatusBadge } from "@/components/base/StatusBadge";
 import { Button } from "@/components/ui/button";
