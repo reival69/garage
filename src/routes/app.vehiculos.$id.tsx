@@ -56,7 +56,7 @@ import {
 } from "@/lib/reminders";
 import { canEdit } from "@/lib/permissions";
 import { toast } from "sonner";
-import type { Customer, MaintenanceReminder, Photo, Vehicle } from "@/types";
+import type { MaintenanceReminder, Photo } from "@/types";
 
 export const Route = createFileRoute("/app/vehiculos/$id")({
   component: VehicleDetail,
