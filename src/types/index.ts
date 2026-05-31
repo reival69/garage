@@ -226,3 +226,17 @@ export interface AppNotification {
   createdAt: string;
   link?: string; // destination route, e.g. "/app/ordenes/abc"
 }
+
+export interface MaintenanceReminder {
+  id: string;
+  tenantId: string;
+  vehicleId: string;
+  customerId: string;
+  label: string; // e.g. "Cambio de aceite"
+  dueDate?: string; // ISO date — due when reached
+  dueKm?: number; // odometer target — due when vehicle.km >= dueKm
+  note?: string;
+  status: "pending" | "done" | "dismissed";
+  notified?: boolean; // true once it has emitted its overdue notification
+  createdAt: string;
+}
