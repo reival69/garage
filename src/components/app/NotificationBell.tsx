@@ -76,7 +76,7 @@ export function NotificationBell({ variant }: NotificationBellProps) {
       setVersion((v) => v + 1);
     }
     setOpen(false);
-    if (n.link) navigate({ to: n.link });
+    if (n.link) navigate({ to: n.link as "/app" });
   };
 
   const handleMarkAll = () => {
