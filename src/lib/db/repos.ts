@@ -110,6 +110,7 @@ export const appointmentsRepo = tenantRepo<Appointment>("appointments");
 export const servicesRepo = tenantRepo<Service>("services");
 export const partsRepo = tenantRepo<Part>("parts");
 export const notificationsRepo = tenantRepo<AppNotification>("notifications");
+export const remindersRepo = tenantRepo<MaintenanceReminder>("reminders");
 
 /** Find a work order across ALL tenants by its 6-char access code (guest view). */
 export function findWorkOrderByAccessCode(
