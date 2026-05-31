@@ -103,13 +103,14 @@ export function generateUniqueAccessCode(): string {
   return c;
 }
 
-/** Mechanics/owners that can be assigned to an order. */
+/** Active mechanics/owners that can be assigned to an order. */
 export function listMechanics(tenantId: string): User[] {
   return usersRepo
     .list()
     .filter(
       (u) =>
         u.tenantId === tenantId &&
+        u.active !== false &&
         (u.role === "mechanic" || u.role === "owner"),
     );
 }
