@@ -9,8 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TerminosRouteImport } from './routes/terminos'
+import { Route as RecursosRouteImport } from './routes/recursos'
+import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as PanelRouteImport } from './routes/panel'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as CookiesRouteImport } from './routes/cookies'
+import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -36,6 +41,21 @@ import { Route as AppOrdenesIdRouteImport } from './routes/app.ordenes.$id'
 import { Route as AppFacturacionIdRouteImport } from './routes/app.facturacion.$id'
 import { Route as AppClientesIdRouteImport } from './routes/app.clientes.$id'
 
+const TerminosRoute = TerminosRouteImport.update({
+  id: '/terminos',
+  path: '/terminos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecursosRoute = RecursosRouteImport.update({
+  id: '/recursos',
+  path: '/recursos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadRoute = PrivacidadRouteImport.update({
+  id: '/privacidad',
+  path: '/privacidad',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PanelRoute = PanelRouteImport.update({
   id: '/panel',
   path: '/panel',
@@ -44,6 +64,16 @@ const PanelRoute = PanelRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactoRoute = ContactoRouteImport.update({
+  id: '/contacto',
+  path: '/contacto',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -171,8 +201,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRouteWithChildren
+  '/contacto': typeof ContactoRoute
+  '/cookies': typeof CookiesRoute
   '/login': typeof LoginRoute
   '/panel': typeof PanelRoute
+  '/privacidad': typeof PrivacidadRoute
+  '/recursos': typeof RecursosRoute
+  '/terminos': typeof TerminosRoute
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/talleres': typeof AdminTalleresRoute
   '/app/citas': typeof AppCitasRoute
@@ -197,8 +232,13 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contacto': typeof ContactoRoute
+  '/cookies': typeof CookiesRoute
   '/login': typeof LoginRoute
   '/panel': typeof PanelRoute
+  '/privacidad': typeof PrivacidadRoute
+  '/recursos': typeof RecursosRoute
+  '/terminos': typeof TerminosRoute
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/talleres': typeof AdminTalleresRoute
   '/app/citas': typeof AppCitasRoute
@@ -226,8 +266,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/app': typeof AppRouteWithChildren
+  '/contacto': typeof ContactoRoute
+  '/cookies': typeof CookiesRoute
   '/login': typeof LoginRoute
   '/panel': typeof PanelRoute
+  '/privacidad': typeof PrivacidadRoute
+  '/recursos': typeof RecursosRoute
+  '/terminos': typeof TerminosRoute
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/talleres': typeof AdminTalleresRoute
   '/app/citas': typeof AppCitasRoute
@@ -256,8 +301,13 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
+    | '/contacto'
+    | '/cookies'
     | '/login'
     | '/panel'
+    | '/privacidad'
+    | '/recursos'
+    | '/terminos'
     | '/admin/planes'
     | '/admin/talleres'
     | '/app/citas'
@@ -282,8 +332,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/contacto'
+    | '/cookies'
     | '/login'
     | '/panel'
+    | '/privacidad'
+    | '/recursos'
+    | '/terminos'
     | '/admin/planes'
     | '/admin/talleres'
     | '/app/citas'
@@ -310,8 +365,13 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
+    | '/contacto'
+    | '/cookies'
     | '/login'
     | '/panel'
+    | '/privacidad'
+    | '/recursos'
+    | '/terminos'
     | '/admin/planes'
     | '/admin/talleres'
     | '/app/citas'
@@ -339,14 +399,40 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   AppRoute: typeof AppRouteWithChildren
+  ContactoRoute: typeof ContactoRoute
+  CookiesRoute: typeof CookiesRoute
   LoginRoute: typeof LoginRoute
   PanelRoute: typeof PanelRoute
+  PrivacidadRoute: typeof PrivacidadRoute
+  RecursosRoute: typeof RecursosRoute
+  TerminosRoute: typeof TerminosRoute
   CCodeRoute: typeof CCodeRoute
   TSlugRoute: typeof TSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terminos': {
+      id: '/terminos'
+      path: '/terminos'
+      fullPath: '/terminos'
+      preLoaderRoute: typeof TerminosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recursos': {
+      id: '/recursos'
+      path: '/recursos'
+      fullPath: '/recursos'
+      preLoaderRoute: typeof RecursosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidad': {
+      id: '/privacidad'
+      path: '/privacidad'
+      fullPath: '/privacidad'
+      preLoaderRoute: typeof PrivacidadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/panel': {
       id: '/panel'
       path: '/panel'
@@ -359,6 +445,20 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contacto': {
+      id: '/contacto'
+      path: '/contacto'
+      fullPath: '/contacto'
+      preLoaderRoute: typeof ContactoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app': {
@@ -590,11 +690,26 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   AppRoute: AppRouteWithChildren,
+  ContactoRoute: ContactoRoute,
+  CookiesRoute: CookiesRoute,
   LoginRoute: LoginRoute,
   PanelRoute: PanelRoute,
+  PrivacidadRoute: PrivacidadRoute,
+  RecursosRoute: RecursosRoute,
+  TerminosRoute: TerminosRoute,
   CCodeRoute: CCodeRoute,
   TSlugRoute: TSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
