@@ -47,6 +47,7 @@ import {
   updateOrder,
 } from "@/lib/orders";
 import { QuoteEditor } from "@/components/app/QuoteEditor";
+import { InspectionEditor } from "@/components/app/InspectionEditor";
 import { compressImage } from "@/lib/image";
 import { formatDateTime } from "@/lib/format";
 import type { Photo, WorkOrder } from "@/types";
