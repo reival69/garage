@@ -15,6 +15,7 @@ import {
   Share2,
   Loader2,
   Trash2,
+  Receipt,
 } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { EmptyState } from "@/components/base/EmptyState";
@@ -47,9 +48,13 @@ import {
 import { QuoteEditor } from "@/components/app/QuoteEditor";
 import { InspectionEditor } from "@/components/app/InspectionEditor";
 import { CheckInEditor } from "@/components/app/CheckInEditor";
+import {
+  generateInvoiceFromOrder,
+  getInvoiceByWorkOrderId,
+} from "@/lib/invoices";
 import { compressImage } from "@/lib/image";
 import { formatDateTime } from "@/lib/format";
-import type { Photo, WorkOrder } from "@/types";
+import type { Photo, Tenant, WorkOrder } from "@/types";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/ordenes/$id")({
@@ -215,8 +220,9 @@ function OrderDetail() {
           <CheckInEditor order={order} tenant={tenant} onSaved={bump} />
         </div>
 
-        {/* Sidebar: share */}
+        {/* Sidebar: billing + share */}
         <div className="space-y-4 lg:col-span-1">
+          <BillingCard order={order} tenant={tenant} onSaved={bump} />
           <ShareCard order={order} tenantName={tenant.name} />
         </div>
       </div>
@@ -436,6 +442,69 @@ function Photos({
               </button>
             </figure>
           ))}
+        </div>
+      )}
+    </DataCard>
+  );
+}
+
+const BILLABLE_STATUSES = new Set(["aprobado", "listo", "entregado"]);
+
+function BillingCard({
+  order,
+  tenant,
+  onSaved,
+}: {
+  order: WorkOrder;
+  tenant: Tenant;
+  onSaved: () => void;
+}) {
+  const invoice = getInvoiceByWorkOrderId(tenant.id, order.id);
+  const billable = BILLABLE_STATUSES.has(order.status);
+  const approvedCount = order.items.filter(
+    (i) => i.approval === "approved",
+  ).length;
+
+  const generate = () => {
+    const created = generateInvoiceFromOrder(tenant, order);
+    if (!created) {
+      toast.error("No hay líneas aprobadas para facturar.");
+      return;
+    }
+    toast.success(`Factura ${created.number} generada`);
+    onSaved();
+  };
+
+  if (!invoice && !billable) return null;
+
+  return (
+    <DataCard title="Facturación">
+      {invoice ? (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-sm font-medium text-foreground">
+              {invoice.number}
+            </span>
+            <StatusBadge status={invoice.status} />
+          </div>
+          <Button asChild variant="outline" size="sm" className="w-full">
+            <Link to="/app/facturacion/$id" params={{ id: invoice.id }}>
+              <Receipt strokeWidth={1.5} />
+              Ver factura
+            </Link>
+          </Button>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            {approvedCount > 0
+              ? `${approvedCount} línea(s) aprobada(s) lista(s) para facturar.`
+              : "No hay líneas aprobadas todavía."}
+          </p>
+          <Button size="sm" className="w-full" onClick={generate}>
+            <Receipt strokeWidth={1.5} />
+            Generar factura
+          </Button>
         </div>
       )}
     </DataCard>

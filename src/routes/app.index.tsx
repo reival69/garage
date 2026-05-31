@@ -45,7 +45,15 @@ function AppDashboard() {
       pendingQuotes: orders.filter((o) => o.status === "presupuesto_enviado")
         .length,
       monthRevenue: invoices
-        .filter((i) => i.status === "paid")
+        .filter((i) => {
+          if (i.status !== "paid") return false;
+          const d = new Date(i.createdAt);
+          const now = new Date();
+          return (
+            d.getFullYear() === now.getFullYear() &&
+            d.getMonth() === now.getMonth()
+          );
+        })
         .reduce((s, i) => s + i.total, 0),
     });
   }, [ready, tenant]);
