@@ -43,12 +43,12 @@ import {
   changeOrderStatus,
   listMechanics,
   nextStatuses,
-  quoteTotals,
   removeOrderPhoto,
   updateOrder,
 } from "@/lib/orders";
+import { QuoteEditor } from "@/components/app/QuoteEditor";
 import { compressImage } from "@/lib/image";
-import { formatCurrencyCents, formatDateTime } from "@/lib/format";
+import { formatDateTime } from "@/lib/format";
 import type { Photo, WorkOrder } from "@/types";
 import { toast } from "sonner";
 
