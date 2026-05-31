@@ -102,7 +102,7 @@ function AppLayout() {
           )}
         </div>
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2">
-          {NAV.map((item) => {
+          {navItems.map((item) => {
             const active = item.exact
               ? pathname === item.to
               : pathname.startsWith(item.to);
@@ -152,7 +152,7 @@ function AppLayout() {
 
         {/* Mobile bottom nav */}
         <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border bg-card md:hidden">
-          {BOTTOM.map((item) => {
+          {bottomItems.map((item) => {
             const active = item.exact
               ? pathname === item.to
               : pathname.startsWith(item.to);
