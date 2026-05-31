@@ -212,13 +212,8 @@ function OrderDetail() {
           {/* Digital inspection */}
           <InspectionEditor order={order} tenant={tenant} onSaved={bump} />
 
-          {/* Placeholder */}
-          <DataCard title="Check-in de recepción">
-            <Placeholder
-              icon={ClipboardCheck}
-              text="El check-in con firma llegará en el siguiente prompt."
-            />
-          </DataCard>
+          {/* Reception check-in */}
+          <CheckInEditor order={order} tenant={tenant} onSaved={bump} />
         </div>
 
         {/* Sidebar: share */}
