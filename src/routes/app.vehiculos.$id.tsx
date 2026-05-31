@@ -278,6 +278,154 @@ function VehicleDetail() {
               </div>
             )}
           </DataCard>
+
+          {/* Maintenance reminders */}
+          <DataCard
+            title="Recordatorios"
+            bodyClassName="p-0"
+            action={
+              remindersEditable ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setEditingReminder(null);
+                    setReminderOpen(true);
+                  }}
+                >
+                  <Plus strokeWidth={1.5} />
+                  Programar
+                </Button>
+              ) : undefined
+            }
+          >
+            {reminders.length === 0 ? (
+              <p className="px-5 py-6 text-center text-sm text-muted-foreground">
+                Sin recordatorios para este vehículo.
+              </p>
+            ) : (
+              <ul className="divide-y divide-border">
+                {reminders.map((r) => {
+                  const due = isReminderDue(r, vehicle);
+                  return (
+                    <li
+                      key={r.id}
+                      className="flex items-center gap-3 px-5 py-3.5"
+                    >
+                      <span
+                        className={
+                          due
+                            ? "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[var(--destructive)] bg-[color-mix(in_srgb,var(--destructive)_12%,transparent)]"
+                            : "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground"
+                        }
+                      >
+                        <BellRing strokeWidth={1.5} className="h-4 w-4" />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                          <span className="truncate text-sm font-medium text-foreground">
+                            {r.label}
+                          </span>
+                          {r.status !== "pending" && (
+                            <span className="rounded-md bg-background-muted px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+                              {r.status === "done" ? "Hecho" : "Descartado"}
+                            </span>
+                          )}
+                          {due && (
+                            <span className="rounded-md bg-[color-mix(in_srgb,var(--destructive)_12%,transparent)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--destructive)]">
+                              Vencido
+                            </span>
+                          )}
+                        </div>
+                        <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
+                          {r.dueDate && (
+                            <span className="inline-flex items-center gap-1">
+                              <CalendarClock
+                                strokeWidth={1.5}
+                                className="h-3.5 w-3.5"
+                              />
+                              {formatDate(r.dueDate)}
+                            </span>
+                          )}
+                          {r.dueKm != null && (
+                            <span className="inline-flex items-center gap-1">
+                              <Gauge strokeWidth={1.5} className="h-3.5 w-3.5" />
+                              {r.dueKm.toLocaleString("es-ES")} km
+                            </span>
+                          )}
+                          {!r.dueDate && r.dueKm == null && (
+                            <span>Sin disparador</span>
+                          )}
+                        </div>
+                        {r.note && (
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {r.note}
+                          </p>
+                        )}
+                      </div>
+
+                      {remindersEditable && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="shrink-0"
+                            >
+                              <MoreHorizontal
+                                strokeWidth={1.5}
+                                className="h-4 w-4"
+                              />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            {r.status === "pending" && (
+                              <DropdownMenuItem onClick={() => onReminderDone(r)}>
+                                <Check strokeWidth={1.5} className="h-4 w-4" />
+                                Marcar como hecho
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setEditingReminder(r);
+                                setReminderOpen(true);
+                              }}
+                            >
+                              <Pencil strokeWidth={1.5} className="h-4 w-4" />
+                              Posponer / editar
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => notifyReminder(r)}>
+                              <MessageCircle
+                                strokeWidth={1.5}
+                                className="h-4 w-4"
+                              />
+                              Avisar al cliente
+                            </DropdownMenuItem>
+                            {r.status === "pending" && (
+                              <DropdownMenuItem
+                                onClick={() => onReminderDismiss(r)}
+                              >
+                                <BellRing strokeWidth={1.5} className="h-4 w-4" />
+                                Descartar
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem
+                              onClick={() => setReminderToDelete(r)}
+                              className="text-[var(--destructive)] focus:text-[var(--destructive)]"
+                            >
+                              <Trash2 strokeWidth={1.5} className="h-4 w-4" />
+                              Eliminar
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </DataCard>
         </div>
       </div>
 
