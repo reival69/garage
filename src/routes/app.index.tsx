@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Car, Calendar, FileText, Banknote, BellRing } from "lucide-react";
+import { Car, Calendar, FileText, Banknote, BellRing, Star } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { StatCard } from "@/components/base/StatCard";
 import { DataCard } from "@/components/base/DataCard";
