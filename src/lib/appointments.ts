@@ -11,10 +11,10 @@ import type {
 } from "@/types";
 import {
   appointmentsRepo,
-  notificationsRepo,
   servicesRepo,
   vehiclesRepo,
 } from "@/lib/db";
+import { notify } from "@/lib/notifications";
 import { createWorkOrder } from "@/lib/orders";
 
 // Linear flow of an appointment. `no_show` is an alternative terminal outcome.
