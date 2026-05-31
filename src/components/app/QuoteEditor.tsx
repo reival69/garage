@@ -244,6 +244,12 @@ function QuoteItemDialog({
   const [description, setDescription] = useState(item?.description ?? "");
   const [qty, setQty] = useState(String(item?.qty ?? 1));
   const [unitPrice, setUnitPrice] = useState(String(item?.unitPrice ?? 0));
+  const [warrantyMonths, setWarrantyMonths] = useState(
+    item?.warrantyMonths != null ? String(item.warrantyMonths) : "",
+  );
+  const [warrantyKm, setWarrantyKm] = useState(
+    item?.warrantyKm != null ? String(item.warrantyKm) : "",
+  );
 
   const onTypeChange = (v: QuoteItem["type"]) => {
     setType(v);
@@ -275,11 +281,17 @@ function QuoteItemDialog({
 
   const submit = () => {
     if (!valid) return;
+    const months = Number(warrantyMonths);
+    const km = Number(warrantyKm);
     onSubmit({
       type,
       description: description.trim(),
       qty: qtyNum,
       unitPrice: priceNum,
+      warrantyMonths:
+        warrantyMonths.trim() !== "" && months > 0 ? Math.round(months) : undefined,
+      warrantyKm:
+        warrantyKm.trim() !== "" && km > 0 ? Math.round(km) : undefined,
     });
   };
 
