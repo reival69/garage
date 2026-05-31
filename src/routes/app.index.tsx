@@ -35,6 +35,7 @@ function AppDashboard() {
     pendingQuotes: 0,
     monthRevenue: 0,
     overdueReminders: 0,
+    avgRating: 0,
   });
 
   useEffect(() => {
