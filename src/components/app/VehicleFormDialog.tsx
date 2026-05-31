@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { EntityCombobox } from "@/components/app/EntityCombobox";
 import { customersRepo, vehiclesRepo } from "@/lib/db";
+import { generateUniqueVehicleAccessCode } from "@/lib/vehicles";
 import type { Vehicle } from "@/types";
 import { toast } from "sonner";
 
@@ -124,6 +125,7 @@ export function VehicleFormDialog({
     } else {
       saved = vehiclesRepo.create(tenantId, {
         tenantId,
+        accessCode: generateUniqueVehicleAccessCode(),
         ...payload,
       } as Omit<Vehicle, "id">);
       toast.success("Vehículo creado");

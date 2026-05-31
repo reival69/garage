@@ -37,7 +37,7 @@ import { quoteTotals } from "@/lib/orders";
 
 const SEED_FLAG = "seeded";
 // Bump when the seed shape changes to force a clean reseed of the demo.
-const SEED_VERSION = "3";
+const SEED_VERSION = "4";
 
 // Tiny base64 placeholder images (kept small to respect the ~5MB quota).
 const PHOTO_A =
@@ -306,6 +306,7 @@ function seedTenant(ts: TenantSeed): void {
     vehiclesRepo.create(t, {
       tenantId: t,
       customerId: customers[v.customerIdx % customers.length].id,
+      accessCode: code6(),
       plate: v.plate,
       make: v.make,
       model: v.model,

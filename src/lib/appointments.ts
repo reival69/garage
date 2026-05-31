@@ -20,6 +20,7 @@ import {
 import { notify } from "@/lib/notifications";
 import { formatDateTime } from "@/lib/format";
 import { createWorkOrder } from "@/lib/orders";
+import { generateUniqueVehicleAccessCode } from "@/lib/vehicles";
 
 // Linear flow of an appointment. `no_show` is an alternative terminal outcome.
 export const APPOINTMENT_FLOW: AppointmentStatus[] = [
@@ -179,6 +180,7 @@ export function requestOnlineAppointment(
       const vehicle = vehiclesRepo.create(tenant.id, {
         tenantId: tenant.id,
         customerId: customer.id,
+        accessCode: generateUniqueVehicleAccessCode(),
         plate: plate.toUpperCase(),
         make: input.make?.trim() || "—",
         model: input.model?.trim() || "—",

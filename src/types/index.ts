@@ -72,6 +72,7 @@ export interface Vehicle {
   id: string;
   tenantId: string;
   customerId: string;
+  accessCode: string; // stable 6-char public code for the permanent cartilla (/v/:code)
   plate: string;
   make: string;
   model: string;

@@ -161,3 +161,51 @@ export function listAllAccessCodes(): Array<{
   }
   return result;
 }
+
+/** Find a vehicle across ALL tenants by its stable access code (cartilla /v/:code). */
+export function findVehicleByAccessCode(
+  code: string,
+): { vehicle: Vehicle; tenant: Tenant } | undefined {
+  const normalized = code.trim().toUpperCase();
+  const tenantIds = listTenantIdsWithCollection("vehicles");
+  for (const tenantId of tenantIds) {
+    const vehicle = read<Vehicle>("vehicles", tenantId).find(
+      (v) => (v.accessCode ?? "").toUpperCase() === normalized,
+    );
+    if (vehicle) {
+      const tenant = tenantsRepo.getById(vehicle.tenantId);
+      if (tenant) return { vehicle, tenant };
+    }
+  }
+  return undefined;
+}
+
+/** Collect every vehicle access code in use (for the demo control panel). */
+export function listAllVehicleAccessCodes(): Array<{
+  code: string;
+  tenantId: string;
+  tenantName: string;
+  vehicle: string;
+}> {
+  const result: Array<{
+    code: string;
+    tenantId: string;
+    tenantName: string;
+    vehicle: string;
+  }> = [];
+  const tenantIds = listTenantIdsWithCollection("vehicles");
+  for (const tenantId of tenantIds) {
+    const tenant = tenantsRepo.getById(tenantId);
+    const vehicles = read<Vehicle>("vehicles", tenantId);
+    for (const v of vehicles) {
+      if (!v.accessCode) continue;
+      result.push({
+        code: v.accessCode,
+        tenantId,
+        tenantName: tenant?.name ?? tenantId,
+        vehicle: `${v.make} ${v.model} · ${v.plate}`,
+      });
+    }
+  }
+  return result;
+}
