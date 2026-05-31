@@ -68,13 +68,11 @@ export function generateInvoiceFromOrder(
     createdAt: now,
   });
 
-  notificationsRepo.create(tenant.id, {
-    tenantId: tenant.id,
+  notify(tenant.id, {
     type: "presupuesto",
     title: "Factura generada",
     body: `${invoice.number} — ${vehicleLabel(tenant.id, order.vehicleId)}.`,
-    read: false,
-    createdAt: now,
+    link: `/app/facturacion/${invoice.id}`,
   });
 
   return invoice;
