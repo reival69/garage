@@ -50,6 +50,8 @@ export function addQuoteItem(
     qty: input.qty,
     unitPrice: input.unitPrice,
     approval: "pending",
+    warrantyMonths: input.warrantyMonths,
+    warrantyKm: input.warrantyKm,
   };
   return workOrdersRepo.update(tenantId, order.id, {
     items: [...order.items, item],
