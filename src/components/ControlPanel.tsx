@@ -196,6 +196,25 @@ export function ControlPanel() {
               ))}
             </div>
           )}
+
+          {view === "publica" && (
+            <div className="space-y-2">
+              <BackRow
+                onClick={() => setView("menu")}
+                label="Ver página pública"
+              />
+              {tenants.map((t) => (
+                <SwitchRow
+                  key={t.id}
+                  icon={ExternalLink}
+                  title={t.name}
+                  subtitle={`/t/${t.slug}`}
+                  accent={t.accentColor}
+                  onClick={() => openPublic(t.slug)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
