@@ -93,13 +93,16 @@ function AppLayout() {
     <div className="flex min-h-screen bg-background" style={accentStyle}>
       {/* Desktop sidebar */}
       <aside className="hidden w-60 shrink-0 flex-col border-r border-border bg-sidebar md:flex">
-        <div className="px-5 py-5">
-          <Logo className="text-base" logoUrl={tenant.logoUrl} />
-          {tenant && (
-            <p className="mt-1 truncate text-xs text-muted-foreground">
-              {tenant.name}
-            </p>
-          )}
+        <div className="flex items-start justify-between px-5 py-5">
+          <div className="min-w-0">
+            <Logo className="text-base" logoUrl={tenant.logoUrl} />
+            {tenant && (
+              <p className="mt-1 truncate text-xs text-muted-foreground">
+                {tenant.name}
+              </p>
+            )}
+          </div>
+          <NotificationBell variant="popover" />
         </div>
         <nav className="flex-1 space-y-1 overflow-y-auto px-3 py-2">
           {navItems.map((item) => {
