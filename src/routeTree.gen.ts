@@ -26,6 +26,7 @@ import { Route as AdminTalleresRouteImport } from './routes/admin.talleres'
 import { Route as AdminPlanesRouteImport } from './routes/admin.planes'
 import { Route as AppVehiculosIndexRouteImport } from './routes/app.vehiculos.index'
 import { Route as AppClientesIndexRouteImport } from './routes/app.clientes.index'
+import { Route as AppVehiculosIdRouteImport } from './routes/app.vehiculos.$id'
 import { Route as AppClientesIdRouteImport } from './routes/app.clientes.$id'
 
 const LoginRoute = LoginRouteImport.update({
@@ -113,6 +114,11 @@ const AppClientesIndexRoute = AppClientesIndexRouteImport.update({
   path: '/clientes/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppVehiculosIdRoute = AppVehiculosIdRouteImport.update({
+  id: '/vehiculos/$id',
+  path: '/vehiculos/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppClientesIdRoute = AppClientesIdRouteImport.update({
   id: '/clientes/$id',
   path: '/clientes/$id',
@@ -136,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
+  '/app/vehiculos/$id': typeof AppVehiculosIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
   '/app/vehiculos/': typeof AppVehiculosIndexRoute
 }
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
+  '/app/vehiculos/$id': typeof AppVehiculosIdRoute
   '/app/clientes': typeof AppClientesIndexRoute
   '/app/vehiculos': typeof AppVehiculosIndexRoute
 }
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
+  '/app/vehiculos/$id': typeof AppVehiculosIdRoute
   '/app/clientes/': typeof AppClientesIndexRoute
   '/app/vehiculos/': typeof AppVehiculosIndexRoute
 }
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/app/'
     | '/app/clientes/$id'
+    | '/app/vehiculos/$id'
     | '/app/clientes/'
     | '/app/vehiculos/'
   fileRoutesByTo: FileRoutesByTo
@@ -215,6 +225,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/app'
     | '/app/clientes/$id'
+    | '/app/vehiculos/$id'
     | '/app/clientes'
     | '/app/vehiculos'
   id:
@@ -235,6 +246,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/app/'
     | '/app/clientes/$id'
+    | '/app/vehiculos/$id'
     | '/app/clientes/'
     | '/app/vehiculos/'
   fileRoutesById: FileRoutesById
@@ -368,6 +380,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppClientesIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/vehiculos/$id': {
+      id: '/app/vehiculos/$id'
+      path: '/vehiculos/$id'
+      fullPath: '/app/vehiculos/$id'
+      preLoaderRoute: typeof AppVehiculosIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/clientes/$id': {
       id: '/app/clientes/$id'
       path: '/clientes/$id'
@@ -401,6 +420,7 @@ interface AppRouteChildren {
   AppServiciosRoute: typeof AppServiciosRoute
   AppIndexRoute: typeof AppIndexRoute
   AppClientesIdRoute: typeof AppClientesIdRoute
+  AppVehiculosIdRoute: typeof AppVehiculosIdRoute
   AppClientesIndexRoute: typeof AppClientesIndexRoute
   AppVehiculosIndexRoute: typeof AppVehiculosIndexRoute
 }
@@ -414,6 +434,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppServiciosRoute: AppServiciosRoute,
   AppIndexRoute: AppIndexRoute,
   AppClientesIdRoute: AppClientesIdRoute,
+  AppVehiculosIdRoute: AppVehiculosIdRoute,
   AppClientesIndexRoute: AppClientesIndexRoute,
   AppVehiculosIndexRoute: AppVehiculosIndexRoute,
 }
@@ -430,3 +451,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
