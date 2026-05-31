@@ -375,6 +375,28 @@ function QuoteItemDialog({
             </div>
           </div>
 
+          <div className="space-y-1.5">
+            <Label>Garantía (opcional)</Label>
+            <div className="grid grid-cols-2 gap-3">
+              <Input
+                type="number"
+                min={0}
+                step="1"
+                value={warrantyMonths}
+                onChange={(e) => setWarrantyMonths(e.target.value)}
+                placeholder="Meses"
+              />
+              <Input
+                type="number"
+                min={0}
+                step="1"
+                value={warrantyKm}
+                onChange={(e) => setWarrantyKm(e.target.value)}
+                placeholder="Kilómetros"
+              />
+            </div>
+          </div>
+
           <div className="flex items-center justify-between rounded-lg border border-border bg-background-subtle px-3 py-2 text-sm">
             <span className="text-muted-foreground">Importe</span>
             <span className="font-medium text-foreground">
