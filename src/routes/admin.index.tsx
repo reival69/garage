@@ -55,7 +55,7 @@ function AdminDashboard() {
           icon={Building2}
         />
         <StatCard
-          label="MRR (simulado)"
+          label="MRR"
           value={formatCurrency(stats.mrr)}
           hint="Ingreso mensual recurrente"
           icon={CreditCard}
