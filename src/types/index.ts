@@ -99,6 +99,8 @@ export interface QuoteItem {
   qty: number;
   unitPrice: number;
   approval: "pending" | "approved" | "rejected";
+  warrantyMonths?: number; // optional warranty in months for this line
+  warrantyKm?: number; // optional warranty in kilometres for this line
 }
 
 export interface Photo {
