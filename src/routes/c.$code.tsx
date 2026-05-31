@@ -277,6 +277,16 @@ function GuestView() {
           onChanged={load}
         />
 
+        {/* Invoice for this order (read only, printable) */}
+        <OrderInvoiceSection order={order} tenant={tenant} vehicle={vehicle} />
+
+        {/* Vehicle service history */}
+        <VehicleHistorySection
+          order={order}
+          tenant={tenant}
+          vehicle={vehicle}
+        />
+
         {/* Messages — two-way */}
         <MessagesTimeline
           messages={messages}
