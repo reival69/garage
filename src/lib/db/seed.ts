@@ -167,7 +167,23 @@ const PROBLEMS = [
   "Mantenimiento general",
 ];
 
-function seedTenant(tenant: Tenant): void {
+interface SeedOpts {
+  /** Number of customers to create. */
+  customers?: number;
+  /** Number of vehicles to create. */
+  vehicles?: number;
+  /** Pipeline (one work order per entry). */
+  pipeline?: WorkOrderStatus[];
+  /** Multiplier applied to catalog & quote prices (e.g. ~20 for MXN). */
+  priceFactor?: number;
+}
+
+function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
+  const customerCount = opts.customers ?? 6;
+  const vehicleCount = opts.vehicles ?? 7;
+  const pipeline = opts.pipeline ?? PIPELINE;
+  const f = opts.priceFactor ?? 1;
+
   tenantsRepo.create(tenant);
   const t = tenant.id;
   const locationId = tenant.locations[0].id;
