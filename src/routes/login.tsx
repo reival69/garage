@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { Building2, Shield, Smartphone } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { listAllAccessCodes, tenantsRepo, usersRepo } from "@/lib/db";
-import type { Tenant } from "@/types";
+import { usersRepo } from "@/lib/db";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -19,44 +17,20 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const { ready, login } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [tenants, setTenants] = useState<Tenant[]>([]);
-  const [firstCode, setFirstCode] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!ready) return;
-    setTenants(tenantsRepo.list());
-    const codes = listAllAccessCodes();
-    setFirstCode(codes[0]?.code ?? null);
-  }, [ready]);
-
-  // Simulated login: any credentials are accepted.
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const match = usersRepo.list().find((u) => u.email === email.trim());
-    if (match) {
+    if (match && match.role !== "superadmin") {
       login(match);
-      navigate({ to: match.role === "superadmin" ? "/admin" : "/app" });
+      navigate({ to: "/app" });
       return;
     }
     const owner = usersRepo.list().find((u) => u.role === "owner");
-    if (owner) {
-      login(owner);
-      navigate({ to: "/app" });
-    }
-  };
-
-  const enterSuperadmin = () => {
-    const admin = usersRepo.list().find((u) => u.role === "superadmin");
-    if (admin) login(admin);
-    navigate({ to: "/admin" });
-  };
-
-  const enterTenant = (tenantId: string) => {
-    const owner = usersRepo.list().find((u) => u.tenantId === tenantId);
     if (owner) login(owner);
     navigate({ to: "/app" });
   };
@@ -79,7 +53,7 @@ function LoginPage() {
               Inicia sesión
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Demo: cualquier acceso es válido.
+              Accede con tu cuenta de Talleo.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-3">
@@ -110,83 +84,8 @@ function LoginPage() {
               </Button>
             </form>
           </div>
-
-          <div className="mt-5 rounded-xl border border-border bg-card p-4">
-            <p className="px-1 pb-2 text-xs text-muted-foreground">
-              Accesos rápidos
-            </p>
-            <div className="space-y-2">
-              <QuickRow
-                icon={Shield}
-                title="Superadmin"
-                subtitle="Panel del SaaS"
-                onClick={enterSuperadmin}
-              />
-              {tenants.map((t) => (
-                <QuickRow
-                  key={t.id}
-                  icon={Building2}
-                  title={t.name}
-                  subtitle="Vista del taller"
-                  accent={t.accentColor}
-                  onClick={() => enterTenant(t.id)}
-                />
-              ))}
-              {firstCode && (
-                <QuickRow
-                  icon={Smartphone}
-                  title={`Cliente · ${firstCode}`}
-                  subtitle="Vista del cliente final"
-                  mono
-                  onClick={() =>
-                    navigate({ to: "/c/$code", params: { code: firstCode } })
-                  }
-                />
-              )}
-            </div>
-          </div>
         </div>
       </main>
     </div>
-  );
-}
-
-function QuickRow({
-  icon: Icon,
-  title,
-  subtitle,
-  onClick,
-  accent,
-  mono,
-}: {
-  icon: typeof Shield;
-  title: string;
-  subtitle: string;
-  onClick: () => void;
-  accent?: string;
-  mono?: boolean;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-xl border border-border bg-background px-3 py-2.5 text-left transition-colors hover:border-border-strong"
-    >
-      <span
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground"
-        style={accent ? { color: accent, borderColor: accent } : undefined}
-      >
-        <Icon strokeWidth={1.5} className="h-4 w-4" />
-      </span>
-      <span className="min-w-0 flex-1">
-        <span
-          className={`block truncate text-sm font-medium text-foreground ${mono ? "font-mono tracking-wider" : ""}`}
-        >
-          {title}
-        </span>
-        <span className="block truncate text-xs text-muted-foreground">
-          {subtitle}
-        </span>
-      </span>
-    </button>
   );
 }
