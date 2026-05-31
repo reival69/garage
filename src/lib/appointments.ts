@@ -5,16 +5,20 @@
 import type {
   Appointment,
   AppointmentStatus,
+  Customer,
   Service,
   Tenant,
+  Vehicle,
   WorkOrder,
 } from "@/types";
 import {
   appointmentsRepo,
+  customersRepo,
   servicesRepo,
   vehiclesRepo,
 } from "@/lib/db";
 import { notify } from "@/lib/notifications";
+import { formatDateTime } from "@/lib/format";
 import { createWorkOrder } from "@/lib/orders";
 
 // Linear flow of an appointment. `no_show` is an alternative terminal outcome.
