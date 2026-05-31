@@ -236,9 +236,35 @@ function OrderDetail() {
         {/* Sidebar: billing + share */}
         <div className="space-y-4 lg:col-span-1">
           {canBill && <BillingCard order={order} tenant={tenant} onSaved={bump} />}
+          {canScheduleReminder && (
+            <DataCard title="Mantenimiento">
+              <p className="text-sm text-muted-foreground">
+                Programa la próxima revisión de este vehículo.
+              </p>
+              <Button
+                size="sm"
+                className="mt-3 w-full"
+                onClick={() => setReminderOpen(true)}
+              >
+                <BellRing strokeWidth={1.5} />
+                Programar próxima revisión
+              </Button>
+            </DataCard>
+          )}
           <ShareCard order={order} tenantName={tenant.name} />
         </div>
       </div>
+
+      {vehicle && (
+        <ReminderFormDialog
+          open={reminderOpen}
+          onOpenChange={setReminderOpen}
+          tenantId={tenant.id}
+          vehicleId={vehicle.id}
+          customerId={order.customerId}
+          onSaved={bump}
+        />
+      )}
     </div>
   );
 }
