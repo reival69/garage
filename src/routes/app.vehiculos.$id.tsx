@@ -3,19 +3,60 @@
 
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { ArrowLeft, Pencil, Plus, User, ClipboardList } from "lucide-react";
+import {
+  ArrowLeft,
+  Pencil,
+  Plus,
+  User,
+  ClipboardList,
+  BellRing,
+  CalendarClock,
+  Gauge,
+  Check,
+  MoreHorizontal,
+  Trash2,
+  MessageCircle,
+} from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { EmptyState } from "@/components/base/EmptyState";
 import { DataCard } from "@/components/base/DataCard";
 import { StatusBadge } from "@/components/base/StatusBadge";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { VehicleFormDialog } from "@/components/app/VehicleFormDialog";
 import { OrderFormDialog } from "@/components/app/OrderFormDialog";
+import { ReminderFormDialog } from "@/components/app/ReminderFormDialog";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { customersRepo, vehiclesRepo, workOrdersRepo } from "@/lib/db";
 import { formatDate } from "@/lib/format";
 import { PHOTO_LABEL_TEXT } from "@/lib/orders";
-import type { Photo } from "@/types";
+import {
+  dismiss,
+  isReminderDue,
+  listVehicleReminders,
+  markDone,
+  removeReminder,
+  whatsappReminderUrl,
+} from "@/lib/reminders";
+import { canEdit } from "@/lib/permissions";
+import { toast } from "sonner";
+import type { Customer, MaintenanceReminder, Photo, Vehicle } from "@/types";
 
 export const Route = createFileRoute("/app/vehiculos/$id")({
   component: VehicleDetail,
