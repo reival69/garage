@@ -262,8 +262,8 @@ function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
     vehicles.push(v);
   }
 
-  // Work orders across the whole pipeline
-  PIPELINE.forEach((status, i) => {
+  // Work orders across the pipeline
+  pipeline.forEach((status, i) => {
     const v = vehicles[i % vehicles.length];
     const hasQuote =
       status !== "recibido" && status !== "diagnostico";
