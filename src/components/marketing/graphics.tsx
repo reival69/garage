@@ -1,10 +1,6 @@
 import {
   Car,
-  Wrench,
-  CheckCircle2,
-  CircleDot,
   Camera,
-  PenLine,
   ClipboardList,
   Smartphone,
   HandCoins,
