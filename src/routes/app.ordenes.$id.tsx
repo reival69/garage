@@ -208,13 +208,10 @@ function OrderDetail() {
           <QuoteEditor order={order} tenant={tenant} onSaved={bump} />
 
 
-          {/* Placeholders */}
-          <DataCard title="Inspección (DVI)">
-            <Placeholder
-              icon={ScanLine}
-              text="La inspección digital llegará en el siguiente prompt."
-            />
-          </DataCard>
+          {/* Digital inspection */}
+          <InspectionEditor order={order} tenant={tenant} onSaved={bump} />
+
+          {/* Placeholder */}
           <DataCard title="Check-in de recepción">
             <Placeholder
               icon={ClipboardCheck}
