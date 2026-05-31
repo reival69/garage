@@ -3,11 +3,10 @@
 // de daños interactivo (marcas con coordenadas relativas) y firma del cliente
 // en canvas (puntero táctil + ratón). Todo pasa por src/lib/checkin.ts.
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   ClipboardCheck,
   Trash2,
-  Eraser,
   Fuel,
   Gauge,
   Pencil,
@@ -17,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { SignaturePad } from "@/components/base/SignaturePad";
 import { vehiclesRepo } from "@/lib/db";
 import { fuelLabel, saveCheckIn, type CheckInInput } from "@/lib/checkin";
 import { formatDateTime } from "@/lib/format";
