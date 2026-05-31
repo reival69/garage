@@ -22,6 +22,7 @@ import {
   Home,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { NotificationBell } from "@/components/app/NotificationBell";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { can, moduleForPath } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
