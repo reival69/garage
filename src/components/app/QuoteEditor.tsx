@@ -32,6 +32,7 @@ import {
   removeQuoteItem,
   updateQuoteItem,
   sendQuote,
+  warrantyLabel,
   type QuoteItemInput,
 } from "@/lib/quotes";
 import { quoteTotals } from "@/lib/orders";
