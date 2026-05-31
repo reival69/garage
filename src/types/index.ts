@@ -20,6 +20,13 @@ export interface Location {
   phone?: string;
 }
 
+/** Opening hours for a single weekday (index 0 = Monday … 6 = Sunday). */
+export interface BusinessDay {
+  open: boolean;
+  from: string; // "09:00"
+  to: string; // "18:00"
+}
+
 export interface Tenant {
   id: string;
   name: string;
@@ -31,6 +38,13 @@ export interface Tenant {
   taxRate: number; // e.g. 0.21
   locations: Location[];
   createdAt: string;
+  // Configuration (set from /app/configuracion). All optional.
+  legalName?: string; // razón social — used on invoices
+  taxId?: string; // NIF / CIF / RFC — used on invoices
+  email?: string;
+  phone?: string;
+  logoUrl?: string; // base64 image; falls back to the "Talleo" wordmark
+  businessHours?: BusinessDay[]; // length 7, Monday → Sunday
 }
 
 export interface User {

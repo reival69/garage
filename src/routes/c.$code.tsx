@@ -134,15 +134,23 @@ function GuestView() {
       {/* Branding */}
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-lg items-center justify-between px-5 py-4">
-          <div className="flex items-center gap-2">
-            <span
-              className="inline-block h-2.5 w-2.5 rounded-full"
-              style={{ backgroundColor: tenant.accentColor }}
+          {tenant.logoUrl ? (
+            <img
+              src={tenant.logoUrl}
+              alt={tenant.name}
+              className="h-7 w-auto max-w-[140px] object-contain"
             />
-            <span className="text-base font-bold tracking-tight text-foreground">
-              {tenant.name}
-            </span>
-          </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span
+                className="inline-block h-2.5 w-2.5 rounded-full"
+                style={{ backgroundColor: tenant.accentColor }}
+              />
+              <span className="text-base font-bold tracking-tight text-foreground">
+                {tenant.name}
+              </span>
+            </div>
+          )}
           <span className="font-mono text-xs tracking-wider text-muted-foreground">
             {order.accessCode}
           </span>

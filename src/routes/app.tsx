@@ -80,7 +80,7 @@ function AppLayout() {
       {/* Desktop sidebar */}
       <aside className="hidden w-60 shrink-0 flex-col border-r border-border bg-sidebar md:flex">
         <div className="px-5 py-5">
-          <Logo className="text-base" />
+          <Logo className="text-base" logoUrl={tenant.logoUrl} />
           {tenant && (
             <p className="mt-1 truncate text-xs text-muted-foreground">
               {tenant.name}
@@ -124,7 +124,7 @@ function AppLayout() {
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Mobile header */}
         <header className="flex items-center justify-between border-b border-border px-4 py-3 md:hidden">
-          <Logo className="text-base" />
+          <Logo className="text-base" logoUrl={tenant.logoUrl} />
           {tenant && (
             <span className="truncate text-xs text-muted-foreground">
               {tenant.name}
