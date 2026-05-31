@@ -347,6 +347,22 @@ function ConfigPage() {
         </Section>
 
         <Section
+          title="Reseñas"
+          description="Enlace de Google que se ofrece a los clientes satisfechos (valoración alta) en su vista."
+        >
+          <Field label="Enlace de reseña de Google">
+            <Input
+              type="url"
+              value={googleReviewUrl}
+              onChange={(e) => setGoogleReviewUrl(e.target.value)}
+              placeholder="https://g.page/r/..."
+            />
+          </Field>
+        </Section>
+
+
+
+        <Section
           title="Horario de atención"
           description="Días y horas de apertura del taller."
         >
