@@ -16,6 +16,7 @@ import {
   Receipt,
   Wrench,
   BellRing,
+  Star,
   UsersRound,
   Settings,
   LogOut,
