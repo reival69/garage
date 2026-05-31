@@ -79,6 +79,13 @@ function AppLayout() {
     }
   }, [ready, user, tenant, pathname, navigate]);
 
+  // Maintenance reminders: on shop load, fire notifications for overdue
+  // reminders that haven't notified yet (once each).
+  useEffect(() => {
+    if (!ready || !tenant) return;
+    evaluateReminders(tenant.id);
+  }, [ready, tenant]);
+
   if (!ready) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background" />
