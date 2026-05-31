@@ -47,9 +47,13 @@ import {
 import { QuoteEditor } from "@/components/app/QuoteEditor";
 import { InspectionEditor } from "@/components/app/InspectionEditor";
 import { CheckInEditor } from "@/components/app/CheckInEditor";
+import {
+  generateInvoiceFromOrder,
+  getInvoiceByWorkOrderId,
+} from "@/lib/invoices";
 import { compressImage } from "@/lib/image";
 import { formatDateTime } from "@/lib/format";
-import type { Photo, WorkOrder } from "@/types";
+import type { Photo, Tenant, WorkOrder } from "@/types";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/app/ordenes/$id")({
