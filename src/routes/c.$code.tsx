@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, Car, Camera, ScanLine, FileText, AlertCircle } from "lucide-react";
+import { Check, Car, Camera, ScanLine, FileText, AlertCircle, MessageSquare } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { findWorkOrderByAccessCode, vehiclesRepo } from "@/lib/db";
+import { PHOTO_LABEL_TEXT } from "@/lib/orders";
+import { formatDateTime } from "@/lib/format";
 import type { Tenant, Vehicle, WorkOrder, WorkOrderStatus } from "@/types";
 import { cn } from "@/lib/utils";
 
