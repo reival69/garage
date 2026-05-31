@@ -16,6 +16,8 @@ import {
   ReceiptText,
   History,
   ChevronDown,
+  ShieldCheck,
+  Star,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/auth/AuthContext";
