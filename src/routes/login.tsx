@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { usersRepo } from "@/lib/db";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
