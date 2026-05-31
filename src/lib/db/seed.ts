@@ -246,7 +246,7 @@ function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
 
   // Vehicles (one or two per customer-ish, 7 total)
   const vehicles: Vehicle[] = [];
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < vehicleCount; i++) {
     const [make, model, year] = VEHICLES[i % VEHICLES.length];
     const owner_c = customers[i % customers.length];
     const v = vehiclesRepo.create(t, {
