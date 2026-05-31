@@ -15,7 +15,7 @@ import {
   servicesRepo,
   vehiclesRepo,
 } from "@/lib/db";
-import { createWorkOrder, updateOrder } from "@/lib/orders";
+import { createWorkOrder } from "@/lib/orders";
 
 // Linear flow of an appointment. `no_show` is an alternative terminal outcome.
 export const APPOINTMENT_FLOW: AppointmentStatus[] = [
