@@ -96,7 +96,7 @@ function VehicleDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, tenant, id, version]);
 
-  if (!tenant) return null;
+  if (!tenant || !user) return null;
 
   if (!data) {
     return (
@@ -110,7 +110,40 @@ function VehicleDetail() {
     );
   }
 
-  const { vehicle, customer, orders, photos } = data;
+  const { vehicle, customer, orders, photos, reminders } = data;
+  const remindersEditable = canEdit(user.role, "recordatorios");
+
+  const bump = () => {
+    setVersion((v) => v + 1);
+    router.invalidate();
+  };
+  const onReminderDone = (r: MaintenanceReminder) => {
+    markDone(tenant.id, r.id);
+    toast.success("Recordatorio marcado como hecho");
+    bump();
+  };
+  const onReminderDismiss = (r: MaintenanceReminder) => {
+    dismiss(tenant.id, r.id);
+    toast.success("Recordatorio descartado");
+    bump();
+  };
+  const confirmDeleteReminder = () => {
+    if (!reminderToDelete) return;
+    removeReminder(tenant.id, reminderToDelete.id);
+    toast.success("Recordatorio eliminado");
+    setReminderToDelete(null);
+    bump();
+  };
+  const notifyReminder = (r: MaintenanceReminder) => {
+    const url = whatsappReminderUrl({
+      phone: customer?.phone,
+      tenantName: tenant.name,
+      customerName: customer?.name,
+      vehicleLabel: `${vehicle.make} ${vehicle.model}`.trim(),
+      label: r.label,
+    });
+    window.open(url, "_blank");
+  };
 
   const specs: Array<[string, string]> = [
     ["Marca", vehicle.make || "—"],
