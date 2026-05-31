@@ -19,7 +19,7 @@ import { formatCurrencyCents, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Customer, Invoice, Vehicle } from "@/types";
 
-export const Route = createFileRoute("/app/facturacion/")({
+export const Route = createFileRoute("/app/facturacion")({
   component: InvoicesPage,
 });
 
