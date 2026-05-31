@@ -70,6 +70,7 @@ function OrderDetail() {
   const { id } = Route.useParams();
   const { ready, user, tenant } = useAuth();
   const [version, setVersion] = useState(0);
+  const [reminderOpen, setReminderOpen] = useState(false);
   const bump = () => setVersion((v) => v + 1);
 
   const order = useMemo(() => {
