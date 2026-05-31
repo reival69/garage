@@ -338,8 +338,16 @@ function AppointmentCard({
             {formatTime(appt.scheduledAt)}
           </span>
         </div>
-        <StatusBadge status={appt.status} />
+        <div className="flex items-center gap-2">
+          {appt.source === "online" && (
+            <span className="rounded-md border border-border bg-background-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+              Online
+            </span>
+          )}
+          <StatusBadge status={appt.status} />
+        </div>
       </div>
+
 
       <div className="mt-2 space-y-0.5">
         <p className="font-medium text-foreground">
