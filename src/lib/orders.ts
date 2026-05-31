@@ -70,6 +70,21 @@ export function nextStatuses(current: WorkOrderStatus): WorkOrderStatus[] {
   return out;
 }
 
+/**
+ * All work orders for a vehicle in a tenant, most recent first. Used by the
+ * customer view to show the vehicle's service history.
+ */
+export function listOrdersByVehicleId(
+  tenantId: string,
+  vehicleId: string,
+): WorkOrder[] {
+  return workOrdersRepo
+    .list(tenantId)
+    .filter((o) => o.vehicleId === vehicleId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+
 // Auto messages pushed to the customer timeline on certain status changes.
 const STATUS_CUSTOMER_MESSAGE: Partial<Record<WorkOrderStatus, string>> = {
   diagnostico: "Estamos diagnosticando tu vehículo.",
