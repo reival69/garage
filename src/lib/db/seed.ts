@@ -231,7 +231,7 @@ function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
 
   // Customers
   const customers: Customer[] = [];
-  const count = 6;
+  const count = customerCount;
   for (let i = 0; i < count; i++) {
     const name = `${FIRST_NAMES[i % FIRST_NAMES.length]} ${LAST_NAMES[i % LAST_NAMES.length]}`;
     const c = customersRepo.create(t, {
