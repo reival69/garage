@@ -181,6 +181,8 @@ export interface Appointment {
   status: AppointmentStatus;
   source: "manual" | "online";
   notes?: string;
+  // Set when the car is received and a work order is created from this appointment.
+  workOrderId?: string;
 }
 
 export interface Service {
