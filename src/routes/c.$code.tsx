@@ -207,11 +207,11 @@ function GuestView() {
         <PlaceholderSection
           icon={FileText}
           title="Presupuesto"
-          body="Podrás ver y aprobar el presupuesto próximamente."
+          body="Aquí podrás ver y aprobar el presupuesto de tu reparación."
         />
 
         <p className="pt-2 text-center text-xs text-muted-foreground">
-          <Logo showMark={false} className="text-xs font-semibold" /> · Demo local
+          <Logo showMark={false} className="text-xs font-semibold" />
         </p>
       </main>
     </div>

@@ -78,12 +78,12 @@ function AppDashboard() {
       <div className="mt-8 grid gap-4 lg:grid-cols-2">
         <DataCard title="Actividad reciente">
           <p className="text-sm text-muted-foreground">
-            Próximamente: últimas órdenes y movimientos del taller.
+            No hay actividad reciente todavía.
           </p>
         </DataCard>
         <DataCard title="Agenda de hoy">
           <p className="text-sm text-muted-foreground">
-            Próximamente: citas y entregas previstas para hoy.
+            No tienes citas ni entregas previstas para hoy.
           </p>
         </DataCard>
       </div>
