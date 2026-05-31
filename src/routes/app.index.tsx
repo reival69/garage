@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Car, Calendar, FileText, Banknote } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { StatCard } from "@/components/base/StatCard";
@@ -58,11 +58,13 @@ function AppDashboard() {
       />
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard label="Coches en taller" value={stats.inShop} icon={Car} />
-        <StatCard
-          label="Citas de hoy"
-          value={stats.todayAppointments}
-          icon={Calendar}
-        />
+        <Link to="/app/citas" className="rounded-xl">
+          <StatCard
+            label="Citas de hoy"
+            value={stats.todayAppointments}
+            icon={Calendar}
+          />
+        </Link>
         <StatCard
           label="Presupuestos pendientes"
           value={stats.pendingQuotes}
