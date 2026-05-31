@@ -36,7 +36,7 @@ import {
   changeAppointmentStatus,
   createOrderFromAppointment,
   formatDuration,
-  listServiceNames,
+  listServiceLabels,
   nextAppointmentStatuses,
 } from "@/lib/appointments";
 import { formatTime } from "@/lib/format";
@@ -118,7 +118,7 @@ function CitasPage() {
         appt,
         customer: appt.customerId ? cById.get(appt.customerId) : undefined,
         vehicle: appt.vehicleId ? vById.get(appt.vehicleId) : undefined,
-        services: listServiceNames(tenant.id, appt.serviceIds),
+        services: listServiceLabels(tenant.id, appt.serviceIds),
         duration: appointmentDuration(tenant.id, appt.serviceIds),
       }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
