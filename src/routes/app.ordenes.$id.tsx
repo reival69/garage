@@ -87,7 +87,6 @@ function OrderDetail() {
   const customer = customersRepo.getById(tenant.id, order.customerId);
   const mechanics = listMechanics(tenant.id);
   const transitions = nextStatuses(order.status);
-  const totals = quoteTotals(order.items, tenant.taxRate);
 
   const move = (next: string) => {
     changeOrderStatus(tenant, order, next as WorkOrder["status"]);
