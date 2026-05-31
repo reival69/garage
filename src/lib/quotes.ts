@@ -207,13 +207,11 @@ export function confirmQuoteApproval(
       updatedAt: now,
     }) ?? updated;
 
-  notificationsRepo.create(tenant.id, {
-    tenantId: tenant.id,
+  notify(tenant.id, {
     type: "presupuesto",
     title: "Decisión del cliente",
     body: `${vehicleLabel(tenant.id, updated.vehicleId)} — ${text}`,
-    read: false,
-    createdAt: now,
+    link: `/app/ordenes/${updated.id}`,
   });
 
   return updated;
