@@ -112,6 +112,9 @@ function ConfigPage() {
   );
   const [accentColor, setAccentColor] = useState(tenant?.accentColor ?? "#101010");
   const [logoUrl, setLogoUrl] = useState<string | undefined>(tenant?.logoUrl);
+  const [googleReviewUrl, setGoogleReviewUrl] = useState(
+    tenant?.googleReviewUrl ?? "",
+  );
   const [hours, setHours] = useState<BusinessDay[]>(
     tenant?.businessHours && tenant.businessHours.length === 7
       ? tenant.businessHours
