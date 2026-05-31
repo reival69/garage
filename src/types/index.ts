@@ -222,12 +222,23 @@ export interface Part {
 export interface AppNotification {
   id: string;
   tenantId: string;
-  type: "cita" | "presupuesto" | "estado" | "recordatorio";
+  type: "cita" | "presupuesto" | "estado" | "recordatorio" | "resena";
   title: string;
   body: string;
   read: boolean;
   createdAt: string;
   link?: string; // destination route, e.g. "/app/ordenes/abc"
+}
+
+export interface Review {
+  id: string;
+  tenantId: string;
+  orderId: string;
+  customerId: string;
+  vehicleId: string;
+  rating: number; // 1–5
+  comment?: string;
+  createdAt: string;
 }
 
 export interface MaintenanceReminder {
