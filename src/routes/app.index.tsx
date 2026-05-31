@@ -178,7 +178,7 @@ function AppDashboard() {
                   <li key={n.id}>
                     {n.link ? (
                       <Link
-                        to={n.link}
+                        to={n.link as "/app"}
                         className="block rounded-lg transition-colors hover:bg-background-muted"
                       >
                         {row}
