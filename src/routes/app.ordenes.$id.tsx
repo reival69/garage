@@ -448,7 +448,70 @@ function Photos({
   );
 }
 
-function ShareCard({
+const BILLABLE_STATUSES = new Set(["aprobado", "listo", "entregado"]);
+
+function BillingCard({
+  order,
+  tenant,
+  onSaved,
+}: {
+  order: WorkOrder;
+  tenant: Tenant;
+  onSaved: () => void;
+}) {
+  const invoice = getInvoiceByWorkOrderId(tenant.id, order.id);
+  const billable = BILLABLE_STATUSES.has(order.status);
+  const approvedCount = order.items.filter(
+    (i) => i.approval === "approved",
+  ).length;
+
+  const generate = () => {
+    const created = generateInvoiceFromOrder(tenant, order);
+    if (!created) {
+      toast.error("No hay líneas aprobadas para facturar.");
+      return;
+    }
+    toast.success(`Factura ${created.number} generada`);
+    onSaved();
+  };
+
+  if (!invoice && !billable) return null;
+
+  return (
+    <DataCard title="Facturación">
+      {invoice ? (
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-sm font-medium text-foreground">
+              {invoice.number}
+            </span>
+            <StatusBadge status={invoice.status} />
+          </div>
+          <Button asChild variant="outline" size="sm" className="w-full">
+            <Link to="/app/facturacion/$id" params={{ id: invoice.id }}>
+              <Receipt strokeWidth={1.5} />
+              Ver factura
+            </Link>
+          </Button>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            {approvedCount > 0
+              ? `${approvedCount} línea(s) aprobada(s) lista(s) para facturar.`
+              : "No hay líneas aprobadas todavía."}
+          </p>
+          <Button size="sm" className="w-full" onClick={generate}>
+            <Receipt strokeWidth={1.5} />
+            Generar factura
+          </Button>
+        </div>
+      )}
+    </DataCard>
+  );
+}
+
+
   order,
   tenantName,
 }: {
