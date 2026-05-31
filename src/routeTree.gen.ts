@@ -15,6 +15,15 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AppVehiculosRouteImport } from './routes/app.vehiculos'
+import { Route as AppServiciosRouteImport } from './routes/app.servicios'
+import { Route as AppPresupuestosRouteImport } from './routes/app.presupuestos'
+import { Route as AppOrdenesRouteImport } from './routes/app.ordenes'
+import { Route as AppFacturacionRouteImport } from './routes/app.facturacion'
+import { Route as AppEquipoRouteImport } from './routes/app.equipo'
+import { Route as AppConfiguracionRouteImport } from './routes/app.configuracion'
+import { Route as AppClientesRouteImport } from './routes/app.clientes'
+import { Route as AppCitasRouteImport } from './routes/app.citas'
 import { Route as AdminTalleresRouteImport } from './routes/admin.talleres'
 import { Route as AdminPlanesRouteImport } from './routes/admin.planes'
 
@@ -48,6 +57,51 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AppVehiculosRoute = AppVehiculosRouteImport.update({
+  id: '/vehiculos',
+  path: '/vehiculos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppServiciosRoute = AppServiciosRouteImport.update({
+  id: '/servicios',
+  path: '/servicios',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPresupuestosRoute = AppPresupuestosRouteImport.update({
+  id: '/presupuestos',
+  path: '/presupuestos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOrdenesRoute = AppOrdenesRouteImport.update({
+  id: '/ordenes',
+  path: '/ordenes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppFacturacionRoute = AppFacturacionRouteImport.update({
+  id: '/facturacion',
+  path: '/facturacion',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEquipoRoute = AppEquipoRouteImport.update({
+  id: '/equipo',
+  path: '/equipo',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppConfiguracionRoute = AppConfiguracionRouteImport.update({
+  id: '/configuracion',
+  path: '/configuracion',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppClientesRoute = AppClientesRouteImport.update({
+  id: '/clientes',
+  path: '/clientes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCitasRoute = AppCitasRouteImport.update({
+  id: '/citas',
+  path: '/citas',
+  getParentRoute: () => AppRoute,
+} as any)
 const AdminTalleresRoute = AdminTalleresRouteImport.update({
   id: '/talleres',
   path: '/talleres',
@@ -66,6 +120,15 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/talleres': typeof AdminTalleresRoute
+  '/app/citas': typeof AppCitasRoute
+  '/app/clientes': typeof AppClientesRoute
+  '/app/configuracion': typeof AppConfiguracionRoute
+  '/app/equipo': typeof AppEquipoRoute
+  '/app/facturacion': typeof AppFacturacionRoute
+  '/app/ordenes': typeof AppOrdenesRoute
+  '/app/presupuestos': typeof AppPresupuestosRoute
+  '/app/servicios': typeof AppServiciosRoute
+  '/app/vehiculos': typeof AppVehiculosRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
 }
@@ -74,6 +137,15 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/talleres': typeof AdminTalleresRoute
+  '/app/citas': typeof AppCitasRoute
+  '/app/clientes': typeof AppClientesRoute
+  '/app/configuracion': typeof AppConfiguracionRoute
+  '/app/equipo': typeof AppEquipoRoute
+  '/app/facturacion': typeof AppFacturacionRoute
+  '/app/ordenes': typeof AppOrdenesRoute
+  '/app/presupuestos': typeof AppPresupuestosRoute
+  '/app/servicios': typeof AppServiciosRoute
+  '/app/vehiculos': typeof AppVehiculosRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
 }
@@ -85,6 +157,15 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/talleres': typeof AdminTalleresRoute
+  '/app/citas': typeof AppCitasRoute
+  '/app/clientes': typeof AppClientesRoute
+  '/app/configuracion': typeof AppConfiguracionRoute
+  '/app/equipo': typeof AppEquipoRoute
+  '/app/facturacion': typeof AppFacturacionRoute
+  '/app/ordenes': typeof AppOrdenesRoute
+  '/app/presupuestos': typeof AppPresupuestosRoute
+  '/app/servicios': typeof AppServiciosRoute
+  '/app/vehiculos': typeof AppVehiculosRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
 }
@@ -97,10 +178,34 @@ export interface FileRouteTypes {
     | '/login'
     | '/admin/planes'
     | '/admin/talleres'
+    | '/app/citas'
+    | '/app/clientes'
+    | '/app/configuracion'
+    | '/app/equipo'
+    | '/app/facturacion'
+    | '/app/ordenes'
+    | '/app/presupuestos'
+    | '/app/servicios'
+    | '/app/vehiculos'
     | '/admin/'
     | '/app/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/admin/planes' | '/admin/talleres' | '/admin' | '/app'
+  to:
+    | '/'
+    | '/login'
+    | '/admin/planes'
+    | '/admin/talleres'
+    | '/app/citas'
+    | '/app/clientes'
+    | '/app/configuracion'
+    | '/app/equipo'
+    | '/app/facturacion'
+    | '/app/ordenes'
+    | '/app/presupuestos'
+    | '/app/servicios'
+    | '/app/vehiculos'
+    | '/admin'
+    | '/app'
   id:
     | '__root__'
     | '/'
@@ -109,6 +214,15 @@ export interface FileRouteTypes {
     | '/login'
     | '/admin/planes'
     | '/admin/talleres'
+    | '/app/citas'
+    | '/app/clientes'
+    | '/app/configuracion'
+    | '/app/equipo'
+    | '/app/facturacion'
+    | '/app/ordenes'
+    | '/app/presupuestos'
+    | '/app/servicios'
+    | '/app/vehiculos'
     | '/admin/'
     | '/app/'
   fileRoutesById: FileRoutesById
@@ -164,6 +278,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/app/vehiculos': {
+      id: '/app/vehiculos'
+      path: '/vehiculos'
+      fullPath: '/app/vehiculos'
+      preLoaderRoute: typeof AppVehiculosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/servicios': {
+      id: '/app/servicios'
+      path: '/servicios'
+      fullPath: '/app/servicios'
+      preLoaderRoute: typeof AppServiciosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/presupuestos': {
+      id: '/app/presupuestos'
+      path: '/presupuestos'
+      fullPath: '/app/presupuestos'
+      preLoaderRoute: typeof AppPresupuestosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/ordenes': {
+      id: '/app/ordenes'
+      path: '/ordenes'
+      fullPath: '/app/ordenes'
+      preLoaderRoute: typeof AppOrdenesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/facturacion': {
+      id: '/app/facturacion'
+      path: '/facturacion'
+      fullPath: '/app/facturacion'
+      preLoaderRoute: typeof AppFacturacionRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/equipo': {
+      id: '/app/equipo'
+      path: '/equipo'
+      fullPath: '/app/equipo'
+      preLoaderRoute: typeof AppEquipoRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/configuracion': {
+      id: '/app/configuracion'
+      path: '/configuracion'
+      fullPath: '/app/configuracion'
+      preLoaderRoute: typeof AppConfiguracionRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/clientes': {
+      id: '/app/clientes'
+      path: '/clientes'
+      fullPath: '/app/clientes'
+      preLoaderRoute: typeof AppClientesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/citas': {
+      id: '/app/citas'
+      path: '/citas'
+      fullPath: '/app/citas'
+      preLoaderRoute: typeof AppCitasRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/admin/talleres': {
       id: '/admin/talleres'
       path: '/talleres'
@@ -196,10 +373,28 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface AppRouteChildren {
+  AppCitasRoute: typeof AppCitasRoute
+  AppClientesRoute: typeof AppClientesRoute
+  AppConfiguracionRoute: typeof AppConfiguracionRoute
+  AppEquipoRoute: typeof AppEquipoRoute
+  AppFacturacionRoute: typeof AppFacturacionRoute
+  AppOrdenesRoute: typeof AppOrdenesRoute
+  AppPresupuestosRoute: typeof AppPresupuestosRoute
+  AppServiciosRoute: typeof AppServiciosRoute
+  AppVehiculosRoute: typeof AppVehiculosRoute
   AppIndexRoute: typeof AppIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppCitasRoute: AppCitasRoute,
+  AppClientesRoute: AppClientesRoute,
+  AppConfiguracionRoute: AppConfiguracionRoute,
+  AppEquipoRoute: AppEquipoRoute,
+  AppFacturacionRoute: AppFacturacionRoute,
+  AppOrdenesRoute: AppOrdenesRoute,
+  AppPresupuestosRoute: AppPresupuestosRoute,
+  AppServiciosRoute: AppServiciosRoute,
+  AppVehiculosRoute: AppVehiculosRoute,
   AppIndexRoute: AppIndexRoute,
 }
 
