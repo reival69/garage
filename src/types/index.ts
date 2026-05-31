@@ -224,4 +224,5 @@ export interface AppNotification {
   body: string;
   read: boolean;
   createdAt: string;
+  link?: string; // destination route, e.g. "/app/ordenes/abc"
 }
