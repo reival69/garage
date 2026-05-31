@@ -54,6 +54,7 @@ import {
 } from "@/lib/invoices";
 import { compressImage } from "@/lib/image";
 import { formatDateTime } from "@/lib/format";
+import { can } from "@/lib/permissions";
 import type { Photo, Tenant, WorkOrder } from "@/types";
 import { toast } from "sonner";
 
