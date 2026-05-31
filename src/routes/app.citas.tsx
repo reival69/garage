@@ -7,7 +7,7 @@ export const Route = createFileRoute("/app/citas")({
   component: () => (
     <div>
       <PageHeader title="Citas" description="Agenda y reservas del taller." />
-      <EmptyState icon={Calendar} title="Próximamente" description="La gestión de citas llegará en el siguiente prompt." />
+      <EmptyState icon={Calendar} title="No hay citas" description="No tienes citas programadas." />
     </div>
   ),
 });

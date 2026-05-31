@@ -7,7 +7,7 @@ export const Route = createFileRoute("/app/facturacion")({
   component: () => (
     <div>
       <PageHeader title="Facturación" description="Facturas del taller." />
-      <EmptyState icon={Receipt} title="Próximamente" description="La facturación llegará en el siguiente prompt." />
+      <EmptyState icon={Receipt} title="No hay facturas" description="Todavía no se ha emitido ninguna factura." />
     </div>
   ),
 });
