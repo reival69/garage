@@ -228,7 +228,7 @@ function OrderDetail() {
 
         {/* Sidebar: billing + share */}
         <div className="space-y-4 lg:col-span-1">
-          <BillingCard order={order} tenant={tenant} onSaved={bump} />
+          {canBill && <BillingCard order={order} tenant={tenant} onSaved={bump} />}
           <ShareCard order={order} tenantName={tenant.name} />
         </div>
       </div>
