@@ -7,6 +7,7 @@
 import type { Customer, Invoice, Location, Tenant, Vehicle } from "@/types";
 import { StatusBadge } from "@/components/base/StatusBadge";
 import { INVOICE_STATUS_LABELS } from "@/lib/invoices";
+import { warrantyLabel } from "@/lib/quotes";
 import { formatCurrencyCents, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
