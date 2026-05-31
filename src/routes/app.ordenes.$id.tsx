@@ -98,6 +98,10 @@ function OrderDetail() {
   const transitions = nextStatuses(order.status);
   const canQuote = can(user.role, "presupuestos");
   const canBill = can(user.role, "facturacion");
+  const canScheduleReminder =
+    order.status === "entregado" &&
+    !!vehicle &&
+    canEdit(user.role, "recordatorios");
 
   const move = (next: string) => {
     changeOrderStatus(tenant, order, next as WorkOrder["status"]);
