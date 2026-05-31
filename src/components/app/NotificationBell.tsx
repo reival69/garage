@@ -12,6 +12,7 @@ import {
   FileText,
   Activity,
   BellRing,
+  Star,
   CheckCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,7 @@ const TYPE_ICON: Record<AppNotification["type"], typeof Bell> = {
   presupuesto: FileText,
   estado: Activity,
   recordatorio: BellRing,
+  resena: Star,
 };
 
 interface NotificationBellProps {
