@@ -50,7 +50,6 @@ import {
   printInvoiceDocument,
 } from "@/components/InvoiceDocument";
 import type {
-  Customer,
   InspectionItem,
   Invoice,
   Photo,
