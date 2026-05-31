@@ -76,7 +76,7 @@ function OrderDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready, tenant, id, version]);
 
-  if (!tenant) return null;
+  if (!tenant || !user) return null;
   if (!order) {
     return (
       <div>
