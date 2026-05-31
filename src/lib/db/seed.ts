@@ -392,7 +392,10 @@ function seedTenant(tenant: Tenant, opts: SeedOpts = {}): void {
 
 export function seedIfEmpty(): void {
   if (typeof window === "undefined") return;
-  if (readRaw(SEED_FLAG) === "1") return;
+  // Version-aware: when the seed shape changes we wipe & reseed so the demo
+  // always reflects the latest data (e.g. the third MXN shop).
+  if (readRaw(SEED_FLAG) === SEED_VERSION) return;
+  clearAll();
   doSeed();
 }
 
@@ -407,6 +410,7 @@ function doSeed(): void {
     role: "superadmin",
   } as Omit<User, "id">);
 
+  // García — Spain (EUR), Pro plan.
   seedTenant({
     id: "tnt_garcia",
     name: "Taller García",
@@ -428,12 +432,13 @@ function doSeed(): void {
     createdAt: hoursAgo(24 * 60),
   });
 
+  // AutoNorte — Spain (EUR), Básico plan.
   seedTenant({
     id: "tnt_autonorte",
     name: "AutoNorte",
     slug: "autonorte",
     accentColor: "#0F766E",
-    planId: "plan_premium",
+    planId: "plan_basico",
     status: "active",
     currency: "EUR",
     taxRate: 0.21,
@@ -449,7 +454,44 @@ function doSeed(): void {
     createdAt: hoursAgo(24 * 90),
   });
 
-  writeRaw(SEED_FLAG, "1");
+  // Taller Reyes — México (MXN, IVA 16%), Premium plan. Lighter seed and
+  // prices scaled (~x20) so the quotes read as credible pesos.
+  seedTenant(
+    {
+      id: "tnt_reyes",
+      name: "Taller Reyes",
+      slug: "reyes",
+      accentColor: "#B45309",
+      planId: "plan_premium",
+      status: "active",
+      currency: "MXN",
+      taxRate: 0.16,
+      locations: [
+        {
+          id: "loc_reyes_1",
+          tenantId: "tnt_reyes",
+          name: "Ciudad de México",
+          address: "Av. Insurgentes Sur 1234, CDMX",
+          phone: "55 1234 5678",
+        },
+      ],
+      createdAt: hoursAgo(24 * 30),
+    },
+    {
+      customers: 4,
+      vehicles: 5,
+      pipeline: [
+        "recibido",
+        "presupuesto_enviado",
+        "aprobado",
+        "en_reparacion",
+        "entregado",
+      ],
+      priceFactor: 20,
+    },
+  );
+
+  writeRaw(SEED_FLAG, SEED_VERSION);
 }
 
 export function resetDemo(): void {
