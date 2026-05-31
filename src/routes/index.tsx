@@ -73,10 +73,8 @@ function Landing() {
                   Acceder <ArrowRight strokeWidth={1.5} />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline">
-                <a href="#pedir-cita">Pedir cita</a>
-              </Button>
             </div>
+
           </div>
         </section>
 
