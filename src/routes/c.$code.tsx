@@ -12,16 +12,26 @@ import {
   MessageSquare,
   Send,
   PenLine,
+  Printer,
+  ReceiptText,
+  History,
+  ChevronDown,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { findWorkOrderByAccessCode, vehiclesRepo } from "@/lib/db";
-import { PHOTO_LABEL_TEXT, addCustomerMessage, quoteTotals } from "@/lib/orders";
+import { customersRepo, findWorkOrderByAccessCode, vehiclesRepo } from "@/lib/db";
+import {
+  PHOTO_LABEL_TEXT,
+  addCustomerMessage,
+  listOrdersByVehicleId,
+  quoteTotals,
+} from "@/lib/orders";
 import {
   approvedTotals,
   confirmQuoteApproval,
   type ApprovalDecision,
 } from "@/lib/quotes";
+import { getInvoiceByWorkOrderId } from "@/lib/invoices";
 import { inspectionSummary } from "@/lib/inspection";
 import { formatCurrencyCents, formatDate, formatDateTime } from "@/lib/format";
 import {
@@ -34,8 +44,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { SignaturePad } from "@/components/base/SignaturePad";
+import { StatusBadge } from "@/components/base/StatusBadge";
+import {
+  InvoiceDocument,
+  printInvoiceDocument,
+} from "@/components/InvoiceDocument";
 import type {
   InspectionItem,
+  Invoice,
   Photo,
   QuoteItem,
   Tenant,
@@ -258,6 +274,16 @@ function GuestView() {
           tenant={tenant}
           accent={tenant.accentColor}
           onChanged={load}
+        />
+
+        {/* Invoice for this order (read only, printable) */}
+        <OrderInvoiceSection order={order} tenant={tenant} vehicle={vehicle} />
+
+        {/* Vehicle service history */}
+        <VehicleHistorySection
+          order={order}
+          tenant={tenant}
+          vehicle={vehicle}
         />
 
         {/* Messages — two-way */}
@@ -839,5 +865,251 @@ function MessagesTimeline({
         </Button>
       </div>
     </section>
+  );
+}
+
+/* ----------------------------- Invoice (this order) ----------------------------- */
+
+function OrderInvoiceSection({
+  order,
+  tenant,
+  vehicle,
+}: {
+  order: WorkOrder;
+  tenant: Tenant;
+  vehicle?: Vehicle;
+}) {
+  const invoice = getInvoiceByWorkOrderId(tenant.id, order.id);
+  // No invoice yet → hide the section entirely.
+  if (!invoice) return null;
+
+  const customer = customersRepo.getById(tenant.id, order.customerId);
+  const location =
+    tenant.locations.find((l) => l.id === order.locationId) ??
+    tenant.locations[0];
+
+  return (
+    <section className="rounded-xl border border-border bg-card p-5">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <ReceiptText strokeWidth={1.5} className="h-4 w-4" />
+          <h2 className="text-sm font-semibold text-foreground">Factura</h2>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => printInvoiceDocument("invoice-customer")}
+        >
+          <Printer strokeWidth={1.5} />
+          Imprimir / PDF
+        </Button>
+      </div>
+
+      <div className="mt-4">
+        <InvoiceDocument
+          invoice={invoice}
+          tenant={tenant}
+          customer={customer}
+          vehicle={vehicle}
+          location={location}
+          printId="invoice-customer"
+        />
+      </div>
+    </section>
+  );
+}
+
+/* ----------------------------- Vehicle history ----------------------------- */
+
+function VehicleHistorySection({
+  order,
+  tenant,
+  vehicle,
+}: {
+  order: WorkOrder;
+  tenant: Tenant;
+  vehicle?: Vehicle;
+}) {
+  // Other orders for this vehicle (most recent first), excluding the current one.
+  const history = vehicle
+    ? listOrdersByVehicleId(tenant.id, vehicle.id).filter(
+        (o) => o.id !== order.id,
+      )
+    : [];
+
+  return (
+    <section className="rounded-xl border border-border bg-card p-5">
+      <div className="flex items-center gap-2 text-muted-foreground">
+        <History strokeWidth={1.5} className="h-4 w-4" />
+        <h2 className="text-sm font-semibold text-foreground">
+          Historial del vehículo
+        </h2>
+      </div>
+
+      {history.length === 0 ? (
+        <p className="mt-1.5 text-sm text-muted-foreground">
+          Esta es la primera visita registrada de este vehículo.
+        </p>
+      ) : (
+        <ul className="mt-4 space-y-2">
+          {history.map((o) => (
+            <HistoryItem key={o.id} order={o} tenant={tenant} vehicle={vehicle} />
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function HistoryItem({
+  order,
+  tenant,
+  vehicle,
+}: {
+  order: WorkOrder;
+  tenant: Tenant;
+  vehicle?: Vehicle;
+}) {
+  const [open, setOpen] = useState(false);
+  const [invoiceOpen, setInvoiceOpen] = useState(false);
+  const invoice = getInvoiceByWorkOrderId(tenant.id, order.id);
+
+  return (
+    <li className="rounded-lg border border-border">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex w-full items-center gap-3 p-3 text-left"
+      >
+        <ChevronDown
+          strokeWidth={1.5}
+          className={cn(
+            "h-4 w-4 shrink-0 text-muted-foreground transition-transform",
+            open && "rotate-180",
+          )}
+        />
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-medium text-foreground">
+            {order.problemDescription || "Visita al taller"}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            {formatDate(order.createdAt)}
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {invoice && (
+            <span className="text-sm font-medium text-foreground">
+              {formatCurrencyCents(invoice.total, tenant.currency)}
+            </span>
+          )}
+          <StatusBadge status={order.status} />
+        </div>
+      </button>
+
+      {open && (
+        <div className="border-t border-border p-3">
+          {order.items.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Sin líneas de presupuesto registradas.
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {order.items.map((it) => (
+                <div
+                  key={it.id}
+                  className="flex items-start justify-between gap-3 text-sm"
+                >
+                  <span className="min-w-0 text-foreground">
+                    {it.description}
+                    <span className="ml-2 text-xs text-muted-foreground">
+                      {it.qty} ×{" "}
+                      {formatCurrencyCents(it.unitPrice, tenant.currency)}
+                    </span>
+                  </span>
+                  <span className="shrink-0 font-medium text-foreground">
+                    {formatCurrencyCents(
+                      it.qty * it.unitPrice,
+                      tenant.currency,
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {invoice && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-3"
+              onClick={() => setInvoiceOpen(true)}
+            >
+              <ReceiptText strokeWidth={1.5} />
+              Ver / Imprimir factura
+            </Button>
+          )}
+        </div>
+      )}
+
+      {invoice && (
+        <HistoryInvoiceDialog
+          open={invoiceOpen}
+          onClose={() => setInvoiceOpen(false)}
+          invoice={invoice}
+          order={order}
+          tenant={tenant}
+          vehicle={vehicle}
+        />
+      )}
+    </li>
+  );
+}
+
+function HistoryInvoiceDialog({
+  open,
+  onClose,
+  invoice,
+  order,
+  tenant,
+  vehicle,
+}: {
+  open: boolean;
+  onClose: () => void;
+  invoice: Invoice;
+  order: WorkOrder;
+  tenant: Tenant;
+  vehicle?: Vehicle;
+}) {
+  const customer = customersRepo.getById(tenant.id, order.customerId);
+  const location =
+    tenant.locations.find((l) => l.id === order.locationId) ??
+    tenant.locations[0];
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
+      <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center justify-between gap-3">
+            <span>Factura {invoice.number}</span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => printInvoiceDocument("invoice-history")}
+            >
+              <Printer strokeWidth={1.5} />
+              Imprimir / PDF
+            </Button>
+          </DialogTitle>
+        </DialogHeader>
+        <InvoiceDocument
+          invoice={invoice}
+          tenant={tenant}
+          customer={customer}
+          vehicle={vehicle}
+          location={location}
+          printId="invoice-history"
+        />
+      </DialogContent>
+    </Dialog>
   );
 }
