@@ -25,12 +25,18 @@ function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const match = usersRepo.list().find((u) => u.email === email.trim());
+    if (match && match.active === false) {
+      toast.error("Esta cuenta está desactivada. Contacta con el taller.");
+      return;
+    }
     if (match && match.role !== "superadmin") {
       login(match);
       navigate({ to: "/app" });
       return;
     }
-    const owner = usersRepo.list().find((u) => u.role === "owner");
+    const owner = usersRepo
+      .list()
+      .find((u) => u.role === "owner" && u.active !== false);
     if (owner) login(owner);
     navigate({ to: "/app" });
   };
