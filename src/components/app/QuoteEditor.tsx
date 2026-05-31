@@ -4,7 +4,7 @@
 // presupuesto al cliente (simulado). Todo pasa por src/lib/quotes.ts.
 
 import { useMemo, useState } from "react";
-import { Plus, Pencil, Trash2, Send } from "lucide-react";
+import { Plus, Pencil, Trash2, Send, ShieldCheck } from "lucide-react";
 import { DataCard } from "@/components/base/DataCard";
 import { StatusBadge } from "@/components/base/StatusBadge";
 import { Button } from "@/components/ui/button";
@@ -32,6 +32,7 @@ import {
   removeQuoteItem,
   updateQuoteItem,
   sendQuote,
+  warrantyLabel,
   type QuoteItemInput,
 } from "@/lib/quotes";
 import { quoteTotals } from "@/lib/orders";
@@ -131,6 +132,12 @@ export function QuoteEditor({
                 <p className="text-xs text-muted-foreground">
                   {it.qty} × {formatCurrencyCents(it.unitPrice, tenant.currency)}
                 </p>
+                {warrantyLabel(it) && (
+                  <p className="mt-1 inline-flex items-center gap-1 rounded-md bg-background-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                    <ShieldCheck strokeWidth={1.5} className="h-3 w-3" />
+                    Garantía: {warrantyLabel(it)}
+                  </p>
+                )}
               </div>
               <div className="flex items-center justify-between gap-3 sm:justify-end">
                 <span className="text-sm font-medium text-foreground">
@@ -237,6 +244,12 @@ function QuoteItemDialog({
   const [description, setDescription] = useState(item?.description ?? "");
   const [qty, setQty] = useState(String(item?.qty ?? 1));
   const [unitPrice, setUnitPrice] = useState(String(item?.unitPrice ?? 0));
+  const [warrantyMonths, setWarrantyMonths] = useState(
+    item?.warrantyMonths != null ? String(item.warrantyMonths) : "",
+  );
+  const [warrantyKm, setWarrantyKm] = useState(
+    item?.warrantyKm != null ? String(item.warrantyKm) : "",
+  );
 
   const onTypeChange = (v: QuoteItem["type"]) => {
     setType(v);
@@ -268,11 +281,17 @@ function QuoteItemDialog({
 
   const submit = () => {
     if (!valid) return;
+    const months = Number(warrantyMonths);
+    const km = Number(warrantyKm);
     onSubmit({
       type,
       description: description.trim(),
       qty: qtyNum,
       unitPrice: priceNum,
+      warrantyMonths:
+        warrantyMonths.trim() !== "" && months > 0 ? Math.round(months) : undefined,
+      warrantyKm:
+        warrantyKm.trim() !== "" && km > 0 ? Math.round(km) : undefined,
     });
   };
 
@@ -352,6 +371,28 @@ function QuoteItemDialog({
                 step="0.01"
                 value={unitPrice}
                 onChange={(e) => setUnitPrice(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <Label>Garantía (opcional)</Label>
+            <div className="grid grid-cols-2 gap-3">
+              <Input
+                type="number"
+                min={0}
+                step="1"
+                value={warrantyMonths}
+                onChange={(e) => setWarrantyMonths(e.target.value)}
+                placeholder="Meses"
+              />
+              <Input
+                type="number"
+                min={0}
+                step="1"
+                value={warrantyKm}
+                onChange={(e) => setWarrantyKm(e.target.value)}
+                placeholder="Kilómetros"
               />
             </div>
           </div>

@@ -45,6 +45,7 @@ export interface Tenant {
   phone?: string;
   logoUrl?: string; // base64 image; falls back to the "Talleo" wordmark
   businessHours?: BusinessDay[]; // length 7, Monday → Sunday
+  googleReviewUrl?: string; // public Google review link offered to happy customers
 }
 
 export interface User {
@@ -98,6 +99,8 @@ export interface QuoteItem {
   qty: number;
   unitPrice: number;
   approval: "pending" | "approved" | "rejected";
+  warrantyMonths?: number; // optional warranty in months for this line
+  warrantyKm?: number; // optional warranty in kilometres for this line
 }
 
 export interface Photo {
@@ -219,12 +222,23 @@ export interface Part {
 export interface AppNotification {
   id: string;
   tenantId: string;
-  type: "cita" | "presupuesto" | "estado" | "recordatorio";
+  type: "cita" | "presupuesto" | "estado" | "recordatorio" | "resena";
   title: string;
   body: string;
   read: boolean;
   createdAt: string;
   link?: string; // destination route, e.g. "/app/ordenes/abc"
+}
+
+export interface Review {
+  id: string;
+  tenantId: string;
+  orderId: string;
+  customerId: string;
+  vehicleId: string;
+  rating: number; // 1–5
+  comment?: string;
+  createdAt: string;
 }
 
 export interface MaintenanceReminder {

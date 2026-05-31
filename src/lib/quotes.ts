@@ -18,11 +18,30 @@ export interface QuoteItemInput {
   description: string;
   qty: number;
   unitPrice: number;
+  warrantyMonths?: number;
+  warrantyKm?: number;
 }
 
 /** Per-line amount = qty × unitPrice. */
 export function lineAmount(item: Pick<QuoteItem, "qty" | "unitPrice">): number {
   return item.qty * item.unitPrice;
+}
+
+/**
+ * Human-readable warranty label for a line, e.g. "12 meses / 20.000 km".
+ * Returns undefined when the line carries no warranty.
+ */
+export function warrantyLabel(
+  item: Pick<QuoteItem, "warrantyMonths" | "warrantyKm">,
+): string | undefined {
+  const parts: string[] = [];
+  if (item.warrantyMonths != null && item.warrantyMonths > 0) {
+    parts.push(`${item.warrantyMonths} ${item.warrantyMonths === 1 ? "mes" : "meses"}`);
+  }
+  if (item.warrantyKm != null && item.warrantyKm > 0) {
+    parts.push(`${item.warrantyKm.toLocaleString("es-ES")} km`);
+  }
+  return parts.length ? parts.join(" / ") : undefined;
 }
 
 /** Count of lines by approval state. */
@@ -48,6 +67,8 @@ export function addQuoteItem(
     qty: input.qty,
     unitPrice: input.unitPrice,
     approval: "pending",
+    warrantyMonths: input.warrantyMonths,
+    warrantyKm: input.warrantyKm,
   };
   return workOrdersRepo.update(tenantId, order.id, {
     items: [...order.items, item],

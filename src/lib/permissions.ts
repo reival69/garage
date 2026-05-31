@@ -14,6 +14,7 @@ export type AppModule =
   | "facturacion"
   | "servicios"
   | "recordatorios"
+  | "resenas"
   | "equipo"
   | "configuracion";
 
@@ -31,6 +32,7 @@ const ACCESS: Record<Role, AppModule[] | "all"> = {
     "facturacion",
     "servicios",
     "recordatorios",
+    "resenas",
   ],
   mechanic: ["dashboard", "ordenes", "citas", "clientes", "vehiculos", "recordatorios"],
 };
@@ -66,6 +68,7 @@ export function moduleForPath(pathname: string): AppModule | null {
   if (p.startsWith("/app/facturacion")) return "facturacion";
   if (p.startsWith("/app/servicios")) return "servicios";
   if (p.startsWith("/app/recordatorios")) return "recordatorios";
+  if (p.startsWith("/app/resenas")) return "resenas";
   if (p.startsWith("/app/equipo")) return "equipo";
   if (p.startsWith("/app/configuracion")) return "configuracion";
   return null;
