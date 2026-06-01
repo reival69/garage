@@ -20,6 +20,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { PublicLoading } from "@/components/PublicLoading";
 import { VehicleHistory } from "@/components/VehicleHistory";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { findVehicleByAccessCode } from "@/lib/db";
