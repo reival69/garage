@@ -68,6 +68,16 @@ export interface Customer {
   createdAt: string;
 }
 
+export type FuelType =
+  | "gasolina"
+  | "diesel"
+  | "electrico"
+  | "hibrido"
+  | "glp"
+  | "otro";
+
+export type Transmission = "manual" | "automatico";
+
 export interface Vehicle {
   id: string;
   tenantId: string;
@@ -81,6 +91,14 @@ export interface Vehicle {
   vin?: string;
   color?: string;
   notes?: string;
+  // Extended technical sheet (all optional).
+  fuelType?: FuelType;
+  transmission?: Transmission;
+  displacementCc?: number; // engine displacement in cc
+  powerHp?: number; // power in horsepower
+  // Vehicle-level photo gallery, independent from work-order photos.
+  photos?: Photo[];
+  coverPhotoId?: string; // id of the photo shown as the cartilla cover
 }
 
 export type WorkOrderStatus =

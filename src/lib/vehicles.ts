@@ -3,10 +3,33 @@
 // "vigent warranty" computation. All access goes through the repos; everything
 // is local & simulated.
 
-import type { QuoteItem, Tenant, Vehicle, WorkOrder } from "@/types";
-import { listAllVehicleAccessCodes, vehiclesRepo } from "@/lib/db";
+import type {
+  FuelType,
+  Photo,
+  QuoteItem,
+  Tenant,
+  Transmission,
+  Vehicle,
+  WorkOrder,
+} from "@/types";
+import { listAllVehicleAccessCodes, uid, vehiclesRepo } from "@/lib/db";
 import { getInvoiceByWorkOrderId } from "@/lib/invoices";
 import { warrantyLabel } from "@/lib/quotes";
+
+/** Human labels for the extended technical sheet. */
+export const FUEL_TYPE_LABELS: Record<FuelType, string> = {
+  gasolina: "Gasolina",
+  diesel: "Diésel",
+  electrico: "Eléctrico",
+  hibrido: "Híbrido",
+  glp: "GLP",
+  otro: "Otro",
+};
+
+export const TRANSMISSION_LABELS: Record<Transmission, string> = {
+  manual: "Manual",
+  automatico: "Automático",
+};
 
 function code6(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -153,4 +176,160 @@ export function listActiveWarranties(
 /** Look up the latest odometer reading for display convenience. */
 export function vehicleById(tenantId: string, id: string): Vehicle | undefined {
   return vehiclesRepo.getById(tenantId, id);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Vehicle photo gallery (vehicle-level, independent from order photos).      */
+/* -------------------------------------------------------------------------- */
+
+/** Append a compressed photo to the vehicle's own gallery. */
+export function addVehiclePhoto(
+  tenantId: string,
+  vehicle: Vehicle,
+  photo: { url: string; label: Photo["label"]; note?: string },
+): Vehicle | undefined {
+  const next: Photo = {
+    id: uid("vph"),
+    url: photo.url,
+    label: photo.label,
+    note: photo.note,
+    createdAt: new Date().toISOString(),
+  };
+  const photos = [...(vehicle.photos ?? []), next];
+  // First photo automatically becomes the cover.
+  const coverPhotoId = vehicle.coverPhotoId ?? next.id;
+  return vehiclesRepo.update(tenantId, vehicle.id, { photos, coverPhotoId });
+}
+
+/** Remove a photo from the vehicle gallery, fixing the cover if needed. */
+export function removeVehiclePhoto(
+  tenantId: string,
+  vehicle: Vehicle,
+  photoId: string,
+): Vehicle | undefined {
+  const photos = (vehicle.photos ?? []).filter((p) => p.id !== photoId);
+  let coverPhotoId = vehicle.coverPhotoId;
+  if (coverPhotoId === photoId) coverPhotoId = photos[0]?.id;
+  return vehiclesRepo.update(tenantId, vehicle.id, { photos, coverPhotoId });
+}
+
+/** Mark a gallery photo as the cartilla cover. */
+export function setVehicleCoverPhoto(
+  tenantId: string,
+  vehicle: Vehicle,
+  photoId: string,
+): Vehicle | undefined {
+  return vehiclesRepo.update(tenantId, vehicle.id, { coverPhotoId: photoId });
+}
+
+/** The cover photo object, if set and still present. */
+export function coverPhoto(vehicle: Vehicle): Photo | undefined {
+  const photos = vehicle.photos ?? [];
+  return photos.find((p) => p.id === vehicle.coverPhotoId) ?? photos[0];
+}
+
+/** Gallery photos excluding the cover (shown as the rest of the gallery). */
+export function galleryPhotos(vehicle: Vehicle): Photo[] {
+  const cover = coverPhoto(vehicle);
+  return (vehicle.photos ?? []).filter((p) => p.id !== cover?.id);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Accumulated spend across the vehicle's invoices.                           */
+/* -------------------------------------------------------------------------- */
+
+export interface VehicleSpend {
+  /** Total invested (sum of invoice line items, currency units). */
+  total: number;
+  /** Split between labor and parts. */
+  byType: { labor: number; part: number };
+  /** Totals grouped by calendar year, oldest first. */
+  byYear: Array<{ year: number; total: number }>;
+}
+
+/**
+ * Aggregate everything the customer has spent on a vehicle, derived from the
+ * invoices generated for its delivered orders. Uses line items so the
+ * labour/parts and per-year breakdowns add up to the same total.
+ */
+export function computeVehicleSpend(
+  tenantId: string,
+  orders: WorkOrder[],
+): VehicleSpend {
+  let labor = 0;
+  let part = 0;
+  const yearMap = new Map<number, number>();
+
+  for (const order of orders) {
+    const invoice = getInvoiceByWorkOrderId(tenantId, order.id);
+    if (!invoice) continue;
+    const year = new Date(invoice.createdAt).getFullYear();
+    for (const item of invoice.items) {
+      const amount = item.qty * item.unitPrice;
+      if (item.type === "labor") labor += amount;
+      else part += amount;
+      yearMap.set(year, (yearMap.get(year) ?? 0) + amount);
+    }
+  }
+
+  const byYear = [...yearMap.entries()]
+    .map(([year, total]) => ({ year, total }))
+    .sort((a, b) => a.year - b.year);
+
+  return { total: labor + part, byType: { labor, part }, byYear };
+}
+
+/* -------------------------------------------------------------------------- */
+/* Odometer (km) history.                                                     */
+/* -------------------------------------------------------------------------- */
+
+export interface KmPoint {
+  date: string; // ISO
+  km: number;
+}
+
+export interface KmHistory {
+  points: KmPoint[];
+  /** Km driven between the first and last point. */
+  delta: number;
+  /** Whole months spanned by the series (>= 0). */
+  months: number;
+}
+
+/**
+ * Build an odometer series from the check-in readings of the vehicle's orders
+ * plus its current km, sorted oldest first and de-duplicated by reading.
+ */
+export function buildKmHistory(
+  vehicle: Vehicle,
+  orders: WorkOrder[],
+): KmHistory {
+  const raw: KmPoint[] = [];
+  for (const order of orders) {
+    if (order.checkIn?.km != null) {
+      raw.push({ date: order.checkIn.createdAt, km: order.checkIn.km });
+    }
+  }
+  raw.push({ date: new Date().toISOString(), km: vehicle.km });
+
+  raw.sort((a, b) => a.date.localeCompare(b.date));
+
+  // Collapse consecutive duplicate km readings, keeping the earliest date.
+  const points: KmPoint[] = [];
+  for (const p of raw) {
+    const last = points[points.length - 1];
+    if (last && last.km === p.km) continue;
+    points.push(p);
+  }
+
+  const first = points[0];
+  const last = points[points.length - 1];
+  const delta = first && last ? Math.max(0, last.km - first.km) : 0;
+  let months = 0;
+  if (first && last) {
+    const ms = new Date(last.date).getTime() - new Date(first.date).getTime();
+    months = Math.max(0, Math.round(ms / (1000 * 60 * 60 * 24 * 30)));
+  }
+
+  return { points, delta, months };
 }

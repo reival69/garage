@@ -37,7 +37,7 @@ import { quoteTotals } from "@/lib/orders";
 
 const SEED_FLAG = "seeded";
 // Bump when the seed shape changes to force a clean reseed of the demo.
-const SEED_VERSION = "5";
+const SEED_VERSION = "6";
 
 // Tiny base64 placeholder images (kept small to respect the ~5MB quota).
 const PHOTO_A =
@@ -49,6 +49,17 @@ const PHOTO_B =
   "data:image/svg+xml;base64," +
   btoaSafe(
     `<svg xmlns='http://www.w3.org/2000/svg' width='160' height='120'><rect width='100%' height='100%' fill='#d4d4d8'/><text x='50%' y='52%' font-family='sans-serif' font-size='14' fill='#52525b' text-anchor='middle'>Detalle</text></svg>`,
+  );
+// Vehicle-level cover/gallery placeholders (replaced by real photos later).
+const PHOTO_COVER =
+  "data:image/svg+xml;base64," +
+  btoaSafe(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='320' height='180'><rect width='100%' height='100%' fill='#cbd5e1'/><text x='50%' y='52%' font-family='sans-serif' font-size='18' fill='#475569' text-anchor='middle'>Portada</text></svg>`,
+  );
+const PHOTO_GALLERY =
+  "data:image/svg+xml;base64," +
+  btoaSafe(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><rect width='100%' height='100%' fill='#e2e8f0'/><text x='50%' y='52%' font-family='sans-serif' font-size='14' fill='#64748b' text-anchor='middle'>Foto</text></svg>`,
   );
 // Tiny placeholder "signature" (a small scribble) kept as light base64.
 const SIGNATURE =
@@ -302,8 +313,14 @@ function seedTenant(ts: TenantSeed): void {
   );
 
   // Vehicles
-  const vehicles: Vehicle[] = ts.vehicles.map((v) =>
-    vehiclesRepo.create(t, {
+  const FUELS = ["gasolina", "diesel", "hibrido", "gasolina", "diesel", "glp"] as const;
+  const TRANS = ["manual", "automatico", "manual", "automatico"] as const;
+  const CCS = [1598, 1968, 1497, 1995, 999, 1796];
+  const HPS = [115, 150, 130, 190, 95, 140];
+  const vehicles: Vehicle[] = ts.vehicles.map((v, vi) => {
+    const coverId = uid("vph");
+    const galId = uid("vph");
+    return vehiclesRepo.create(t, {
       tenantId: t,
       customerId: customers[v.customerIdx % customers.length].id,
       accessCode: code6(),
@@ -313,14 +330,29 @@ function seedTenant(ts: TenantSeed): void {
       year: v.year,
       km: v.km,
       color: v.color,
-    } as Omit<Vehicle, "id">),
-  );
+      fuelType: FUELS[vi % FUELS.length],
+      transmission: TRANS[vi % TRANS.length],
+      displacementCc: CCS[vi % CCS.length],
+      powerHp: HPS[vi % HPS.length],
+      coverPhotoId: coverId,
+      photos: [
+        { id: coverId, url: PHOTO_COVER, label: "detalle", createdAt: daysAgo(60 + vi) },
+        { id: galId, url: PHOTO_GALLERY, label: "detalle", createdAt: daysAgo(50 + vi) },
+      ],
+    } as Omit<Vehicle, "id">);
+  });
 
   // Work orders
   ts.orders.forEach((spec, i) => {
     const v = vehicles[spec.vehicleIdx % vehicles.length];
     const items = buildItems(spec.lines, spec.status, f);
     const decided = quoteApproved(spec.status);
+    // Delivered orders are spread across past months/years so the km trend and
+    // the per-year spend breakdown show history; active orders stay recent.
+    const delivered = spec.status === "entregado";
+    const ageDays = delivered ? 120 + i * 95 : 0;
+    const baseIso = delivered ? daysAgo(ageDays) : hoursAgo(50 - i * 2);
+    const checkInIso = delivered ? daysAgo(ageDays) : hoursAgo(47 - i);
 
     const order = workOrdersRepo.create(t, {
       tenantId: t,
@@ -345,7 +377,7 @@ function seedTenant(ts: TenantSeed): void {
               ? [{ x: 0.32, y: 0.45, note: "Rayón en puerta delantera" }]
               : [],
             customerSignature: SIGNATURE,
-            createdAt: hoursAgo(47 - i),
+            createdAt: checkInIso,
           }
         : undefined,
       inspection: spec.inspection

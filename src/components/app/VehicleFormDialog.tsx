@@ -14,10 +14,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { EntityCombobox } from "@/components/app/EntityCombobox";
 import { customersRepo, vehiclesRepo } from "@/lib/db";
-import { generateUniqueVehicleAccessCode } from "@/lib/vehicles";
-import type { Vehicle } from "@/types";
+import {
+  FUEL_TYPE_LABELS,
+  TRANSMISSION_LABELS,
+  generateUniqueVehicleAccessCode,
+} from "@/lib/vehicles";
+import type { FuelType, Transmission, Vehicle } from "@/types";
 import { toast } from "sonner";
 
 interface VehicleFormDialogProps {
@@ -39,8 +50,14 @@ interface FormState {
   km: string;
   vin: string;
   color: string;
+  fuelType: string;
+  transmission: string;
+  displacementCc: string;
+  powerHp: string;
   notes: string;
 }
+
+const NONE = "none";
 
 const EMPTY: FormState = {
   customerId: "",
@@ -51,6 +68,10 @@ const EMPTY: FormState = {
   km: "",
   vin: "",
   color: "",
+  fuelType: "",
+  transmission: "",
+  displacementCc: "",
+  powerHp: "",
   notes: "",
 };
 
@@ -85,6 +106,11 @@ export function VehicleFormDialog({
         km: String(vehicle.km ?? ""),
         vin: vehicle.vin ?? "",
         color: vehicle.color ?? "",
+        fuelType: vehicle.fuelType ?? "",
+        transmission: vehicle.transmission ?? "",
+        displacementCc:
+          vehicle.displacementCc != null ? String(vehicle.displacementCc) : "",
+        powerHp: vehicle.powerHp != null ? String(vehicle.powerHp) : "",
         notes: vehicle.notes ?? "",
       });
     } else {
@@ -115,6 +141,10 @@ export function VehicleFormDialog({
       km: Number(form.km) || 0,
       vin: form.vin.trim() || undefined,
       color: form.color.trim() || undefined,
+      fuelType: (form.fuelType || undefined) as FuelType | undefined,
+      transmission: (form.transmission || undefined) as Transmission | undefined,
+      displacementCc: Number(form.displacementCc) || undefined,
+      powerHp: Number(form.powerHp) || undefined,
       notes: form.notes.trim() || undefined,
     };
 
@@ -261,6 +291,70 @@ export function VehicleFormDialog({
               placeholder="Número de bastidor (opcional)"
               maxLength={30}
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label>Combustible</Label>
+              <Select
+                value={form.fuelType || NONE}
+                onValueChange={(v) => set("fuelType", v === NONE ? "" : v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sin especificar" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE}>Sin especificar</SelectItem>
+                  {Object.entries(FUEL_TYPE_LABELS).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Transmisión</Label>
+              <Select
+                value={form.transmission || NONE}
+                onValueChange={(v) => set("transmission", v === NONE ? "" : v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sin especificar" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE}>Sin especificar</SelectItem>
+                  {Object.entries(TRANSMISSION_LABELS).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="v-cc">Cilindrada (cc)</Label>
+              <Input
+                id="v-cc"
+                type="number"
+                value={form.displacementCc}
+                onChange={(e) => set("displacementCc", e.target.value)}
+                placeholder="1600"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="v-hp">Potencia (CV)</Label>
+              <Input
+                id="v-hp"
+                type="number"
+                value={form.powerHp}
+                onChange={(e) => set("powerHp", e.target.value)}
+                placeholder="115"
+              />
+            </div>
           </div>
 
           <div className="space-y-1.5">

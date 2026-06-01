@@ -42,6 +42,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { VehicleFormDialog } from "@/components/app/VehicleFormDialog";
+import { VehiclePhotosCard } from "@/components/app/VehiclePhotosCard";
 import { OrderFormDialog } from "@/components/app/OrderFormDialog";
 import { ReminderFormDialog } from "@/components/app/ReminderFormDialog";
 import { useAuth } from "@/lib/auth/AuthContext";
@@ -57,7 +58,12 @@ import {
   whatsappReminderUrl,
 } from "@/lib/reminders";
 import { canEdit } from "@/lib/permissions";
-import { cartillaUrl, whatsappCartillaUrl } from "@/lib/vehicles";
+import {
+  FUEL_TYPE_LABELS,
+  TRANSMISSION_LABELS,
+  cartillaUrl,
+  whatsappCartillaUrl,
+} from "@/lib/vehicles";
 import { toast } from "sonner";
 import type { MaintenanceReminder, Photo } from "@/types";
 
@@ -174,6 +180,16 @@ function VehicleDetail() {
     ["Kilómetros", vehicle.km ? `${vehicle.km.toLocaleString("es-ES")} km` : "—"],
     ["Color", vehicle.color ?? "—"],
     ["VIN", vehicle.vin ?? "—"],
+    ["Combustible", vehicle.fuelType ? FUEL_TYPE_LABELS[vehicle.fuelType] : "—"],
+    [
+      "Transmisión",
+      vehicle.transmission ? TRANSMISSION_LABELS[vehicle.transmission] : "—",
+    ],
+    [
+      "Cilindrada",
+      vehicle.displacementCc ? `${vehicle.displacementCc} cc` : "—",
+    ],
+    ["Potencia", vehicle.powerHp ? `${vehicle.powerHp} CV` : "—"],
   ];
 
   return (
@@ -291,8 +307,15 @@ function VehicleDetail() {
             )}
           </DataCard>
 
-          {/* Photo gallery */}
-          <DataCard title={`Galería de fotos (${photos.length})`}>
+          {/* Vehicle-level photos (cover + own gallery) */}
+          <VehiclePhotosCard
+            tenantId={tenant.id}
+            vehicle={vehicle}
+            onSaved={bump}
+          />
+
+          {/* Photos collected from the work orders */}
+          <DataCard title={`Fotos por orden (${photos.length})`}>
             {photos.length === 0 ? (
               <p className="py-6 text-center text-sm text-muted-foreground">
                 Aún no hay fotos de este vehículo.
