@@ -151,6 +151,13 @@ function ConfigPage() {
       ? tenant.businessHours
       : defaultHours(),
   );
+  const [enabledModules, setEnabledModules] = useState<
+    Partial<Record<string, boolean>>
+  >(() => {
+    const init: Partial<Record<string, boolean>> = {};
+    for (const m of TOGGLEABLE_MODULES) init[m] = isModuleEnabled(tenant, m);
+    return init;
+  });
   const [saving, setSaving] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
