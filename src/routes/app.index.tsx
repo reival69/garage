@@ -60,6 +60,7 @@ function AppDashboard() {
     monthRevenue: 0,
     overdueReminders: 0,
     avgRating: 0,
+    lowStock: 0,
   });
   const [agenda, setAgenda] = useState<Appointment[]>([]);
   const [activity, setActivity] = useState<AppNotification[]>([]);
@@ -87,6 +88,7 @@ function AppDashboard() {
         .reduce((s, i) => s + i.total, 0),
       overdueReminders: dueReminders(tenant.id).length,
       avgRating: averageRating(tenant.id),
+      lowStock: lowStockCount(tenant.id),
     });
     setAgenda(
       appts
@@ -147,6 +149,13 @@ function AppDashboard() {
             label="Valoración media"
             value={stats.avgRating > 0 ? `${stats.avgRating.toFixed(1)} / 5` : "—"}
             icon={Star}
+          />
+        </Link>
+        <Link to="/app/stock" className="rounded-xl">
+          <StatCard
+            label="Repuestos bajo stock"
+            value={stats.lowStock}
+            icon={Boxes}
           />
         </Link>
       </div>
