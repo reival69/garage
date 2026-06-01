@@ -13,18 +13,34 @@ import {
   ExternalLink,
   Gauge,
   History,
+  Images,
   ShieldCheck,
+  TrendingUp,
+  Wallet,
+  Wrench,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { VehicleHistory } from "@/components/VehicleHistory";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { findVehicleByAccessCode } from "@/lib/db";
 import { listOrdersByVehicleId } from "@/lib/orders";
+import { PHOTO_LABEL_TEXT } from "@/lib/orders";
 import { listVehicleReminders } from "@/lib/reminders";
-import { findActiveOrder, listActiveWarranties } from "@/lib/vehicles";
+import {
+  FUEL_TYPE_LABELS,
+  TRANSMISSION_LABELS,
+  buildKmHistory,
+  computeVehicleSpend,
+  coverPhoto,
+  findActiveOrder,
+  galleryPhotos,
+  listActiveWarranties,
+  type KmHistory,
+  type VehicleSpend,
+} from "@/lib/vehicles";
 import { StatusBadge } from "@/components/base/StatusBadge";
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/format";
+import { formatCurrency, formatDate } from "@/lib/format";
 import type {
   MaintenanceReminder,
   Tenant,
