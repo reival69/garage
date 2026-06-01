@@ -353,6 +353,8 @@ function seedTenant(ts: TenantSeed): void {
     const ageDays = delivered ? 120 + i * 95 : 0;
     const baseIso = delivered ? daysAgo(ageDays) : hoursAgo(50 - i * 2);
     const checkInIso = delivered ? daysAgo(ageDays) : hoursAgo(47 - i);
+    // Delivery/invoice happen a few days after intake for delivered orders.
+    const deliveredIso = delivered ? daysAgo(Math.max(ageDays - 3, 0)) : hoursAgo(2 + i);
 
     const order = workOrdersRepo.create(t, {
       tenantId: t,
@@ -413,8 +415,8 @@ function seedTenant(ts: TenantSeed): void {
         ? { signature: SIGNATURE, decidedAt: hoursAgo(30 - i) }
         : undefined,
       estimatedReadyAt: daysFromNow((i % 3) + 1, 18),
-      createdAt: hoursAgo(50 - i * 2),
-      updatedAt: hoursAgo(2 + i),
+      createdAt: baseIso,
+      updatedAt: deliveredIso,
     } as Omit<WorkOrder, "id">);
 
     // Invoice for delivered orders (mix of paid/pending).
@@ -431,7 +433,7 @@ function seedTenant(ts: TenantSeed): void {
           tax,
           total,
           status: spec.invoiceStatus,
-          createdAt: hoursAgo(24 - i),
+          createdAt: deliveredIso,
         } as Omit<Invoice, "id">);
       }
     }
