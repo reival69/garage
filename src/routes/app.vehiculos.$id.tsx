@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { VehicleFormDialog } from "@/components/app/VehicleFormDialog";
 import { VehiclePhotosCard } from "@/components/app/VehiclePhotosCard";
+import { VehicleDocumentsCard } from "@/components/app/VehicleDocumentsCard";
 import { OrderFormDialog } from "@/components/app/OrderFormDialog";
 import { ReminderFormDialog } from "@/components/app/ReminderFormDialog";
 import { useAuth } from "@/lib/auth/AuthContext";
