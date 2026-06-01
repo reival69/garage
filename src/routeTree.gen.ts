@@ -124,6 +124,11 @@ const AppStockRoute = AppStockRouteImport.update({
   path: '/stock',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMensajesRoute = AppMensajesRouteImport.update({
+  id: '/mensajes',
+  path: '/mensajes',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppServiciosRoute = AppServiciosRouteImport.update({
   id: '/servicios',
   path: '/servicios',
