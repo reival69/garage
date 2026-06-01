@@ -12,7 +12,7 @@ interface LogoProps {
 const LONG_PRESS_MS = 1000;
 
 /** Talleo wordmark — Plus Jakarta Sans 700, monochrome. */
-export function Logo({ className, showMark = true, logoUrl }: LogoProps) {
+export function Logo({ className, logoUrl }: LogoProps) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const start = () => {
