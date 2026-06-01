@@ -113,6 +113,20 @@ function CartillaView() {
     (r) => r.status === "pending",
   );
   const warranties = listActiveWarranties(tenant.id, vehicle, orders);
+  const cover = coverPhoto(vehicle);
+  const gallery = galleryPhotos(vehicle);
+  const spend = computeVehicleSpend(tenant.id, orders);
+  const kmHistory = buildKmHistory(vehicle, orders);
+  const techSpecs: Array<[string, string]> = [];
+  if (vehicle.vin) techSpecs.push(["VIN", vehicle.vin]);
+  if (vehicle.color) techSpecs.push(["Color", vehicle.color]);
+  if (vehicle.fuelType)
+    techSpecs.push(["Combustible", FUEL_TYPE_LABELS[vehicle.fuelType]]);
+  if (vehicle.transmission)
+    techSpecs.push(["Transmisión", TRANSMISSION_LABELS[vehicle.transmission]]);
+  if (vehicle.displacementCc)
+    techSpecs.push(["Cilindrada", `${vehicle.displacementCc} cc`]);
+  if (vehicle.powerHp) techSpecs.push(["Potencia", `${vehicle.powerHp} CV`]);
 
   return (
     <div
