@@ -50,6 +50,17 @@ const PHOTO_B =
   btoaSafe(
     `<svg xmlns='http://www.w3.org/2000/svg' width='160' height='120'><rect width='100%' height='100%' fill='#d4d4d8'/><text x='50%' y='52%' font-family='sans-serif' font-size='14' fill='#52525b' text-anchor='middle'>Detalle</text></svg>`,
   );
+// Vehicle-level cover/gallery placeholders (replaced by real photos later).
+const PHOTO_COVER =
+  "data:image/svg+xml;base64," +
+  btoaSafe(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='320' height='180'><rect width='100%' height='100%' fill='#cbd5e1'/><text x='50%' y='52%' font-family='sans-serif' font-size='18' fill='#475569' text-anchor='middle'>Portada</text></svg>`,
+  );
+const PHOTO_GALLERY =
+  "data:image/svg+xml;base64," +
+  btoaSafe(
+    `<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><rect width='100%' height='100%' fill='#e2e8f0'/><text x='50%' y='52%' font-family='sans-serif' font-size='14' fill='#64748b' text-anchor='middle'>Foto</text></svg>`,
+  );
 // Tiny placeholder "signature" (a small scribble) kept as light base64.
 const SIGNATURE =
   "data:image/svg+xml;base64," +
