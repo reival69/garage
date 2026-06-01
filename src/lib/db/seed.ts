@@ -542,7 +542,7 @@ function seedTenant(ts: TenantSeed): void {
     });
   }
 
-
+  // Appointments — today and upcoming, including online bookings.
   const appts: Array<[number, number, Appointment["status"], "online" | "manual"]> = [
     [0, 9, "confirmada", "online"],
     [0, 12, "programada", "manual"],
