@@ -60,6 +60,58 @@ export function canEdit(role: Role, module: AppModule): boolean {
   return !(ro?.includes(module) ?? false);
 }
 
+// ----------------------------------------------------------------------------
+// Per-shop module toggles. The owner can turn optional modules on/off from
+// Configuración. Core modules are always active and never toggleable.
+// `reserva_online` is not an /app route — it gates the public booking wizard
+// on /t/:slug — but it lives here so all module keys stay in one place.
+// ----------------------------------------------------------------------------
+
+export type ToggleableModule =
+  | "stock"
+  | "mensajes"
+  | "recordatorios"
+  | "resenas"
+  | "reserva_online";
+
+/** Optional modules the owner can enable/disable per shop. */
+export const TOGGLEABLE_MODULES: ToggleableModule[] = [
+  "stock",
+  "mensajes",
+  "recordatorios",
+  "resenas",
+  "reserva_online",
+];
+
+/** Core modules — always active, shown as informative (no switch). */
+export const CORE_MODULES = [
+  "dashboard",
+  "ordenes",
+  "clientes",
+  "vehiculos",
+  "citas",
+  "presupuestos",
+  "facturacion",
+  "servicios",
+  "configuracion",
+  "equipo",
+] as const;
+
+const TOGGLEABLE_SET = new Set<string>(TOGGLEABLE_MODULES);
+
+/**
+ * Is a module enabled for this shop?
+ * - Core modules → always true.
+ * - Optional modules → tenant.enabledModules[key] ?? true (default on).
+ */
+export function isModuleEnabled(
+  tenant: Pick<Tenant, "enabledModules"> | null | undefined,
+  moduleKey: string,
+): boolean {
+  if (!TOGGLEABLE_SET.has(moduleKey)) return true;
+  return tenant?.enabledModules?.[moduleKey] ?? true;
+}
+
 /** Map a /app/* pathname to its module (for the route guard). */
 export function moduleForPath(pathname: string): AppModule | null {
   const p = pathname.replace(/\/+$/, "");
