@@ -184,6 +184,24 @@ function VehicleDetail() {
         description={vehicle.plate}
         actions={
           <>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  <Share2 strokeWidth={1.5} />
+                  Compartir cartilla
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={copyCartilla}>
+                  <Copy strokeWidth={1.5} />
+                  Copiar enlace
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={shareCartillaWhatsapp}>
+                  <MessageCircle strokeWidth={1.5} />
+                  Enviar por WhatsApp
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="outline" onClick={() => setEditOpen(true)}>
               <Pencil strokeWidth={1.5} />
               Editar
