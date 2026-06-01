@@ -57,6 +57,10 @@ export function ControlPanel() {
 
   const tenants = useMemo(() => (open ? tenantsRepo.list() : []), [open]);
   const codes = useMemo(() => (open ? listAllAccessCodes() : []), [open]);
+  const vehicleCodes = useMemo(
+    () => (open ? listAllVehicleAccessCodes() : []),
+    [open],
+  );
 
   if (!ready || !open) return null;
 
