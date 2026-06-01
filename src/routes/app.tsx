@@ -15,6 +15,7 @@ import {
   FileText,
   Receipt,
   Wrench,
+  Boxes,
   BellRing,
   Star,
   UsersRound,
@@ -29,6 +30,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { can, moduleForPath } from "@/lib/permissions";
 import { evaluateReminders } from "@/lib/reminders";
 import { evaluateDocumentExpiries } from "@/lib/documents";
+import { evaluateLowStock } from "@/lib/stock";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/app")({
@@ -44,6 +46,7 @@ const NAV = [
   { to: "/app/presupuestos", label: "Presupuestos", icon: FileText, exact: false, module: "presupuestos" },
   { to: "/app/facturacion", label: "Facturación", icon: Receipt, exact: false, module: "facturacion" },
   { to: "/app/servicios", label: "Servicios", icon: Wrench, exact: false, module: "servicios" },
+  { to: "/app/stock", label: "Stock", icon: Boxes, exact: false, module: "stock" },
   { to: "/app/recordatorios", label: "Recordatorios", icon: BellRing, exact: false, module: "recordatorios" },
   { to: "/app/resenas", label: "Reseñas", icon: Star, exact: false, module: "resenas" },
   { to: "/app/equipo", label: "Equipo", icon: UsersRound, exact: false, module: "equipo" },
@@ -89,6 +92,7 @@ function AppLayout() {
     if (!ready || !tenant) return;
     evaluateReminders(tenant.id);
     evaluateDocumentExpiries(tenant.id);
+    evaluateLowStock(tenant.id);
   }, [ready, tenant]);
 
   if (!ready) {

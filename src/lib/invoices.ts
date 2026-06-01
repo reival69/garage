@@ -7,6 +7,7 @@ import type { Invoice, Tenant, WorkOrder } from "@/types";
 import { invoicesRepo, vehiclesRepo } from "@/lib/db";
 import { notify } from "@/lib/notifications";
 import { quoteTotals } from "@/lib/orders";
+import { decrementStockForInvoice } from "@/lib/stock";
 
 /** Find the invoice generated for a given work order, if any. */
 export function getInvoiceByWorkOrderId(
@@ -67,6 +68,9 @@ export function generateInvoiceFromOrder(
     status: "pending",
     createdAt: now,
   });
+
+  // Decrement inventory once, for each line linked to a catalog part.
+  decrementStockForInvoice(invoice);
 
   notify(tenant.id, {
     type: "presupuesto",

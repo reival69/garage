@@ -144,6 +144,7 @@ export interface QuoteItem {
   approval: "pending" | "approved" | "rejected";
   warrantyMonths?: number; // optional warranty in months for this line
   warrantyKm?: number; // optional warranty in kilometres for this line
+  partId?: string; // links a "part" line to its catalog Part, to decrement stock
 }
 
 export interface Photo {
@@ -260,6 +261,11 @@ export interface Part {
   name: string;
   price: number;
   sku?: string;
+  // Inventory (Stock module). All optional so existing catalog data is valid.
+  stockQty?: number; // current units on hand
+  minStock?: number; // minimum desired units; at or below → "bajo stock"
+  location?: string; // warehouse location, e.g. "Estante A-3"
+  lowStockNotified?: boolean; // true once it emitted its low-stock notification
 }
 
 export interface AppNotification {

@@ -20,6 +20,7 @@ export interface QuoteItemInput {
   unitPrice: number;
   warrantyMonths?: number;
   warrantyKm?: number;
+  partId?: string;
 }
 
 /** Per-line amount = qty × unitPrice. */
@@ -69,6 +70,8 @@ export function addQuoteItem(
     approval: "pending",
     warrantyMonths: input.warrantyMonths,
     warrantyKm: input.warrantyKm,
+    // Only part lines carry a partId (custom lines never do).
+    partId: input.type === "part" ? input.partId : undefined,
   };
   return workOrdersRepo.update(tenantId, order.id, {
     items: [...order.items, item],
