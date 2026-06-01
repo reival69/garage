@@ -156,6 +156,12 @@ export function ControlPanel() {
                 onClick={() => setView("cliente")}
               />
               <SwitchRow
+                icon={Car}
+                title="Cartilla del vehículo"
+                subtitle="Historial público por coche"
+                onClick={() => setView("cartilla")}
+              />
+              <SwitchRow
                 icon={ExternalLink}
                 title="Página pública"
                 subtitle="Reserva online del taller"
