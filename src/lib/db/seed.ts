@@ -353,6 +353,8 @@ function seedTenant(ts: TenantSeed): void {
     const ageDays = delivered ? 120 + i * 95 : 0;
     const baseIso = delivered ? daysAgo(ageDays) : hoursAgo(50 - i * 2);
     const checkInIso = delivered ? daysAgo(ageDays) : hoursAgo(47 - i);
+    // Delivery/invoice happen a few days after intake for delivered orders.
+    const deliveredIso = delivered ? daysAgo(Math.max(ageDays - 3, 0)) : hoursAgo(2 + i);
 
     const order = workOrdersRepo.create(t, {
       tenantId: t,
