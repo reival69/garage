@@ -798,6 +798,13 @@ const GARCIA: TenantSeed = {
       status: "en_reparacion",
       problem: "Distribución a los 90.000 km",
       checkin: { km: 32000, fuel: 70 },
+      thread: [
+        { from: "shop", text: "Hemos recibido su vehículo, le mantendremos informado.", hAgo: 48 },
+        { from: "customer", text: "Buenos días, ¿han podido empezar ya con la distribución?", hAgo: 28 },
+        { from: "shop", text: "Sí, estamos con ello. Aprovechamos para revisar la bomba de agua.", hAgo: 27 },
+        { from: "customer", text: "Genial, gracias por avisar.", hAgo: 26 },
+        { from: "customer", text: "¿Creéis que estará para el viernes?", hAgo: 1, read: false },
+      ],
       lines: [
         { type: "labor", description: "Mano de obra — distribución", qty: 3, unitPrice: 45 },
         { type: "part", description: "Kit de distribución", qty: 1, unitPrice: 180, warrantyMonths: 24, warrantyKm: 60000 },
@@ -808,6 +815,11 @@ const GARCIA: TenantSeed = {
       status: "listo",
       problem: "Cambio de aceite y filtros",
       checkin: { km: 67200, fuel: 45 },
+      thread: [
+        { from: "shop", text: "Hemos recibido su vehículo, le mantendremos informado.", hAgo: 20 },
+        { from: "shop", text: "Su coche ya está listo para recoger. ¡Le esperamos!", hAgo: 2 },
+        { from: "customer", text: "Perfecto, paso esta tarde a recogerlo. ¡Gracias!", hAgo: 1 },
+      ],
       lines: [
         { type: "labor", description: "Mano de obra — mantenimiento", qty: 1, unitPrice: 45 },
         { type: "part", description: "Aceite sintético 5W30 (4L)", qty: 4, unitPrice: 10 },
