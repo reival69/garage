@@ -99,6 +99,30 @@ export interface Vehicle {
   // Vehicle-level photo gallery, independent from work-order photos.
   photos?: Photo[];
   coverPhotoId?: string; // id of the photo shown as the cartilla cover
+  // Documents and expiry dates (ITV, insurance, road tax, …).
+  documents?: VehicleDocument[];
+}
+
+export type VehicleDocumentType =
+  | "itv"
+  | "seguro"
+  | "impuesto"
+  | "permiso"
+  | "ficha_tecnica"
+  | "otro";
+
+export interface VehicleDocument {
+  id: string;
+  tenantId: string;
+  vehicleId: string;
+  type: VehicleDocumentType;
+  label?: string; // custom name when type === "otro"
+  expiryDate?: string; // ISO date — drives the vigente/por vencer/vencido badge
+  note?: string;
+  fileBase64?: string; // compressed image of the document (optional)
+  fileName?: string;
+  notified?: boolean; // true once it emitted its expiry notification
+  createdAt: string;
 }
 
 export type WorkOrderStatus =

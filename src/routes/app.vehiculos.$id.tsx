@@ -43,6 +43,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { VehicleFormDialog } from "@/components/app/VehicleFormDialog";
 import { VehiclePhotosCard } from "@/components/app/VehiclePhotosCard";
+import { VehicleDocumentsCard } from "@/components/app/VehicleDocumentsCard";
 import { OrderFormDialog } from "@/components/app/OrderFormDialog";
 import { ReminderFormDialog } from "@/components/app/ReminderFormDialog";
 import { useAuth } from "@/lib/auth/AuthContext";
@@ -313,6 +314,15 @@ function VehicleDetail() {
             vehicle={vehicle}
             onSaved={bump}
           />
+
+          {/* Documents & expiries */}
+          <VehicleDocumentsCard
+            tenantId={tenant.id}
+            vehicle={vehicle}
+            editable={canEdit(user.role, "vehiculos")}
+            onSaved={bump}
+          />
+
 
           {/* Photos collected from the work orders */}
           <DataCard title={`Fotos por orden (${photos.length})`}>

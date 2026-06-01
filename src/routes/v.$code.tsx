@@ -10,7 +10,9 @@ import {
   BellRing,
   Calendar,
   Car,
+  ClipboardCheck,
   ExternalLink,
+  FileText,
   Gauge,
   History,
   Images,
@@ -22,11 +24,22 @@ import {
 import { Logo } from "@/components/Logo";
 import { PublicLoading } from "@/components/PublicLoading";
 import { VehicleHistory } from "@/components/VehicleHistory";
+import { DocumentStatusBadge } from "@/components/app/DocumentStatusBadge";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { findVehicleByAccessCode } from "@/lib/db";
 import { listOrdersByVehicleId } from "@/lib/orders";
 import { PHOTO_LABEL_TEXT } from "@/lib/orders";
 import { listVehicleReminders } from "@/lib/reminders";
+import {
+  documentLabel,
+  documentStatus,
+  listVehicleDocuments,
+} from "@/lib/documents";
+import {
+  inspectionAttentionItems,
+  inspectionSummary,
+  latestVehicleInspection,
+} from "@/lib/inspection";
 import {
   FUEL_TYPE_LABELS,
   TRANSMISSION_LABELS,
@@ -115,6 +128,14 @@ function CartillaView() {
   const gallery = galleryPhotos(vehicle);
   const spend = computeVehicleSpend(tenant.id, orders);
   const kmHistory = buildKmHistory(vehicle, orders);
+  const documents = listVehicleDocuments(vehicle);
+  const latestInspection = latestVehicleInspection(orders);
+  const inspectionAttention = latestInspection
+    ? inspectionAttentionItems(latestInspection.inspection)
+    : [];
+  const inspectionStats = latestInspection
+    ? inspectionSummary(latestInspection.inspection.items)
+    : null;
   const techSpecs: Array<[string, string]> = [];
   if (vehicle.vin) techSpecs.push(["VIN", vehicle.vin]);
   if (vehicle.color) techSpecs.push(["Color", vehicle.color]);
@@ -364,6 +385,123 @@ function CartillaView() {
             </ul>
           )}
         </section>
+
+        {/* Current condition from the latest DVI */}
+        {latestInspection && inspectionStats && (
+          <section className="rounded-xl border border-border bg-card p-5">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <ClipboardCheck strokeWidth={1.5} className="h-4 w-4" />
+              <h2 className="text-sm font-semibold text-foreground">
+                Estado actual del coche
+              </h2>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Última revisión: {formatDate(latestInspection.inspection.createdAt)}
+            </p>
+            <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+              <div className="rounded-lg border border-border p-2">
+                <p className="text-lg font-semibold text-[var(--success)]">
+                  {inspectionStats.ok}
+                </p>
+                <p className="text-[11px] text-muted-foreground">OK</p>
+              </div>
+              <div className="rounded-lg border border-border p-2">
+                <p className="text-lg font-semibold text-[var(--warning)]">
+                  {inspectionStats.atencion}
+                </p>
+                <p className="text-[11px] text-muted-foreground">Atención</p>
+              </div>
+              <div className="rounded-lg border border-border p-2">
+                <p className="text-lg font-semibold text-[var(--destructive)]">
+                  {inspectionStats.critico}
+                </p>
+                <p className="text-[11px] text-muted-foreground">Crítico</p>
+              </div>
+            </div>
+
+            {inspectionAttention.length > 0 && (
+              <div className="mt-4">
+                <p className="text-xs font-medium text-muted-foreground">
+                  Lo que tu coche necesita pronto
+                </p>
+                <ul className="mt-2 space-y-2">
+                  {inspectionAttention.map((item) => (
+                    <li
+                      key={item.id}
+                      className="rounded-lg border border-border p-3 text-sm"
+                    >
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-medium text-foreground">
+                          {item.name}
+                        </span>
+                        <StatusBadge status={item.status} />
+                      </div>
+                      {item.note && (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          {item.note}
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {inspectionAttention.length === 0 && (
+              <p className="mt-4 text-sm text-muted-foreground">
+                Todo en orden en la última revisión. Sin puntos pendientes.
+              </p>
+            )}
+          </section>
+        )}
+
+        {/* Vehicle documents (read only) */}
+        {documents.length > 0 && (
+          <section className="rounded-xl border border-border bg-card p-5">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <FileText strokeWidth={1.5} className="h-4 w-4" />
+              <h2 className="text-sm font-semibold text-foreground">
+                Documentos del coche
+              </h2>
+            </div>
+            <ul className="mt-3 space-y-2">
+              {documents.map((doc) => (
+                <li
+                  key={doc.id}
+                  className="flex items-center gap-3 rounded-lg border border-border p-3"
+                >
+                  {doc.fileBase64 ? (
+                    <img
+                      src={doc.fileBase64}
+                      alt={documentLabel(doc)}
+                      loading="lazy"
+                      className="h-12 w-12 shrink-0 rounded-lg border border-border object-cover"
+                    />
+                  ) : (
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-border text-muted-foreground">
+                      <FileText strokeWidth={1.5} className="h-5 w-5" />
+                    </span>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="truncate text-sm font-medium text-foreground">
+                        {documentLabel(doc)}
+                      </span>
+                      <DocumentStatusBadge status={documentStatus(doc)} />
+                    </div>
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      {doc.expiryDate
+                        ? `Caduca ${formatDate(doc.expiryDate)}`
+                        : "Sin fecha de caducidad"}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+
 
         {/* Full service history */}
         <section className="rounded-xl border border-border bg-card p-5">
