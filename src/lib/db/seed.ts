@@ -362,7 +362,7 @@ function seedTenant(ts: TenantSeed): void {
   const vehicles: Vehicle[] = ts.vehicles.map((v, vi) => {
     const coverId = uid("vph");
     const galId = uid("vph");
-    return vehiclesRepo.create(t, {
+    const created = vehiclesRepo.create(t, {
       tenantId: t,
       customerId: customers[v.customerIdx % customers.length].id,
       accessCode: code6(),
@@ -382,7 +382,15 @@ function seedTenant(ts: TenantSeed): void {
         { id: galId, url: PHOTO_GALLERY, label: "detalle", createdAt: daysAgo(50 + vi) },
       ],
     } as Omit<Vehicle, "id">);
+    // Example documents on the first three vehicles: a mix of vigente /
+    // por vencer (≤30 días) / vencido so the cartilla shows the value.
+    const docs = buildVehicleDocs(t, created.id, vi);
+    if (docs.length > 0) {
+      return vehiclesRepo.update(t, created.id, { documents: docs }) ?? created;
+    }
+    return created;
   });
+
 
   // Work orders
   ts.orders.forEach((spec, i) => {
