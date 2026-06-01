@@ -16,6 +16,8 @@ import {
   MoreHorizontal,
   Trash2,
   MessageCircle,
+  Share2,
+  Copy,
 } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { EmptyState } from "@/components/base/EmptyState";
@@ -55,6 +57,7 @@ import {
   whatsappReminderUrl,
 } from "@/lib/reminders";
 import { canEdit } from "@/lib/permissions";
+import { cartillaUrl, whatsappCartillaUrl } from "@/lib/vehicles";
 import { toast } from "sonner";
 import type { MaintenanceReminder, Photo } from "@/types";
 
@@ -144,6 +147,25 @@ function VehicleDetail() {
     });
     window.open(url, "_blank");
   };
+  const copyCartilla = async () => {
+    const url = cartillaUrl(vehicle.accessCode);
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Enlace de la cartilla copiado");
+    } catch {
+      toast.error("No se pudo copiar el enlace");
+    }
+  };
+  const shareCartillaWhatsapp = () => {
+    const url = whatsappCartillaUrl({
+      phone: customer?.phone,
+      tenantName: tenant.name,
+      customerName: customer?.name,
+      vehicleLabel: `${vehicle.make} ${vehicle.model}`.trim(),
+      code: vehicle.accessCode,
+    });
+    window.open(url, "_blank");
+  };
 
   const specs: Array<[string, string]> = [
     ["Marca", vehicle.make || "—"],
@@ -162,6 +184,24 @@ function VehicleDetail() {
         description={vehicle.plate}
         actions={
           <>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline">
+                  <Share2 strokeWidth={1.5} />
+                  Compartir cartilla
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={copyCartilla}>
+                  <Copy strokeWidth={1.5} />
+                  Copiar enlace
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={shareCartillaWhatsapp}>
+                  <MessageCircle strokeWidth={1.5} />
+                  Enviar por WhatsApp
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Button variant="outline" onClick={() => setEditOpen(true)}>
               <Pencil strokeWidth={1.5} />
               Editar

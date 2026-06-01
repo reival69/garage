@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { Building2, ExternalLink, RotateCcw, Shield, Smartphone, X } from "lucide-react";
+import { Building2, Car, ExternalLink, RotateCcw, Shield, Smartphone, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/auth/AuthContext";
 import {
   listAllAccessCodes,
+  listAllVehicleAccessCodes,
   resetDemo,
   tenantsRepo,
   usersRepo,
@@ -22,7 +23,7 @@ export function openControlPanel() {
   }
 }
 
-type View = "menu" | "taller" | "cliente" | "publica";
+type View = "menu" | "taller" | "cliente" | "cartilla" | "publica";
 
 /**
  * Hidden internal control panel for presentations. No visible trigger.
@@ -56,6 +57,10 @@ export function ControlPanel() {
 
   const tenants = useMemo(() => (open ? tenantsRepo.list() : []), [open]);
   const codes = useMemo(() => (open ? listAllAccessCodes() : []), [open]);
+  const vehicleCodes = useMemo(
+    () => (open ? listAllVehicleAccessCodes() : []),
+    [open],
+  );
 
   if (!ready || !open) return null;
 
@@ -83,6 +88,11 @@ export function ControlPanel() {
   const enterCustomer = (code: string) => {
     close();
     navigate({ to: "/c/$code", params: { code } });
+  };
+
+  const openCartilla = (code: string) => {
+    close();
+    navigate({ to: "/v/$code", params: { code } });
   };
 
   const openPublic = (slug: string) => {
@@ -146,6 +156,12 @@ export function ControlPanel() {
                 onClick={() => setView("cliente")}
               />
               <SwitchRow
+                icon={Car}
+                title="Cartilla del vehículo"
+                subtitle="Historial público por coche"
+                onClick={() => setView("cartilla")}
+              />
+              <SwitchRow
                 icon={ExternalLink}
                 title="Página pública"
                 subtitle="Reserva online del taller"
@@ -192,6 +208,25 @@ export function ControlPanel() {
                   subtitle={`${c.tenantName} · ${c.vehicle}`}
                   mono
                   onClick={() => enterCustomer(c.code)}
+                />
+              ))}
+            </div>
+          )}
+
+          {view === "cartilla" && (
+            <div className="space-y-2">
+              <BackRow
+                onClick={() => setView("menu")}
+                label="Abrir cartilla por código"
+              />
+              {vehicleCodes.map((c) => (
+                <SwitchRow
+                  key={`${c.tenantId}-${c.code}`}
+                  icon={Car}
+                  title={c.code}
+                  subtitle={`${c.tenantName} · ${c.vehicle}`}
+                  mono
+                  onClick={() => openCartilla(c.code)}
                 />
               ))}
             </div>

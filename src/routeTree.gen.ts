@@ -21,6 +21,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as VCodeRouteImport } from './routes/v.$code'
 import { Route as TSlugRouteImport } from './routes/t.$slug'
 import { Route as CCodeRouteImport } from './routes/c.$code'
 import { Route as AppServiciosRouteImport } from './routes/app.servicios'
@@ -100,6 +101,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
+} as any)
+const VCodeRoute = VCodeRouteImport.update({
+  id: '/v/$code',
+  path: '/v/$code',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const TSlugRoute = TSlugRouteImport.update({
   id: '/t/$slug',
@@ -219,6 +225,7 @@ export interface FileRoutesByFullPath {
   '/app/servicios': typeof AppServiciosRoute
   '/c/$code': typeof CCodeRoute
   '/t/$slug': typeof TSlugRoute
+  '/v/$code': typeof VCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
@@ -250,6 +257,7 @@ export interface FileRoutesByTo {
   '/app/servicios': typeof AppServiciosRoute
   '/c/$code': typeof CCodeRoute
   '/t/$slug': typeof TSlugRoute
+  '/v/$code': typeof VCodeRoute
   '/admin': typeof AdminIndexRoute
   '/app': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
@@ -284,6 +292,7 @@ export interface FileRoutesById {
   '/app/servicios': typeof AppServiciosRoute
   '/c/$code': typeof CCodeRoute
   '/t/$slug': typeof TSlugRoute
+  '/v/$code': typeof VCodeRoute
   '/admin/': typeof AdminIndexRoute
   '/app/': typeof AppIndexRoute
   '/app/clientes/$id': typeof AppClientesIdRoute
@@ -319,6 +328,7 @@ export interface FileRouteTypes {
     | '/app/servicios'
     | '/c/$code'
     | '/t/$slug'
+    | '/v/$code'
     | '/admin/'
     | '/app/'
     | '/app/clientes/$id'
@@ -350,6 +360,7 @@ export interface FileRouteTypes {
     | '/app/servicios'
     | '/c/$code'
     | '/t/$slug'
+    | '/v/$code'
     | '/admin'
     | '/app'
     | '/app/clientes/$id'
@@ -383,6 +394,7 @@ export interface FileRouteTypes {
     | '/app/servicios'
     | '/c/$code'
     | '/t/$slug'
+    | '/v/$code'
     | '/admin/'
     | '/app/'
     | '/app/clientes/$id'
@@ -408,6 +420,7 @@ export interface RootRouteChildren {
   TerminosRoute: typeof TerminosRoute
   CCodeRoute: typeof CCodeRoute
   TSlugRoute: typeof TSlugRoute
+  VCodeRoute: typeof VCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -495,6 +508,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/v/$code': {
+      id: '/v/$code'
+      path: '/v/$code'
+      fullPath: '/v/$code'
+      preLoaderRoute: typeof VCodeRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/t/$slug': {
       id: '/t/$slug'
@@ -699,7 +719,18 @@ const rootRouteChildren: RootRouteChildren = {
   TerminosRoute: TerminosRoute,
   CCodeRoute: CCodeRoute,
   TSlugRoute: TSlugRoute,
+  VCodeRoute: VCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
