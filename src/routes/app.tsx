@@ -16,6 +16,7 @@ import {
   Receipt,
   Wrench,
   Boxes,
+  MessageSquare,
   BellRing,
   Star,
   UsersRound,
@@ -31,6 +32,7 @@ import { can, moduleForPath } from "@/lib/permissions";
 import { evaluateReminders } from "@/lib/reminders";
 import { evaluateDocumentExpiries } from "@/lib/documents";
 import { evaluateLowStock } from "@/lib/stock";
+import { unreadMessagesCount } from "@/lib/inbox";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/app")({
