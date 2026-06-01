@@ -353,6 +353,7 @@ function QuoteItemDialog({
               onChange={(e) => {
                 setDescription(e.target.value);
                 setCatalogId(CUSTOM);
+                setPartId(undefined);
               }}
               placeholder="Descripción de la línea"
               maxLength={160}
