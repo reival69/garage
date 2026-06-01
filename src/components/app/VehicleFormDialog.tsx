@@ -50,8 +50,14 @@ interface FormState {
   km: string;
   vin: string;
   color: string;
+  fuelType: string;
+  transmission: string;
+  displacementCc: string;
+  powerHp: string;
   notes: string;
 }
+
+const NONE = "none";
 
 const EMPTY: FormState = {
   customerId: "",
@@ -62,6 +68,10 @@ const EMPTY: FormState = {
   km: "",
   vin: "",
   color: "",
+  fuelType: "",
+  transmission: "",
+  displacementCc: "",
+  powerHp: "",
   notes: "",
 };
 
