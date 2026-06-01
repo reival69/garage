@@ -38,7 +38,7 @@ import { quoteTotals } from "@/lib/orders";
 
 const SEED_FLAG = "seeded";
 // Bump when the seed shape changes to force a clean reseed of the demo.
-const SEED_VERSION = "10";
+const SEED_VERSION = "11";
 
 // Tiny base64 placeholder images (kept small to respect the ~5MB quota).
 const PHOTO_A =
@@ -722,6 +722,7 @@ const GARCIA: TenantSeed = {
     phone: "910 234 567",
     googleReviewUrl: "https://g.page/r/taller-garcia-madrid/review",
     businessHours: weekHours("08:30", "19:00", "09:00", "14:00"),
+    enabledModules: { stock: true, mensajes: true, recordatorios: true, resenas: true, reserva_online: true },
     locations: [
       {
         id: "loc_garcia_1",
@@ -879,6 +880,7 @@ const AUTONORTE: TenantSeed = {
     phone: "981 456 789",
     googleReviewUrl: "https://g.page/r/autonorte-coruna/review",
     businessHours: weekHours("09:00", "18:30", "10:00", "13:30"),
+    enabledModules: { stock: true, mensajes: false, recordatorios: true, resenas: true, reserva_online: true },
     locations: [
       {
         id: "loc_autonorte_1",
