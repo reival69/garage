@@ -10,7 +10,9 @@ import {
   BellRing,
   Calendar,
   Car,
+  ClipboardCheck,
   ExternalLink,
+  FileText,
   Gauge,
   History,
   Images,
@@ -22,6 +24,7 @@ import {
 import { Logo } from "@/components/Logo";
 import { PublicLoading } from "@/components/PublicLoading";
 import { VehicleHistory } from "@/components/VehicleHistory";
+import { DocumentStatusBadge } from "@/components/app/DocumentStatusBadge";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { findVehicleByAccessCode } from "@/lib/db";
 import { listOrdersByVehicleId } from "@/lib/orders";
