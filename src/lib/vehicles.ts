@@ -3,10 +3,33 @@
 // "vigent warranty" computation. All access goes through the repos; everything
 // is local & simulated.
 
-import type { QuoteItem, Tenant, Vehicle, WorkOrder } from "@/types";
-import { listAllVehicleAccessCodes, vehiclesRepo } from "@/lib/db";
+import type {
+  FuelType,
+  Photo,
+  QuoteItem,
+  Tenant,
+  Transmission,
+  Vehicle,
+  WorkOrder,
+} from "@/types";
+import { listAllVehicleAccessCodes, uid, vehiclesRepo } from "@/lib/db";
 import { getInvoiceByWorkOrderId } from "@/lib/invoices";
 import { warrantyLabel } from "@/lib/quotes";
+
+/** Human labels for the extended technical sheet. */
+export const FUEL_TYPE_LABELS: Record<FuelType, string> = {
+  gasolina: "Gasolina",
+  diesel: "Diésel",
+  electrico: "Eléctrico",
+  hibrido: "Híbrido",
+  glp: "GLP",
+  otro: "Otro",
+};
+
+export const TRANSMISSION_LABELS: Record<Transmission, string> = {
+  manual: "Manual",
+  automatico: "Automático",
+};
 
 function code6(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
