@@ -37,7 +37,7 @@ import { quoteTotals } from "@/lib/orders";
 
 const SEED_FLAG = "seeded";
 // Bump when the seed shape changes to force a clean reseed of the demo.
-const SEED_VERSION = "6";
+const SEED_VERSION = "7";
 
 // Tiny base64 placeholder images (kept small to respect the ~5MB quota).
 const PHOTO_A =
@@ -215,6 +215,47 @@ const INSP_OK: Array<["ok" | "atencion" | "critico", string, string?]> = [
   ["ok", "Frenos"],
   ["atencion", "Filtro de aire", "Recomendado cambio próxima revisión"],
   ["ok", "Iluminación"],
+];
+
+// Showcase history applied to each tenant's vehicle 0: delivered orders spread
+// across past years (each with its own invoice + check-in) so the public
+// cartilla shows multi-year spend and a clearly rising odometer. kmRatio is the
+// fraction of the vehicle's current km recorded at that point in time.
+const SHOWCASE_ORDERS: Array<{
+  yearsAgo: number;
+  kmRatio: number;
+  problem: string;
+  lines: QuoteLineSeed[];
+}> = [
+  {
+    yearsAgo: 4,
+    kmRatio: 0.62,
+    problem: "Revisión general y cambio de aceite",
+    lines: [
+      { type: "labor", description: "Mano de obra — revisión", qty: 2, unitPrice: 45 },
+      { type: "part", description: "Aceite sintético 5W30 (4L)", qty: 4, unitPrice: 10 },
+      { type: "part", description: "Filtro de aceite", qty: 1, unitPrice: 12 },
+    ],
+  },
+  {
+    yearsAgo: 3,
+    kmRatio: 0.74,
+    problem: "Distribución y bomba de agua",
+    lines: [
+      { type: "labor", description: "Mano de obra — distribución", qty: 3, unitPrice: 45 },
+      { type: "part", description: "Kit de distribución", qty: 1, unitPrice: 180, warrantyMonths: 24, warrantyKm: 60000 },
+    ],
+  },
+  {
+    yearsAgo: 2,
+    kmRatio: 0.86,
+    problem: "Frenos delanteros y traseros",
+    lines: [
+      { type: "labor", description: "Mano de obra — frenos", qty: 2, unitPrice: 45 },
+      { type: "part", description: "Pastillas de freno delanteras", qty: 1, unitPrice: 48, warrantyMonths: 12 },
+      { type: "part", description: "Discos de freno delanteros", qty: 2, unitPrice: 65 },
+    ],
+  },
 ];
 
 // ---- Builders --------------------------------------------------------------
@@ -451,6 +492,55 @@ function seedTenant(ts: TenantSeed): void {
       } as Omit<Review, "id">);
     }
   });
+
+  // Showcase vehicle (vehicle 0): multi-year delivered history so its public
+  // cartilla shows spend across several years and a clearly rising odometer.
+  const showcase = vehicles[0];
+  if (showcase) {
+    SHOWCASE_ORDERS.forEach((s, si) => {
+      const items = buildItems(s.lines, "entregado", f);
+      const createdIso = daysAgo(s.yearsAgo * 365 + 20 - si * 3);
+      const deliveredIso = daysAgo(s.yearsAgo * 365 + 16 - si * 3);
+      const km = Math.max(1000, Math.round(showcase.km * s.kmRatio));
+      const order = workOrdersRepo.create(t, {
+        tenantId: t,
+        locationId,
+        customerId: showcase.customerId,
+        vehicleId: showcase.id,
+        mechanicId: mechanic.id,
+        status: "entregado",
+        problemDescription: s.problem,
+        internalNotes: "",
+        accessCode: code6(),
+        items,
+        photos: [],
+        checkIn: {
+          km,
+          fuelLevel: 50,
+          bodyDamage: [],
+          customerSignature: SIGNATURE,
+          createdAt: createdIso,
+        },
+        messages: [],
+        quoteApproval: { signature: SIGNATURE, decidedAt: createdIso },
+        createdAt: createdIso,
+        updatedAt: deliveredIso,
+      } as Omit<WorkOrder, "id">);
+
+      const { subtotal, tax, total } = quoteTotals(order.items, tenant.taxRate);
+      invoicesRepo.create(t, {
+        tenantId: t,
+        workOrderId: order.id,
+        number: nextNumber(t),
+        items: order.items.map((it) => ({ ...it })),
+        subtotal,
+        tax,
+        total,
+        status: "paid",
+        createdAt: deliveredIso,
+      } as Omit<Invoice, "id">);
+    });
+  }
 
   // Appointments — today and upcoming, including online bookings.
   const appts: Array<[number, number, Appointment["status"], "online" | "manual"]> = [
