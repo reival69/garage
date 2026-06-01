@@ -110,8 +110,14 @@ function AppLayout() {
   }
   if (!user || !tenant) return null;
 
-  const navItems = NAV.filter((item) => can(user.role, item.module));
-  const bottomItems = BOTTOM.filter((item) => can(user.role, item.module));
+  // A module shows in the nav if the role can access it AND the shop has it
+  // enabled (optional modules can be turned off in Configuración).
+  const navItems = NAV.filter(
+    (item) => can(user.role, item.module) && isModuleEnabled(tenant, item.module),
+  );
+  const bottomItems = BOTTOM.filter(
+    (item) => can(user.role, item.module) && isModuleEnabled(tenant, item.module),
+  );
 
   // Unread customer messages badge (recomputed on every navigation).
   const unreadMessages = unreadMessagesCount(tenant.id);
