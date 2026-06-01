@@ -147,6 +147,25 @@ function VehicleDetail() {
     });
     window.open(url, "_blank");
   };
+  const copyCartilla = async () => {
+    const url = cartillaUrl(vehicle.accessCode);
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Enlace de la cartilla copiado");
+    } catch {
+      toast.error("No se pudo copiar el enlace");
+    }
+  };
+  const shareCartillaWhatsapp = () => {
+    const url = whatsappCartillaUrl({
+      phone: customer?.phone,
+      tenantName: tenant.name,
+      customerName: customer?.name,
+      vehicleLabel: `${vehicle.make} ${vehicle.model}`.trim(),
+      code: vehicle.accessCode,
+    });
+    window.open(url, "_blank");
+  };
 
   const specs: Array<[string, string]> = [
     ["Marca", vehicle.make || "—"],
