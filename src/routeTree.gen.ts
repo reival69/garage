@@ -416,6 +416,7 @@ export interface FileRouteTypes {
     | '/app/resenas'
     | '/app/servicios'
     | '/app/stock'
+    | '/app/mensajes'
     | '/c/$code'
     | '/t/$slug'
     | '/v/$code'
@@ -559,13 +560,6 @@ declare module '@tanstack/react-router' {
       path: '/stock'
       fullPath: '/app/stock'
       preLoaderRoute: typeof AppStockRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/mensajes': {
-      id: '/app/mensajes'
-      path: '/mensajes'
-      fullPath: '/app/mensajes'
-      preLoaderRoute: typeof AppMensajesRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/servicios': {
