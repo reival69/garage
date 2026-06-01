@@ -213,6 +213,25 @@ export function ControlPanel() {
             </div>
           )}
 
+          {view === "cartilla" && (
+            <div className="space-y-2">
+              <BackRow
+                onClick={() => setView("menu")}
+                label="Abrir cartilla por código"
+              />
+              {vehicleCodes.map((c) => (
+                <SwitchRow
+                  key={`${c.tenantId}-${c.code}`}
+                  icon={Car}
+                  title={c.code}
+                  subtitle={`${c.tenantName} · ${c.vehicle}`}
+                  mono
+                  onClick={() => openCartilla(c.code)}
+                />
+              ))}
+            </div>
+          )}
+
           {view === "publica" && (
             <div className="space-y-2">
               <BackRow
