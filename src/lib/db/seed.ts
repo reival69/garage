@@ -415,8 +415,8 @@ function seedTenant(ts: TenantSeed): void {
         ? { signature: SIGNATURE, decidedAt: hoursAgo(30 - i) }
         : undefined,
       estimatedReadyAt: daysFromNow((i % 3) + 1, 18),
-      createdAt: hoursAgo(50 - i * 2),
-      updatedAt: hoursAgo(2 + i),
+      createdAt: baseIso,
+      updatedAt: deliveredIso,
     } as Omit<WorkOrder, "id">);
 
     // Invoice for delivered orders (mix of paid/pending).
