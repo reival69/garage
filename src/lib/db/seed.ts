@@ -14,6 +14,7 @@ import type {
   Tenant,
   User,
   Vehicle,
+  VehicleDocument,
   WorkOrder,
   WorkOrderStatus,
 } from "@/types";
