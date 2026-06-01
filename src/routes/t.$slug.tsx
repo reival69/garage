@@ -6,7 +6,7 @@
 // The shop location is shown as a keyless Google Maps embed. Everything else is
 // local & simulated.
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   AlertCircle,
@@ -20,6 +20,8 @@ import {
   Phone,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { PublicLoading } from "@/components/PublicLoading";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
