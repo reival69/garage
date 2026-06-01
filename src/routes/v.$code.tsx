@@ -31,6 +31,16 @@ import { listOrdersByVehicleId } from "@/lib/orders";
 import { PHOTO_LABEL_TEXT } from "@/lib/orders";
 import { listVehicleReminders } from "@/lib/reminders";
 import {
+  documentLabel,
+  documentStatus,
+  listVehicleDocuments,
+} from "@/lib/documents";
+import {
+  inspectionAttentionItems,
+  inspectionSummary,
+  latestVehicleInspection,
+} from "@/lib/inspection";
+import {
   FUEL_TYPE_LABELS,
   TRANSMISSION_LABELS,
   buildKmHistory,
