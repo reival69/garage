@@ -433,7 +433,7 @@ function seedTenant(ts: TenantSeed): void {
           tax,
           total,
           status: spec.invoiceStatus,
-          createdAt: hoursAgo(24 - i),
+          createdAt: deliveredIso,
         } as Omit<Invoice, "id">);
       }
     }
