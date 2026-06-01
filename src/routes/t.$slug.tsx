@@ -292,6 +292,21 @@ function BookingFlow({ tenant }: { tenant: Tenant }) {
                 )}
               </div>
             </div>
+            ) : (
+              <div className="mt-6 rounded-xl border border-border bg-card p-5 sm:p-6 text-center">
+                <Calendar
+                  strokeWidth={1.5}
+                  className="mx-auto mb-2 h-6 w-6 text-muted-foreground"
+                />
+                <p className="text-sm font-medium text-foreground">
+                  Reservas online no disponibles
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Este taller no acepta citas online por el momento. Puedes
+                  contactar directamente con los datos de arriba.
+                </p>
+              </div>
+            )}
           </>
         )}
       </main>
