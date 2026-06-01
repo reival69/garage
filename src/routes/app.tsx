@@ -28,6 +28,7 @@ import { NotificationBell } from "@/components/app/NotificationBell";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { can, moduleForPath } from "@/lib/permissions";
 import { evaluateReminders } from "@/lib/reminders";
+import { evaluateDocumentExpiries } from "@/lib/documents";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/app")({
