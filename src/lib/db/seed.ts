@@ -493,7 +493,56 @@ function seedTenant(ts: TenantSeed): void {
     }
   });
 
-  // Appointments — today and upcoming, including online bookings.
+  // Showcase vehicle (vehicle 0): multi-year delivered history so its public
+  // cartilla shows spend across several years and a clearly rising odometer.
+  const showcase = vehicles[0];
+  if (showcase) {
+    SHOWCASE_ORDERS.forEach((s, si) => {
+      const items = buildItems(s.lines, "entregado", f);
+      const createdIso = daysAgo(s.yearsAgo * 365 + 20 - si * 3);
+      const deliveredIso = daysAgo(s.yearsAgo * 365 + 16 - si * 3);
+      const km = Math.max(1000, Math.round(showcase.km * s.kmRatio));
+      const order = workOrdersRepo.create(t, {
+        tenantId: t,
+        locationId,
+        customerId: showcase.customerId,
+        vehicleId: showcase.id,
+        mechanicId: mechanic.id,
+        status: "entregado",
+        problemDescription: s.problem,
+        internalNotes: "",
+        accessCode: code6(),
+        items,
+        photos: [],
+        checkIn: {
+          km,
+          fuelLevel: 50,
+          bodyDamage: [],
+          customerSignature: SIGNATURE,
+          createdAt: createdIso,
+        },
+        messages: [],
+        quoteApproval: { signature: SIGNATURE, decidedAt: createdIso },
+        createdAt: createdIso,
+        updatedAt: deliveredIso,
+      } as Omit<WorkOrder, "id">);
+
+      const { subtotal, tax, total } = quoteTotals(order.items, tenant.taxRate);
+      invoicesRepo.create(t, {
+        tenantId: t,
+        workOrderId: order.id,
+        number: nextNumber(t),
+        items: order.items.map((it) => ({ ...it })),
+        subtotal,
+        tax,
+        total,
+        status: "paid",
+        createdAt: deliveredIso,
+      } as Omit<Invoice, "id">);
+    });
+  }
+
+
   const appts: Array<[number, number, Appointment["status"], "online" | "manual"]> = [
     [0, 9, "confirmada", "online"],
     [0, 12, "programada", "manual"],
