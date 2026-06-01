@@ -202,6 +202,7 @@ function ConfigPage() {
       googleReviewUrl: googleReviewUrl.trim() || undefined,
       businessHours: hours,
       locations,
+      enabledModules,
     });
     refresh();
     setSaving(false);
