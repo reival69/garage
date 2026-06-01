@@ -20,6 +20,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { PublicLoading } from "@/components/PublicLoading";
 import { VehicleHistory } from "@/components/VehicleHistory";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { findVehicleByAccessCode } from "@/lib/db";
@@ -82,12 +83,9 @@ function CartillaView() {
   }, [ready, load]);
 
   if (state.kind === "loading") {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background-subtle">
-        <p className="text-sm text-muted-foreground">Cargando…</p>
-      </div>
-    );
+    return <PublicLoading />;
   }
+
 
   if (state.kind === "invalid") {
     return (

@@ -20,6 +20,8 @@ import {
   Phone,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { PublicLoading } from "@/components/PublicLoading";
+import { useAuth } from "@/lib/auth/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -47,7 +49,18 @@ const STEPS = ["Servicio", "Vehículo", "Fecha", "Tus datos", "Resumen"] as cons
 
 function PublicBookingPage() {
   const { slug } = Route.useParams();
-  const tenant = useMemo(() => findTenantBySlug(slug), [slug]);
+  const { ready } = useAuth();
+  const tenant = useMemo(
+    () => (ready ? findTenantBySlug(slug) : null),
+    [ready, slug],
+  );
+
+  // Until the client is mounted and the localStorage lookup has run (after
+  // seedIfEmpty, signalled by `ready`), show a branded loading state instead
+  // of flashing the "not found" error during SSR/hydration.
+  if (!ready) {
+    return <PublicLoading />;
+  }
 
   if (!tenant) {
     return (
@@ -67,6 +80,7 @@ function PublicBookingPage() {
 
   return <BookingFlow tenant={tenant} />;
 }
+
 
 function BookingFlow({ tenant }: { tenant: Tenant }) {
   const services = useMemo<Service[]>(
