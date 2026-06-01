@@ -993,6 +993,7 @@ const REYES: TenantSeed = {
       },
     ],
     createdAt: daysAgo(300),
+    enabledModules: { stock: true, mensajes: true, recordatorios: true, resenas: true, reserva_online: true },
   },
   customers: [
     { name: "José Luis Hernández", phone: "55 8123 4567", email: "joseluis.hernandez@email.mx" },
