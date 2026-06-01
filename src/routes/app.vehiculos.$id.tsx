@@ -175,6 +175,16 @@ function VehicleDetail() {
     ["Kilómetros", vehicle.km ? `${vehicle.km.toLocaleString("es-ES")} km` : "—"],
     ["Color", vehicle.color ?? "—"],
     ["VIN", vehicle.vin ?? "—"],
+    ["Combustible", vehicle.fuelType ? FUEL_TYPE_LABELS[vehicle.fuelType] : "—"],
+    [
+      "Transmisión",
+      vehicle.transmission ? TRANSMISSION_LABELS[vehicle.transmission] : "—",
+    ],
+    [
+      "Cilindrada",
+      vehicle.displacementCc ? `${vehicle.displacementCc} cc` : "—",
+    ],
+    ["Potencia", vehicle.powerHp ? `${vehicle.powerHp} CV` : "—"],
   ];
 
   return (
