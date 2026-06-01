@@ -399,6 +399,51 @@ function ConfigPage() {
           </Field>
         </Section>
 
+        <Section
+          title="Módulos"
+          description="Activa o desactiva las funciones opcionales de tu taller. Desactivar un módulo solo lo oculta; no borra datos."
+        >
+          <div className="space-y-2">
+            {TOGGLEABLE_MODULES.map((m) => {
+              const info = MODULE_INFO[m];
+              const on = enabledModules[m] ?? true;
+              return (
+                <div
+                  key={m}
+                  className="flex items-center justify-between gap-3 rounded-md border border-border-subtle px-3 py-3"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground">
+                      {info.label}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {info.description}
+                    </p>
+                  </div>
+                  <Switch
+                    checked={on}
+                    onCheckedChange={(v) =>
+                      setEnabledModules((prev) => ({ ...prev, [m]: v }))
+                    }
+                    aria-label={info.label}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="rounded-md border border-border-subtle bg-background-subtle p-3">
+            <p className="text-xs font-medium text-foreground">
+              Siempre activos
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {CORE_MODULE_LABELS.join(" · ")}
+            </p>
+          </div>
+        </Section>
+
+
+
 
 
         <Section
