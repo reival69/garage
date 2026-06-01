@@ -108,6 +108,9 @@ function AppLayout() {
   const navItems = NAV.filter((item) => can(user.role, item.module));
   const bottomItems = BOTTOM.filter((item) => can(user.role, item.module));
 
+  // Unread customer messages badge (recomputed on every navigation).
+  const unreadMessages = unreadMessagesCount(tenant.id);
+
   const accentStyle = tenant
     ? ({ ["--talleo-accent" as string]: tenant.accentColor } as React.CSSProperties)
     : undefined;
