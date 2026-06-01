@@ -163,7 +163,15 @@ function CartillaView() {
 
       <main className="mx-auto max-w-lg space-y-4 px-5 py-6">
         {/* Vehicle header */}
-        <section className="rounded-xl border border-border bg-card p-5">
+        <section className="overflow-hidden rounded-xl border border-border bg-card">
+          {cover && (
+            <img
+              src={cover.url}
+              alt={`${vehicle.make} ${vehicle.model}`.trim() || "Vehículo"}
+              className="aspect-[16/9] w-full object-cover"
+            />
+          )}
+          <div className="p-5">
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-border text-foreground">
               <Car strokeWidth={1.5} className="h-5 w-5" />
