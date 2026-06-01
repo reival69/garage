@@ -53,6 +53,40 @@ export function inspectionSummary(items: InspectionItem[]) {
   };
 }
 
+/**
+ * The most recent inspection across a vehicle's orders. Picks the order with
+ * the newest inspection date (falls back to createdAt). Returns the inspection
+ * together with its source order so the cartilla can show the date.
+ */
+export function latestVehicleInspection(
+  orders: WorkOrder[],
+): { inspection: Inspection; order: WorkOrder } | undefined {
+  const withInspection = orders.filter(
+    (o) => o.inspection && o.inspection.items.length > 0,
+  );
+  if (withInspection.length === 0) return undefined;
+  const order = withInspection.sort((a, b) =>
+    (b.inspection!.createdAt || b.createdAt).localeCompare(
+      a.inspection!.createdAt || a.createdAt,
+    ),
+  )[0];
+  return { inspection: order.inspection!, order };
+}
+
+/** Inspection points that are not OK (atención/crítico), worst first. */
+export function inspectionAttentionItems(
+  inspection: Inspection,
+): InspectionItem[] {
+  const order: Record<InspectionItem["status"], number> = {
+    critico: 0,
+    atencion: 1,
+    ok: 2,
+  };
+  return inspection.items
+    .filter((i) => i.status !== "ok")
+    .sort((a, b) => order[a.status] - order[b.status]);
+}
+
 /** Persist an inspection into the order (bumps updatedAt). */
 export function saveInspection(
   tenantId: string,
