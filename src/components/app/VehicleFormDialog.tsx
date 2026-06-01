@@ -293,6 +293,70 @@ export function VehicleFormDialog({
             />
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label>Combustible</Label>
+              <Select
+                value={form.fuelType || NONE}
+                onValueChange={(v) => set("fuelType", v === NONE ? "" : v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sin especificar" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE}>Sin especificar</SelectItem>
+                  {Object.entries(FUEL_TYPE_LABELS).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1.5">
+              <Label>Transmisión</Label>
+              <Select
+                value={form.transmission || NONE}
+                onValueChange={(v) => set("transmission", v === NONE ? "" : v)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sin especificar" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE}>Sin especificar</SelectItem>
+                  {Object.entries(TRANSMISSION_LABELS).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="v-cc">Cilindrada (cc)</Label>
+              <Input
+                id="v-cc"
+                type="number"
+                value={form.displacementCc}
+                onChange={(e) => set("displacementCc", e.target.value)}
+                placeholder="1600"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="v-hp">Potencia (CV)</Label>
+              <Input
+                id="v-hp"
+                type="number"
+                value={form.powerHp}
+                onChange={(e) => set("powerHp", e.target.value)}
+                placeholder="115"
+              />
+            </div>
+          </div>
+
           <div className="space-y-1.5">
             <Label htmlFor="v-notes">Notas</Label>
             <Textarea
