@@ -29,6 +29,7 @@ import { Route as AppServiciosRouteImport } from './routes/app.servicios'
 import { Route as AppResenasRouteImport } from './routes/app.resenas'
 import { Route as AppRecordatoriosRouteImport } from './routes/app.recordatorios'
 import { Route as AppPresupuestosRouteImport } from './routes/app.presupuestos'
+import { Route as AppMensajesRouteImport } from './routes/app.mensajes'
 import { Route as AppEquipoRouteImport } from './routes/app.equipo'
 import { Route as AppConfiguracionRouteImport } from './routes/app.configuracion'
 import { Route as AppCitasRouteImport } from './routes/app.citas'
@@ -143,6 +144,11 @@ const AppPresupuestosRoute = AppPresupuestosRouteImport.update({
   path: '/presupuestos',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMensajesRoute = AppMensajesRouteImport.update({
+  id: '/mensajes',
+  path: '/mensajes',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppEquipoRoute = AppEquipoRouteImport.update({
   id: '/equipo',
   path: '/equipo',
@@ -225,6 +231,7 @@ export interface FileRoutesByFullPath {
   '/app/citas': typeof AppCitasRoute
   '/app/configuracion': typeof AppConfiguracionRoute
   '/app/equipo': typeof AppEquipoRoute
+  '/app/mensajes': typeof AppMensajesRoute
   '/app/presupuestos': typeof AppPresupuestosRoute
   '/app/recordatorios': typeof AppRecordatoriosRoute
   '/app/resenas': typeof AppResenasRoute
@@ -258,6 +265,7 @@ export interface FileRoutesByTo {
   '/app/citas': typeof AppCitasRoute
   '/app/configuracion': typeof AppConfiguracionRoute
   '/app/equipo': typeof AppEquipoRoute
+  '/app/mensajes': typeof AppMensajesRoute
   '/app/presupuestos': typeof AppPresupuestosRoute
   '/app/recordatorios': typeof AppRecordatoriosRoute
   '/app/resenas': typeof AppResenasRoute
@@ -294,6 +302,7 @@ export interface FileRoutesById {
   '/app/citas': typeof AppCitasRoute
   '/app/configuracion': typeof AppConfiguracionRoute
   '/app/equipo': typeof AppEquipoRoute
+  '/app/mensajes': typeof AppMensajesRoute
   '/app/presupuestos': typeof AppPresupuestosRoute
   '/app/recordatorios': typeof AppRecordatoriosRoute
   '/app/resenas': typeof AppResenasRoute
@@ -331,6 +340,7 @@ export interface FileRouteTypes {
     | '/app/citas'
     | '/app/configuracion'
     | '/app/equipo'
+    | '/app/mensajes'
     | '/app/presupuestos'
     | '/app/recordatorios'
     | '/app/resenas'
@@ -364,6 +374,7 @@ export interface FileRouteTypes {
     | '/app/citas'
     | '/app/configuracion'
     | '/app/equipo'
+    | '/app/mensajes'
     | '/app/presupuestos'
     | '/app/recordatorios'
     | '/app/resenas'
@@ -399,6 +410,7 @@ export interface FileRouteTypes {
     | '/app/citas'
     | '/app/configuracion'
     | '/app/equipo'
+    | '/app/mensajes'
     | '/app/presupuestos'
     | '/app/recordatorios'
     | '/app/resenas'
@@ -577,6 +589,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPresupuestosRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/mensajes': {
+      id: '/app/mensajes'
+      path: '/mensajes'
+      fullPath: '/app/mensajes'
+      preLoaderRoute: typeof AppMensajesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/equipo': {
       id: '/app/equipo'
       path: '/equipo'
@@ -689,6 +708,7 @@ interface AppRouteChildren {
   AppCitasRoute: typeof AppCitasRoute
   AppConfiguracionRoute: typeof AppConfiguracionRoute
   AppEquipoRoute: typeof AppEquipoRoute
+  AppMensajesRoute: typeof AppMensajesRoute
   AppPresupuestosRoute: typeof AppPresupuestosRoute
   AppRecordatoriosRoute: typeof AppRecordatoriosRoute
   AppResenasRoute: typeof AppResenasRoute
@@ -709,6 +729,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCitasRoute: AppCitasRoute,
   AppConfiguracionRoute: AppConfiguracionRoute,
   AppEquipoRoute: AppEquipoRoute,
+  AppMensajesRoute: AppMensajesRoute,
   AppPresupuestosRoute: AppPresupuestosRoute,
   AppRecordatoriosRoute: AppRecordatoriosRoute,
   AppResenasRoute: AppResenasRoute,
