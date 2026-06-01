@@ -83,10 +83,12 @@ function AppLayout() {
   }, [ready, user, tenant, pathname, navigate]);
 
   // Maintenance reminders: on shop load, fire notifications for overdue
-  // reminders that haven't notified yet (once each).
+  // reminders that haven't notified yet (once each). Same sweep for upcoming /
+  // expired vehicle documents.
   useEffect(() => {
     if (!ready || !tenant) return;
     evaluateReminders(tenant.id);
+    evaluateDocumentExpiries(tenant.id);
   }, [ready, tenant]);
 
   if (!ready) {
