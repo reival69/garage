@@ -308,6 +308,7 @@ export interface FileRoutesById {
   '/app/resenas': typeof AppResenasRoute
   '/app/servicios': typeof AppServiciosRoute
   '/app/stock': typeof AppStockRoute
+  '/app/mensajes': typeof AppMensajesRoute
   '/c/$code': typeof CCodeRoute
   '/t/$slug': typeof TSlugRoute
   '/v/$code': typeof VCodeRoute
@@ -346,7 +347,6 @@ export interface FileRouteTypes {
     | '/app/resenas'
     | '/app/servicios'
     | '/app/stock'
-    | '/app/mensajes'
     | '/c/$code'
     | '/t/$slug'
     | '/v/$code'
