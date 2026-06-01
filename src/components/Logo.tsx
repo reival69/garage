@@ -56,13 +56,6 @@ export function Logo({ className, showMark = true, logoUrl }: LogoProps) {
         className,
       )}
     >
-      {showMark && (
-        <span
-          className="inline-block h-2 w-2 rounded-full"
-          style={{ backgroundColor: "var(--talleo-accent)" }}
-          aria-hidden
-        />
-      )}
       <svg
         viewBox="0 0 2920 889"
         role="img"
