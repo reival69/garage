@@ -217,6 +217,47 @@ const INSP_OK: Array<["ok" | "atencion" | "critico", string, string?]> = [
   ["ok", "Iluminación"],
 ];
 
+// Showcase history applied to each tenant's vehicle 0: delivered orders spread
+// across past years (each with its own invoice + check-in) so the public
+// cartilla shows multi-year spend and a clearly rising odometer. kmRatio is the
+// fraction of the vehicle's current km recorded at that point in time.
+const SHOWCASE_ORDERS: Array<{
+  yearsAgo: number;
+  kmRatio: number;
+  problem: string;
+  lines: QuoteLineSeed[];
+}> = [
+  {
+    yearsAgo: 4,
+    kmRatio: 0.62,
+    problem: "Revisión general y cambio de aceite",
+    lines: [
+      { type: "labor", description: "Mano de obra — revisión", qty: 2, unitPrice: 45 },
+      { type: "part", description: "Aceite sintético 5W30 (4L)", qty: 4, unitPrice: 10 },
+      { type: "part", description: "Filtro de aceite", qty: 1, unitPrice: 12 },
+    ],
+  },
+  {
+    yearsAgo: 3,
+    kmRatio: 0.74,
+    problem: "Distribución y bomba de agua",
+    lines: [
+      { type: "labor", description: "Mano de obra — distribución", qty: 3, unitPrice: 45 },
+      { type: "part", description: "Kit de distribución", qty: 1, unitPrice: 180, warrantyMonths: 24, warrantyKm: 60000 },
+    ],
+  },
+  {
+    yearsAgo: 2,
+    kmRatio: 0.86,
+    problem: "Frenos delanteros y traseros",
+    lines: [
+      { type: "labor", description: "Mano de obra — frenos", qty: 2, unitPrice: 45 },
+      { type: "part", description: "Pastillas de freno delanteras", qty: 1, unitPrice: 48, warrantyMonths: 12 },
+      { type: "part", description: "Discos de freno delanteros", qty: 2, unitPrice: 65 },
+    ],
+  },
+];
+
 // ---- Builders --------------------------------------------------------------
 
 function quoteApproved(status: WorkOrderStatus): boolean {
