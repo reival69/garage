@@ -55,6 +55,32 @@ const DAY_LABELS = [
   "Domingo",
 ];
 
+// Labels + helper text for the optional, toggleable modules.
+const MODULE_INFO: Record<
+  ToggleableModule,
+  { label: string; description: string }
+> = {
+  stock: { label: "Stock", description: "Inventario de repuestos y avisos de bajo stock." },
+  mensajes: { label: "Mensajes", description: "Bandeja de chat con los clientes por orden." },
+  recordatorios: { label: "Recordatorios", description: "Mantenimientos y vencimientos de documentos." },
+  resenas: { label: "Reseñas", description: "Valoraciones de clientes tras la entrega." },
+  reserva_online: { label: "Reserva online", description: "Asistente de cita en la página pública del taller." },
+};
+
+// Core modules — always active (informative, no switch).
+const CORE_MODULE_LABELS = [
+  "Inicio",
+  "Órdenes",
+  "Clientes",
+  "Vehículos",
+  "Citas",
+  "Presupuestos",
+  "Facturación",
+  "Servicios",
+  "Equipo",
+  "Configuración",
+];
+
 function defaultHours(): BusinessDay[] {
   return DAY_LABELS.map((_, i) => ({
     open: i < 5,
