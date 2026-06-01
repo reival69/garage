@@ -285,7 +285,7 @@ function GuestView() {
         <OrderInvoiceSection order={order} tenant={tenant} vehicle={vehicle} />
 
         {/* Post-delivery review (only when delivered) */}
-        {order.status === "entregado" && (
+        {order.status === "entregado" && isModuleEnabled(tenant, "resenas") && (
           <ReviewSection
             order={order}
             tenant={tenant}
