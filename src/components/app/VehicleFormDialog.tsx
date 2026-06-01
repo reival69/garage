@@ -141,6 +141,10 @@ export function VehicleFormDialog({
       km: Number(form.km) || 0,
       vin: form.vin.trim() || undefined,
       color: form.color.trim() || undefined,
+      fuelType: (form.fuelType || undefined) as FuelType | undefined,
+      transmission: (form.transmission || undefined) as Transmission | undefined,
+      displacementCc: Number(form.displacementCc) || undefined,
+      powerHp: Number(form.powerHp) || undefined,
       notes: form.notes.trim() || undefined,
     };
 
