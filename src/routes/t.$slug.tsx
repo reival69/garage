@@ -28,6 +28,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { findTenantBySlug, servicesRepo } from "@/lib/db";
 import { requestOnlineAppointment } from "@/lib/appointments";
+import { isModuleEnabled } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import type { Service, Tenant } from "@/types";
 
@@ -195,6 +196,7 @@ function BookingFlow({ tenant }: { tenant: Tenant }) {
             <ShopInfo tenant={tenant} />
             <ShopMap tenant={tenant} />
 
+            {isModuleEnabled(tenant, "reserva_online") ? (
             <div className="mt-6 rounded-xl border border-border bg-card p-5 sm:p-6">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Calendar strokeWidth={1.5} className="h-4 w-4" />
@@ -290,6 +292,21 @@ function BookingFlow({ tenant }: { tenant: Tenant }) {
                 )}
               </div>
             </div>
+            ) : (
+              <div className="mt-6 rounded-xl border border-border bg-card p-5 sm:p-6 text-center">
+                <Calendar
+                  strokeWidth={1.5}
+                  className="mx-auto mb-2 h-6 w-6 text-muted-foreground"
+                />
+                <p className="text-sm font-medium text-foreground">
+                  Reservas online no disponibles
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Este taller no acepta citas online por el momento. Puedes
+                  contactar directamente con los datos de arriba.
+                </p>
+              </div>
+            )}
           </>
         )}
       </main>

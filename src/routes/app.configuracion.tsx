@@ -22,6 +22,11 @@ import {
 import { useAuth } from "@/lib/auth/AuthContext";
 import { tenantsRepo } from "@/lib/db";
 import { compressImage } from "@/lib/image";
+import {
+  TOGGLEABLE_MODULES,
+  isModuleEnabled,
+  type ToggleableModule,
+} from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import type { BusinessDay } from "@/types";
 
@@ -48,6 +53,32 @@ const DAY_LABELS = [
   "Viernes",
   "Sábado",
   "Domingo",
+];
+
+// Labels + helper text for the optional, toggleable modules.
+const MODULE_INFO: Record<
+  ToggleableModule,
+  { label: string; description: string }
+> = {
+  stock: { label: "Stock", description: "Inventario de repuestos y avisos de bajo stock." },
+  mensajes: { label: "Mensajes", description: "Bandeja de chat con los clientes por orden." },
+  recordatorios: { label: "Recordatorios", description: "Mantenimientos y vencimientos de documentos." },
+  resenas: { label: "Reseñas", description: "Valoraciones de clientes tras la entrega." },
+  reserva_online: { label: "Reserva online", description: "Asistente de cita en la página pública del taller." },
+};
+
+// Core modules — always active (informative, no switch).
+const CORE_MODULE_LABELS = [
+  "Inicio",
+  "Órdenes",
+  "Clientes",
+  "Vehículos",
+  "Citas",
+  "Presupuestos",
+  "Facturación",
+  "Servicios",
+  "Equipo",
+  "Configuración",
 ];
 
 function defaultHours(): BusinessDay[] {
@@ -120,6 +151,13 @@ function ConfigPage() {
       ? tenant.businessHours
       : defaultHours(),
   );
+  const [enabledModules, setEnabledModules] = useState<
+    Partial<Record<string, boolean>>
+  >(() => {
+    const init: Partial<Record<string, boolean>> = {};
+    for (const m of TOGGLEABLE_MODULES) init[m] = isModuleEnabled(tenant, m);
+    return init;
+  });
   const [saving, setSaving] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -164,6 +202,7 @@ function ConfigPage() {
       googleReviewUrl: googleReviewUrl.trim() || undefined,
       businessHours: hours,
       locations,
+      enabledModules,
     });
     refresh();
     setSaving(false);
@@ -359,6 +398,51 @@ function ConfigPage() {
             />
           </Field>
         </Section>
+
+        <Section
+          title="Módulos"
+          description="Activa o desactiva las funciones opcionales de tu taller. Desactivar un módulo solo lo oculta; no borra datos."
+        >
+          <div className="space-y-2">
+            {TOGGLEABLE_MODULES.map((m) => {
+              const info = MODULE_INFO[m];
+              const on = enabledModules[m] ?? true;
+              return (
+                <div
+                  key={m}
+                  className="flex items-center justify-between gap-3 rounded-md border border-border-subtle px-3 py-3"
+                >
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground">
+                      {info.label}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {info.description}
+                    </p>
+                  </div>
+                  <Switch
+                    checked={on}
+                    onCheckedChange={(v) =>
+                      setEnabledModules((prev) => ({ ...prev, [m]: v }))
+                    }
+                    aria-label={info.label}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="rounded-md border border-border-subtle bg-background-subtle p-3">
+            <p className="text-xs font-medium text-foreground">
+              Siempre activos
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {CORE_MODULE_LABELS.join(" · ")}
+            </p>
+          </div>
+        </Section>
+
+
 
 
 

@@ -46,6 +46,9 @@ export interface Tenant {
   logoUrl?: string; // base64 image; falls back to the "Talleo" wordmark
   businessHours?: BusinessDay[]; // length 7, Monday → Sunday
   googleReviewUrl?: string; // public Google review link offered to happy customers
+  // Optional modules enabled/disabled per shop (Configuración → Módulos).
+  // Missing key = enabled by default. Core modules are always on.
+  enabledModules?: Partial<Record<string, boolean>>;
 }
 
 export interface User {

@@ -40,6 +40,7 @@ import {
 import { getInvoiceByWorkOrderId } from "@/lib/invoices";
 import { createReview, getReviewByOrderId } from "@/lib/reviews";
 import { inspectionSummary } from "@/lib/inspection";
+import { isModuleEnabled } from "@/lib/permissions";
 import { formatCurrencyCents, formatDate, formatDateTime } from "@/lib/format";
 import {
   Dialog,
@@ -284,7 +285,7 @@ function GuestView() {
         <OrderInvoiceSection order={order} tenant={tenant} vehicle={vehicle} />
 
         {/* Post-delivery review (only when delivered) */}
-        {order.status === "entregado" && (
+        {order.status === "entregado" && isModuleEnabled(tenant, "resenas") && (
           <ReviewSection
             order={order}
             tenant={tenant}
