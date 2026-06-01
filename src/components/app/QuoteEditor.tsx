@@ -240,7 +240,8 @@ function QuoteItemDialog({
   const parts = useMemo(() => partsRepo.list(tenant.id), [tenant.id]);
 
   const [type, setType] = useState<QuoteItem["type"]>(item?.type ?? "labor");
-  const [catalogId, setCatalogId] = useState<string>(CUSTOM);
+  const [catalogId, setCatalogId] = useState<string>(item?.partId ?? CUSTOM);
+  const [partId, setPartId] = useState<string | undefined>(item?.partId);
   const [description, setDescription] = useState(item?.description ?? "");
   const [qty, setQty] = useState(String(item?.qty ?? 1));
   const [unitPrice, setUnitPrice] = useState(String(item?.unitPrice ?? 0));
@@ -254,11 +255,15 @@ function QuoteItemDialog({
   const onTypeChange = (v: QuoteItem["type"]) => {
     setType(v);
     setCatalogId(CUSTOM);
+    setPartId(undefined);
   };
 
   const onCatalogChange = (v: string) => {
     setCatalogId(v);
-    if (v === CUSTOM) return;
+    if (v === CUSTOM) {
+      setPartId(undefined);
+      return;
+    }
     if (type === "labor") {
       const s = services.find((x) => x.id === v);
       if (s) {
@@ -270,6 +275,7 @@ function QuoteItemDialog({
       if (p) {
         setDescription(p.name);
         setUnitPrice(String(p.price));
+        setPartId(p.id);
       }
     }
   };
@@ -292,6 +298,7 @@ function QuoteItemDialog({
         warrantyMonths.trim() !== "" && months > 0 ? Math.round(months) : undefined,
       warrantyKm:
         warrantyKm.trim() !== "" && km > 0 ? Math.round(km) : undefined,
+      partId: type === "part" ? partId : undefined,
     });
   };
 
