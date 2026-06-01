@@ -100,8 +100,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Talleo es un asistente digital SaaS para talleres mecánicos que gestiona citas, clientes, órdenes de reparación y facturación." },
       { property: "og:description", content: "Talleo es un asistente digital SaaS para talleres mecánicos que gestiona citas, clientes, órdenes de reparación y facturación." },
       { name: "twitter:description", content: "Talleo es un asistente digital SaaS para talleres mecánicos que gestiona citas, clientes, órdenes de reparación y facturación." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/36d90d25-d04b-4ce6-be3a-416d43b7c581/id-preview-a7273ff6--7e6f5a7a-4b80-4bc9-bc1b-68eb160178c1.lovable.app-1780275782777.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/36d90d25-d04b-4ce6-be3a-416d43b7c581/id-preview-a7273ff6--7e6f5a7a-4b80-4bc9-bc1b-68eb160178c1.lovable.app-1780275782777.png" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/66e4df13-9cdf-4e5a-bea0-9b60af3d8fe4/id-preview-5555b5a6--7e6f5a7a-4b80-4bc9-bc1b-68eb160178c1.lovable.app-1780312705979.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/66e4df13-9cdf-4e5a-bea0-9b60af3d8fe4/id-preview-5555b5a6--7e6f5a7a-4b80-4bc9-bc1b-68eb160178c1.lovable.app-1780312705979.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
