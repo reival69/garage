@@ -90,6 +90,11 @@ export function ControlPanel() {
     navigate({ to: "/c/$code", params: { code } });
   };
 
+  const openCartilla = (code: string) => {
+    close();
+    navigate({ to: "/v/$code", params: { code } });
+  };
+
   const openPublic = (slug: string) => {
     close();
     navigate({ to: "/t/$slug", params: { slug } });
