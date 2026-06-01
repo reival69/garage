@@ -38,7 +38,7 @@ import { quoteTotals } from "@/lib/orders";
 
 const SEED_FLAG = "seeded";
 // Bump when the seed shape changes to force a clean reseed of the demo.
-const SEED_VERSION = "9";
+const SEED_VERSION = "10";
 
 // Tiny base64 placeholder images (kept small to respect the ~5MB quota).
 const PHOTO_A =
@@ -185,6 +185,14 @@ interface OrderSeed {
   invoiceStatus?: Invoice["status"]; // delivered orders only
   review?: { rating: number; comment?: string };
   customerMessage?: string;
+  // Optional richer chat thread (overrides the default messages). hAgo = hours
+  // ago for createdAt; read=false on customer messages keeps them unread.
+  thread?: Array<{
+    from: "shop" | "customer";
+    text: string;
+    hAgo: number;
+    read?: boolean;
+  }>;
 }
 
 interface ReminderSeed {
@@ -499,24 +507,36 @@ function seedTenant(ts: TenantSeed): void {
             createdAt: hoursAgo(44 - i),
           }
         : undefined,
-      messages: [
-        {
-          id: uid("m"),
-          from: "shop",
-          text: "Hemos recibido su vehículo, le mantendremos informado.",
-          createdAt: hoursAgo(46 - i),
-        },
-        ...(spec.customerMessage
-          ? [
-              {
-                id: uid("m"),
-                from: "customer" as const,
-                text: spec.customerMessage,
-                createdAt: hoursAgo(20),
-              },
-            ]
-          : []),
-      ],
+      messages: spec.thread
+        ? spec.thread.map((m) => ({
+            id: uid("m"),
+            from: m.from,
+            text: m.text,
+            createdAt: hoursAgo(m.hAgo),
+            // Shop messages are always "read" by the customer side; customer
+            // messages keep the seeded read flag (default unread).
+            read: m.from === "shop" ? true : m.read ?? false,
+          }))
+        : [
+            {
+              id: uid("m"),
+              from: "shop" as const,
+              text: "Hemos recibido su vehículo, le mantendremos informado.",
+              createdAt: hoursAgo(46 - i),
+              read: true,
+            },
+            ...(spec.customerMessage
+              ? [
+                  {
+                    id: uid("m"),
+                    from: "customer" as const,
+                    text: spec.customerMessage,
+                    createdAt: hoursAgo(20),
+                    read: false,
+                  },
+                ]
+              : []),
+          ],
       quoteApproval: decided
         ? { signature: SIGNATURE, decidedAt: hoursAgo(30 - i) }
         : undefined,
@@ -746,9 +766,16 @@ const GARCIA: TenantSeed = {
       vehicleIdx: 2,
       status: "presupuesto_enviado",
       problem: "Revisión de frenos completa",
-      customerMessage: "¿El precio incluye IVA?",
       checkin: { km: 54100, fuel: 80 },
       inspection: INSP_MIXED,
+      thread: [
+        { from: "shop", text: "Hemos recibido su vehículo, le mantendremos informado.", hAgo: 46 },
+        { from: "shop", text: "Ya tenemos el diagnóstico: hay que cambiar pastillas y discos delanteros. Le enviamos el presupuesto.", hAgo: 30 },
+        { from: "customer", text: "Gracias. ¿El precio incluye IVA?", hAgo: 26 },
+        { from: "shop", text: "Sí, todos los importes del presupuesto ya llevan el IVA incluido.", hAgo: 25 },
+        { from: "customer", text: "Perfecto. ¿Para cuándo estaría listo si lo apruebo hoy?", hAgo: 3, read: false },
+        { from: "customer", text: "Y otra cosa, ¿la garantía cubre los discos también?", hAgo: 2, read: false },
+      ],
       lines: [
         { type: "labor", description: "Mano de obra — frenos", qty: 2, unitPrice: 45 },
         { type: "part", description: "Pastillas de freno delanteras", qty: 1, unitPrice: 48, ...BRAKE_WARRANTY },
@@ -771,6 +798,13 @@ const GARCIA: TenantSeed = {
       status: "en_reparacion",
       problem: "Distribución a los 90.000 km",
       checkin: { km: 32000, fuel: 70 },
+      thread: [
+        { from: "shop", text: "Hemos recibido su vehículo, le mantendremos informado.", hAgo: 48 },
+        { from: "customer", text: "Buenos días, ¿han podido empezar ya con la distribución?", hAgo: 28 },
+        { from: "shop", text: "Sí, estamos con ello. Aprovechamos para revisar la bomba de agua.", hAgo: 27 },
+        { from: "customer", text: "Genial, gracias por avisar.", hAgo: 26 },
+        { from: "customer", text: "¿Creéis que estará para el viernes?", hAgo: 1, read: false },
+      ],
       lines: [
         { type: "labor", description: "Mano de obra — distribución", qty: 3, unitPrice: 45 },
         { type: "part", description: "Kit de distribución", qty: 1, unitPrice: 180, warrantyMonths: 24, warrantyKm: 60000 },
@@ -781,6 +815,11 @@ const GARCIA: TenantSeed = {
       status: "listo",
       problem: "Cambio de aceite y filtros",
       checkin: { km: 67200, fuel: 45 },
+      thread: [
+        { from: "shop", text: "Hemos recibido su vehículo, le mantendremos informado.", hAgo: 20 },
+        { from: "shop", text: "Su coche ya está listo para recoger. ¡Le esperamos!", hAgo: 2 },
+        { from: "customer", text: "Perfecto, paso esta tarde a recogerlo. ¡Gracias!", hAgo: 1 },
+      ],
       lines: [
         { type: "labor", description: "Mano de obra — mantenimiento", qty: 1, unitPrice: 45 },
         { type: "part", description: "Aceite sintético 5W30 (4L)", qty: 4, unitPrice: 10 },

@@ -187,6 +187,9 @@ export interface OrderMessage {
   from: "shop" | "customer";
   text: string;
   createdAt: string;
+  // Whether the recipient has read this message. In the shop inbox, "unread"
+  // means customer messages (from: 'customer') with read falsy.
+  read?: boolean;
 }
 
 export interface WorkOrder {

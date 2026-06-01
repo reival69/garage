@@ -16,6 +16,7 @@ import {
   Receipt,
   Wrench,
   Boxes,
+  MessageSquare,
   BellRing,
   Star,
   UsersRound,
@@ -31,6 +32,7 @@ import { can, moduleForPath } from "@/lib/permissions";
 import { evaluateReminders } from "@/lib/reminders";
 import { evaluateDocumentExpiries } from "@/lib/documents";
 import { evaluateLowStock } from "@/lib/stock";
+import { unreadMessagesCount } from "@/lib/inbox";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/app")({
@@ -47,6 +49,7 @@ const NAV = [
   { to: "/app/facturacion", label: "Facturación", icon: Receipt, exact: false, module: "facturacion" },
   { to: "/app/servicios", label: "Servicios", icon: Wrench, exact: false, module: "servicios" },
   { to: "/app/stock", label: "Stock", icon: Boxes, exact: false, module: "stock" },
+  { to: "/app/mensajes", label: "Mensajes", icon: MessageSquare, exact: false, module: "mensajes" },
   { to: "/app/recordatorios", label: "Recordatorios", icon: BellRing, exact: false, module: "recordatorios" },
   { to: "/app/resenas", label: "Reseñas", icon: Star, exact: false, module: "resenas" },
   { to: "/app/equipo", label: "Equipo", icon: UsersRound, exact: false, module: "equipo" },
@@ -105,6 +108,9 @@ function AppLayout() {
   const navItems = NAV.filter((item) => can(user.role, item.module));
   const bottomItems = BOTTOM.filter((item) => can(user.role, item.module));
 
+  // Unread customer messages badge (recomputed on every navigation).
+  const unreadMessages = unreadMessagesCount(tenant.id);
+
   const accentStyle = tenant
     ? ({ ["--talleo-accent" as string]: tenant.accentColor } as React.CSSProperties)
     : undefined;
@@ -141,7 +147,12 @@ function AppLayout() {
                 )}
               >
                 <item.icon strokeWidth={1.5} className="h-4 w-4" />
-                {item.label}
+                <span className="flex-1">{item.label}</span>
+                {item.module === "mensajes" && unreadMessages > 0 && (
+                  <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium leading-none text-primary-foreground">
+                    {unreadMessages > 9 ? "9+" : unreadMessages}
+                  </span>
+                )}
               </Link>
             );
           })}
