@@ -106,6 +106,11 @@ export function VehicleFormDialog({
         km: String(vehicle.km ?? ""),
         vin: vehicle.vin ?? "",
         color: vehicle.color ?? "",
+        fuelType: vehicle.fuelType ?? "",
+        transmission: vehicle.transmission ?? "",
+        displacementCc:
+          vehicle.displacementCc != null ? String(vehicle.displacementCc) : "",
+        powerHp: vehicle.powerHp != null ? String(vehicle.powerHp) : "",
         notes: vehicle.notes ?? "",
       });
     } else {
