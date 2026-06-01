@@ -561,6 +561,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppStockRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/mensajes': {
+      id: '/app/mensajes'
+      path: '/mensajes'
+      fullPath: '/app/mensajes'
+      preLoaderRoute: typeof AppMensajesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/servicios': {
       id: '/app/servicios'
       path: '/servicios'
