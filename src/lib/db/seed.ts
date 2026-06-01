@@ -377,7 +377,7 @@ function seedTenant(ts: TenantSeed): void {
               ? [{ x: 0.32, y: 0.45, note: "Rayón en puerta delantera" }]
               : [],
             customerSignature: SIGNATURE,
-            createdAt: hoursAgo(47 - i),
+            createdAt: checkInIso,
           }
         : undefined,
       inspection: spec.inspection
