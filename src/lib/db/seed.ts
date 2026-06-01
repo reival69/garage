@@ -293,6 +293,54 @@ function buildItems(
   }));
 }
 
+/**
+ * Example documents for the first vehicles of each tenant, with a mix of
+ * vigente / por vencer (≤30 días) / vencido statuses so the cartilla and the
+ * notification sweep have something meaningful to show.
+ */
+function buildVehicleDocs(
+  tenantId: string,
+  vehicleId: string,
+  vi: number,
+): VehicleDocument[] {
+  const make = (
+    type: VehicleDocument["type"],
+    expiryIso: string,
+    note?: string,
+  ): VehicleDocument => ({
+    id: uid("vdoc"),
+    tenantId,
+    vehicleId,
+    type,
+    expiryDate: expiryIso,
+    note,
+    notified: false,
+    createdAt: daysAgo(40 + vi),
+  });
+
+  if (vi === 0) {
+    return [
+      make("itv", daysFromNow(-18), "Pendiente de pasar la ITV."),
+      make("seguro", daysFromNow(210)),
+    ];
+  }
+  if (vi === 1) {
+    return [
+      make("itv", daysFromNow(14), "Próxima cita en el centro ITV."),
+      make("impuesto", daysFromNow(160)),
+    ];
+  }
+  if (vi === 2) {
+    return [
+      make("seguro", daysFromNow(22), "Renovación de la póliza próxima."),
+      make("itv", daysFromNow(320)),
+    ];
+  }
+  return [];
+}
+
+
+
 function seedTenant(ts: TenantSeed): void {
   const { tenant, f } = { tenant: ts.tenant, f: ts.priceFactor };
   tenantsRepo.create(tenant);
