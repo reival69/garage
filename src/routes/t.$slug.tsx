@@ -28,6 +28,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { findTenantBySlug, servicesRepo } from "@/lib/db";
 import { requestOnlineAppointment } from "@/lib/appointments";
+import { isModuleEnabled } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import type { Service, Tenant } from "@/types";
 
