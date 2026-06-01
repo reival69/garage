@@ -82,12 +82,9 @@ function CartillaView() {
   }, [ready, load]);
 
   if (state.kind === "loading") {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background-subtle">
-        <p className="text-sm text-muted-foreground">Cargando…</p>
-      </div>
-    );
+    return <PublicLoading />;
   }
+
 
   if (state.kind === "invalid") {
     return (
