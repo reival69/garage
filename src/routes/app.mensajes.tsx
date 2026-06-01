@@ -29,7 +29,7 @@ import {
 import { addShopMessage, STATUS_LABELS } from "@/lib/orders";
 import { formatTime, isToday } from "@/lib/format";
 import { relativeTime } from "@/lib/notifications";
-import { workOrdersRepo } from "@/lib/db";
+
 import { canEdit } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
