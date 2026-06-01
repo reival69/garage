@@ -347,6 +347,12 @@ function seedTenant(ts: TenantSeed): void {
     const v = vehicles[spec.vehicleIdx % vehicles.length];
     const items = buildItems(spec.lines, spec.status, f);
     const decided = quoteApproved(spec.status);
+    // Delivered orders are spread across past months/years so the km trend and
+    // the per-year spend breakdown show history; active orders stay recent.
+    const delivered = spec.status === "entregado";
+    const ageDays = delivered ? 120 + i * 95 : 0;
+    const baseIso = delivered ? daysAgo(ageDays) : hoursAgo(50 - i * 2);
+    const checkInIso = delivered ? daysAgo(ageDays) : hoursAgo(47 - i);
 
     const order = workOrdersRepo.create(t, {
       tenantId: t,
