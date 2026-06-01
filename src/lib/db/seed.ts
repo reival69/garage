@@ -766,9 +766,16 @@ const GARCIA: TenantSeed = {
       vehicleIdx: 2,
       status: "presupuesto_enviado",
       problem: "Revisión de frenos completa",
-      customerMessage: "¿El precio incluye IVA?",
       checkin: { km: 54100, fuel: 80 },
       inspection: INSP_MIXED,
+      thread: [
+        { from: "shop", text: "Hemos recibido su vehículo, le mantendremos informado.", hAgo: 46 },
+        { from: "shop", text: "Ya tenemos el diagnóstico: hay que cambiar pastillas y discos delanteros. Le enviamos el presupuesto.", hAgo: 30 },
+        { from: "customer", text: "Gracias. ¿El precio incluye IVA?", hAgo: 26 },
+        { from: "shop", text: "Sí, todos los importes del presupuesto ya llevan el IVA incluido.", hAgo: 25 },
+        { from: "customer", text: "Perfecto. ¿Para cuándo estaría listo si lo apruebo hoy?", hAgo: 3, read: false },
+        { from: "customer", text: "Y otra cosa, ¿la garantía cubre los discos también?", hAgo: 2, read: false },
+      ],
       lines: [
         { type: "labor", description: "Mano de obra — frenos", qty: 2, unitPrice: 45 },
         { type: "part", description: "Pastillas de freno delanteras", qty: 1, unitPrice: 48, ...BRAKE_WARRANTY },
