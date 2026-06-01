@@ -254,7 +254,6 @@ function Landing() {
           <Reveal delay={120} className="relative">
             <div className="relative">
               <KanbanMockup />
-              <PhoneClientView className="absolute -bottom-10 -right-2 hidden sm:block lg:-right-6" />
             </div>
           </Reveal>
         </div>
