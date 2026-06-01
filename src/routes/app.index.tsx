@@ -8,6 +8,7 @@ import {
   BellRing,
   Star,
   Activity,
+  Boxes,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
@@ -24,6 +25,7 @@ import {
   workOrdersRepo,
 } from "@/lib/db";
 import { dueReminders } from "@/lib/reminders";
+import { lowStockCount } from "@/lib/stock";
 import { listNotifications, relativeTime } from "@/lib/notifications";
 import { formatCurrency, formatTime, isToday } from "@/lib/format";
 import type { Appointment, AppNotification } from "@/types";
