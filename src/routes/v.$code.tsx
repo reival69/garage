@@ -128,6 +128,14 @@ function CartillaView() {
   const gallery = galleryPhotos(vehicle);
   const spend = computeVehicleSpend(tenant.id, orders);
   const kmHistory = buildKmHistory(vehicle, orders);
+  const documents = listVehicleDocuments(vehicle);
+  const latestInspection = latestVehicleInspection(orders);
+  const inspectionAttention = latestInspection
+    ? inspectionAttentionItems(latestInspection.inspection)
+    : [];
+  const inspectionStats = latestInspection
+    ? inspectionSummary(latestInspection.inspection.items)
+    : null;
   const techSpecs: Array<[string, string]> = [];
   if (vehicle.vin) techSpecs.push(["VIN", vehicle.vin]);
   if (vehicle.color) techSpecs.push(["Color", vehicle.color]);
