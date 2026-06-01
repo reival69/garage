@@ -28,7 +28,7 @@ import {
 } from "@/lib/inbox";
 import { addShopMessage } from "@/lib/orders";
 import { STATUS_LABELS } from "@/lib/orders";
-import { formatTime, formatDate, isToday } from "@/lib/format";
+import { formatTime, isToday } from "@/lib/format";
 import { relativeTime } from "@/lib/notifications";
 import { workOrdersRepo } from "@/lib/db";
 import { canEdit } from "@/lib/permissions";
