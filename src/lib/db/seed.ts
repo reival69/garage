@@ -507,24 +507,36 @@ function seedTenant(ts: TenantSeed): void {
             createdAt: hoursAgo(44 - i),
           }
         : undefined,
-      messages: [
-        {
-          id: uid("m"),
-          from: "shop",
-          text: "Hemos recibido su vehículo, le mantendremos informado.",
-          createdAt: hoursAgo(46 - i),
-        },
-        ...(spec.customerMessage
-          ? [
-              {
-                id: uid("m"),
-                from: "customer" as const,
-                text: spec.customerMessage,
-                createdAt: hoursAgo(20),
-              },
-            ]
-          : []),
-      ],
+      messages: spec.thread
+        ? spec.thread.map((m) => ({
+            id: uid("m"),
+            from: m.from,
+            text: m.text,
+            createdAt: hoursAgo(m.hAgo),
+            // Shop messages are always "read" by the customer side; customer
+            // messages keep the seeded read flag (default unread).
+            read: m.from === "shop" ? true : m.read ?? false,
+          }))
+        : [
+            {
+              id: uid("m"),
+              from: "shop" as const,
+              text: "Hemos recibido su vehículo, le mantendremos informado.",
+              createdAt: hoursAgo(46 - i),
+              read: true,
+            },
+            ...(spec.customerMessage
+              ? [
+                  {
+                    id: uid("m"),
+                    from: "customer" as const,
+                    text: spec.customerMessage,
+                    createdAt: hoursAgo(20),
+                    read: false,
+                  },
+                ]
+              : []),
+          ],
       quoteApproval: decided
         ? { signature: SIGNATURE, decidedAt: hoursAgo(30 - i) }
         : undefined,
