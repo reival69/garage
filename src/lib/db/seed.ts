@@ -185,6 +185,14 @@ interface OrderSeed {
   invoiceStatus?: Invoice["status"]; // delivered orders only
   review?: { rating: number; comment?: string };
   customerMessage?: string;
+  // Optional richer chat thread (overrides the default messages). hAgo = hours
+  // ago for createdAt; read=false on customer messages keeps them unread.
+  thread?: Array<{
+    from: "shop" | "customer";
+    text: string;
+    hAgo: number;
+    read?: boolean;
+  }>;
 }
 
 interface ReminderSeed {
