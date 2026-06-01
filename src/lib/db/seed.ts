@@ -38,7 +38,7 @@ import { quoteTotals } from "@/lib/orders";
 
 const SEED_FLAG = "seeded";
 // Bump when the seed shape changes to force a clean reseed of the demo.
-const SEED_VERSION = "8";
+const SEED_VERSION = "9";
 
 // Tiny base64 placeholder images (kept small to respect the ~5MB quota).
 const PHOTO_A =
@@ -134,13 +134,17 @@ const SERVICE_NAMES: Array<[string, number, number]> = [
   ["Distribución (correa)", 350, 180],
 ];
 
-const PART_NAMES: Array<[string, number, string]> = [
-  ["Filtro de aceite", 12.5, "FO-1024"],
-  ["Pastillas de freno delanteras", 48.0, "PF-2048"],
-  ["Aceite sintético 5W30 (1L)", 9.9, "AC-5W30"],
-  ["Batería 70Ah", 95.0, "BAT-70"],
-  ["Neumático 205/55 R16", 78.0, "NE-2055"],
-  ["Kit de embrague", 210.0, "EMB-KIT"],
+// [name, price, sku, stockQty, minStock, location]. Some parts are seeded at or
+// below their minimum so the "Bajo stock" badge and the alert show on the demo.
+const PART_NAMES: Array<
+  [string, number, string, number, number, string]
+> = [
+  ["Filtro de aceite", 12.5, "FO-1024", 24, 8, "Estante A-1"],
+  ["Pastillas de freno delanteras", 48.0, "PF-2048", 3, 6, "Estante B-2"],
+  ["Aceite sintético 5W30 (1L)", 9.9, "AC-5W30", 40, 12, "Estante A-3"],
+  ["Batería 70Ah", 95.0, "BAT-70", 2, 3, "Estante C-1"],
+  ["Neumático 205/55 R16", 78.0, "NE-2055", 10, 4, "Almacén exterior"],
+  ["Kit de embrague", 210.0, "EMB-KIT", 1, 2, "Estante C-4"],
 ];
 
 // ---- Per-tenant seed shapes ------------------------------------------------
@@ -382,12 +386,16 @@ function seedTenant(ts: TenantSeed): void {
       estimatedMinutes,
     } as Omit<Service, "id">),
   );
-  PART_NAMES.forEach(([name, price, sku]) =>
+  PART_NAMES.forEach(([name, price, sku, stockQty, minStock, location]) =>
     partsRepo.create(t, {
       tenantId: t,
       name,
       price: Math.round(price * f),
       sku,
+      stockQty,
+      minStock,
+      location,
+      lowStockNotified: false,
     } as Omit<Part, "id">),
   );
 
