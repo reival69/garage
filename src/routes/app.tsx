@@ -49,6 +49,7 @@ const NAV = [
   { to: "/app/facturacion", label: "Facturación", icon: Receipt, exact: false, module: "facturacion" },
   { to: "/app/servicios", label: "Servicios", icon: Wrench, exact: false, module: "servicios" },
   { to: "/app/stock", label: "Stock", icon: Boxes, exact: false, module: "stock" },
+  { to: "/app/mensajes", label: "Mensajes", icon: MessageSquare, exact: false, module: "mensajes" },
   { to: "/app/recordatorios", label: "Recordatorios", icon: BellRing, exact: false, module: "recordatorios" },
   { to: "/app/resenas", label: "Reseñas", icon: Star, exact: false, module: "resenas" },
   { to: "/app/equipo", label: "Equipo", icon: UsersRound, exact: false, module: "equipo" },
