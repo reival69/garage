@@ -315,6 +315,15 @@ function VehicleDetail() {
             onSaved={bump}
           />
 
+          {/* Documents & expiries */}
+          <VehicleDocumentsCard
+            tenantId={tenant.id}
+            vehicle={vehicle}
+            editable={canEdit(user.role, "vehiculos")}
+            onSaved={bump}
+          />
+
+
           {/* Photos collected from the work orders */}
           <DataCard title={`Fotos por orden (${photos.length})`}>
             {photos.length === 0 ? (
