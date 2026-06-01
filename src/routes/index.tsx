@@ -27,7 +27,6 @@ import { MarketingLayout } from "@/components/marketing/MarketingLayout";
 import { Reveal } from "@/components/marketing/Reveal";
 import {
   KanbanMockup,
-  PhoneClientView,
   InspectionCard,
   FlowDiagram,
 } from "@/components/marketing/graphics";
