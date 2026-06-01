@@ -416,3 +416,122 @@ function ReminderRow({ reminder }: { reminder: MaintenanceReminder }) {
     </li>
   );
 }
+
+/* ----------------------------- Spend breakdown ----------------------------- */
+
+function SpendBreakdown({
+  spend,
+  currency,
+}: {
+  spend: VehicleSpend;
+  currency: string;
+}) {
+  const typeRows: Array<{ label: string; value: number; color: string }> = [
+    { label: "Mano de obra", value: spend.byType.labor, color: "var(--talleo-accent)" },
+    { label: "Repuestos", value: spend.byType.part, color: "var(--foreground-subtle)" },
+  ].filter((r) => r.value > 0);
+  const typeMax = Math.max(1, ...typeRows.map((r) => r.value));
+  const yearMax = Math.max(1, ...spend.byYear.map((y) => y.total));
+
+  return (
+    <div className="mt-4 space-y-4">
+      {typeRows.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-xs font-medium text-muted-foreground">Por tipo</p>
+          {typeRows.map((r) => (
+            <div key={r.label} className="space-y-1">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-foreground">{r.label}</span>
+                <span className="text-muted-foreground">
+                  {formatCurrency(r.value, currency)}
+                </span>
+              </div>
+              <div className="h-2 w-full overflow-hidden rounded-full bg-background-muted">
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${(r.value / typeMax) * 100}%`,
+                    backgroundColor: r.color,
+                  }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {spend.byYear.length > 1 && (
+        <div className="space-y-2">
+          <p className="text-xs font-medium text-muted-foreground">Por año</p>
+          <div className="flex items-end gap-2">
+            {spend.byYear.map((y) => (
+              <div key={y.year} className="flex flex-1 flex-col items-center gap-1">
+                <div className="flex h-20 w-full items-end">
+                  <div
+                    className="w-full rounded-t bg-[var(--talleo-accent)]"
+                    style={{ height: `${Math.max(6, (y.total / yearMax) * 100)}%` }}
+                    title={formatCurrency(y.total, currency)}
+                  />
+                </div>
+                <span className="text-[11px] text-muted-foreground">{y.year}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ----------------------------- Km sparkline ----------------------------- */
+
+function KmChart({ history }: { history: KmHistory }) {
+  const { points, delta, months } = history;
+  const W = 320;
+  const H = 80;
+  const pad = 6;
+  const kms = points.map((p) => p.km);
+  const min = Math.min(...kms);
+  const max = Math.max(...kms);
+  const range = Math.max(1, max - min);
+  const n = points.length;
+  const coords = points.map((p, i) => {
+    const x = pad + (i / (n - 1)) * (W - pad * 2);
+    const y = H - pad - ((p.km - min) / range) * (H - pad * 2);
+    return { x, y };
+  });
+  const line = coords
+    .map((c, i) => `${i === 0 ? "M" : "L"} ${c.x.toFixed(1)} ${c.y.toFixed(1)}`)
+    .join(" ");
+  const area = `${line} L ${coords[n - 1].x.toFixed(1)} ${H - pad} L ${coords[0].x.toFixed(1)} ${H - pad} Z`;
+
+  return (
+    <div className="mt-3">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="h-auto w-full"
+        preserveAspectRatio="none"
+      >
+        <path d={area} fill="var(--talleo-accent)" opacity={0.12} />
+        <path
+          d={line}
+          fill="none"
+          stroke="var(--talleo-accent)"
+          strokeWidth={2}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+        {coords.map((c, i) => (
+          <circle key={i} cx={c.x} cy={c.y} r={2.5} fill="var(--talleo-accent)" />
+        ))}
+      </svg>
+      <p className="mt-2 text-xs text-muted-foreground">
+        {delta > 0
+          ? `${delta.toLocaleString("es-ES")} km${
+              months > 0 ? ` en los últimos ${months} meses` : ""
+            }`
+          : "Sin variación de kilometraje registrada"}
+      </p>
+    </div>
+  );
+}
