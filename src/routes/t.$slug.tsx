@@ -196,6 +196,7 @@ function BookingFlow({ tenant }: { tenant: Tenant }) {
             <ShopInfo tenant={tenant} />
             <ShopMap tenant={tenant} />
 
+            {isModuleEnabled(tenant, "reserva_online") ? (
             <div className="mt-6 rounded-xl border border-border bg-card p-5 sm:p-6">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Calendar strokeWidth={1.5} className="h-4 w-4" />
