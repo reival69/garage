@@ -78,24 +78,29 @@ function AppLayout() {
     }
   }, [ready, user, tenant, navigate]);
 
-  // Permission guard: if the current role can't access this module, send it
-  // back to the dashboard. Owner/superadmin are never restricted.
+  // Permission + module guard: redirect to the dashboard if the role can't
+  // access this module OR the shop has the (optional) module disabled.
+  // Owner/superadmin are never restricted by role, but module toggles still
+  // apply (the dashboard itself is core, so they always have a home).
   useEffect(() => {
     if (!ready || !user || !tenant) return;
     const mod = moduleForPath(pathname);
-    if (mod && !can(user.role, mod)) {
+    if (mod && (!can(user.role, mod) || !isModuleEnabled(tenant, mod))) {
       navigate({ to: "/app" });
     }
   }, [ready, user, tenant, pathname, navigate]);
 
-  // Maintenance reminders: on shop load, fire notifications for overdue
-  // reminders that haven't notified yet (once each). Same sweep for upcoming /
-  // expired vehicle documents.
+  // Maintenance sweeps on shop load: only run for modules that are enabled, so
+  // a disabled module never generates fresh notifications.
   useEffect(() => {
     if (!ready || !tenant) return;
-    evaluateReminders(tenant.id);
-    evaluateDocumentExpiries(tenant.id);
-    evaluateLowStock(tenant.id);
+    if (isModuleEnabled(tenant, "recordatorios")) {
+      evaluateReminders(tenant.id);
+      evaluateDocumentExpiries(tenant.id);
+    }
+    if (isModuleEnabled(tenant, "stock")) {
+      evaluateLowStock(tenant.id);
+    }
   }, [ready, tenant]);
 
   if (!ready) {
