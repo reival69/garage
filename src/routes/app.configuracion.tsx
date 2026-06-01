@@ -22,6 +22,11 @@ import {
 import { useAuth } from "@/lib/auth/AuthContext";
 import { tenantsRepo } from "@/lib/db";
 import { compressImage } from "@/lib/image";
+import {
+  TOGGLEABLE_MODULES,
+  isModuleEnabled,
+  type ToggleableModule,
+} from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import type { BusinessDay } from "@/types";
 
