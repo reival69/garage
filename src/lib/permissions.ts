@@ -2,7 +2,7 @@
 // Golden rule: the owner always has full access and is never restricted, so a
 // teacher can never get locked out during a class demo.
 
-import type { Role } from "@/types";
+import type { Role, Tenant } from "@/types";
 
 export type AppModule =
   | "dashboard"
