@@ -58,7 +58,12 @@ import {
   whatsappReminderUrl,
 } from "@/lib/reminders";
 import { canEdit } from "@/lib/permissions";
-import { cartillaUrl, whatsappCartillaUrl } from "@/lib/vehicles";
+import {
+  FUEL_TYPE_LABELS,
+  TRANSMISSION_LABELS,
+  cartillaUrl,
+  whatsappCartillaUrl,
+} from "@/lib/vehicles";
 import { toast } from "sonner";
 import type { MaintenanceReminder, Photo } from "@/types";
 
