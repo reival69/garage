@@ -237,6 +237,7 @@ export interface FileRoutesByFullPath {
   '/app/resenas': typeof AppResenasRoute
   '/app/servicios': typeof AppServiciosRoute
   '/app/stock': typeof AppStockRoute
+  '/app/mensajes': typeof AppMensajesRoute
   '/c/$code': typeof CCodeRoute
   '/t/$slug': typeof TSlugRoute
   '/v/$code': typeof VCodeRoute
@@ -271,7 +272,6 @@ export interface FileRoutesByTo {
   '/app/resenas': typeof AppResenasRoute
   '/app/servicios': typeof AppServiciosRoute
   '/app/stock': typeof AppStockRoute
-  '/app/mensajes': typeof AppMensajesRoute
   '/c/$code': typeof CCodeRoute
   '/t/$slug': typeof TSlugRoute
   '/v/$code': typeof VCodeRoute
