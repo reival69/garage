@@ -200,7 +200,83 @@ function CartillaView() {
               </dd>
             </div>
           </dl>
+
+          {techSpecs.length > 0 && (
+            <div className="mt-4 border-t border-border pt-4">
+              <div className="mb-2 flex items-center gap-2 text-muted-foreground">
+                <Wrench strokeWidth={1.5} className="h-4 w-4" />
+                <h2 className="text-sm font-semibold text-foreground">
+                  Ficha técnica
+                </h2>
+              </div>
+              <dl className="grid grid-cols-2 gap-3 text-sm">
+                {techSpecs.map(([k, v]) => (
+                  <div key={k}>
+                    <dt className="text-xs text-muted-foreground">{k}</dt>
+                    <dd className="break-words text-foreground">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
+          </div>
         </section>
+
+        {/* Spend on the car */}
+        {spend.total > 0 && (
+          <section className="rounded-xl border border-border bg-card p-5">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Wallet strokeWidth={1.5} className="h-4 w-4" />
+              <h2 className="text-sm font-semibold text-foreground">
+                Gasto en el coche
+              </h2>
+            </div>
+            <p className="mt-3 text-2xl font-semibold text-foreground">
+              {formatCurrency(spend.total, tenant.currency)}
+            </p>
+            <SpendBreakdown spend={spend} currency={tenant.currency} />
+          </section>
+        )}
+
+        {/* Odometer history */}
+        {kmHistory.points.length >= 2 && (
+          <section className="rounded-xl border border-border bg-card p-5">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <TrendingUp strokeWidth={1.5} className="h-4 w-4" />
+              <h2 className="text-sm font-semibold text-foreground">
+                Kilometraje
+              </h2>
+            </div>
+            <KmChart history={kmHistory} />
+          </section>
+        )}
+
+        {/* Vehicle photo gallery */}
+        {gallery.length > 0 && (
+          <section className="rounded-xl border border-border bg-card p-5">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Images strokeWidth={1.5} className="h-4 w-4" />
+              <h2 className="text-sm font-semibold text-foreground">
+                Galería del coche
+              </h2>
+            </div>
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              {gallery.map((p) => (
+                <figure
+                  key={p.id}
+                  className="overflow-hidden rounded-lg border border-border"
+                >
+                  <img
+                    src={p.url}
+                    alt={PHOTO_LABEL_TEXT[p.label]}
+                    loading="lazy"
+                    className="aspect-square w-full object-cover"
+                  />
+                </figure>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Active order — link to the live view */}
         {activeOrder && (
