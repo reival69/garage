@@ -292,8 +292,15 @@ function VehicleDetail() {
             )}
           </DataCard>
 
-          {/* Photo gallery */}
-          <DataCard title={`Galería de fotos (${photos.length})`}>
+          {/* Vehicle-level photos (cover + own gallery) */}
+          <VehiclePhotosCard
+            tenantId={tenant.id}
+            vehicle={vehicle}
+            onSaved={bump}
+          />
+
+          {/* Photos collected from the work orders */}
+          <DataCard title={`Fotos por orden (${photos.length})`}>
             {photos.length === 0 ? (
               <p className="py-6 text-center text-sm text-muted-foreground">
                 Aún no hay fotos de este vehículo.
