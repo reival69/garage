@@ -313,8 +313,14 @@ function seedTenant(ts: TenantSeed): void {
   );
 
   // Vehicles
-  const vehicles: Vehicle[] = ts.vehicles.map((v) =>
-    vehiclesRepo.create(t, {
+  const FUELS = ["gasolina", "diesel", "hibrido", "gasolina", "diesel", "glp"] as const;
+  const TRANS = ["manual", "automatico", "manual", "automatico"] as const;
+  const CCS = [1598, 1968, 1497, 1995, 999, 1796];
+  const HPS = [115, 150, 130, 190, 95, 140];
+  const vehicles: Vehicle[] = ts.vehicles.map((v, vi) => {
+    const coverId = uid("vph");
+    const galId = uid("vph");
+    return vehiclesRepo.create(t, {
       tenantId: t,
       customerId: customers[v.customerIdx % customers.length].id,
       accessCode: code6(),
@@ -324,8 +330,17 @@ function seedTenant(ts: TenantSeed): void {
       year: v.year,
       km: v.km,
       color: v.color,
-    } as Omit<Vehicle, "id">),
-  );
+      fuelType: FUELS[vi % FUELS.length],
+      transmission: TRANS[vi % TRANS.length],
+      displacementCc: CCS[vi % CCS.length],
+      powerHp: HPS[vi % HPS.length],
+      coverPhotoId: coverId,
+      photos: [
+        { id: coverId, url: PHOTO_COVER, label: "detalle", createdAt: daysAgo(60 + vi) },
+        { id: galId, url: PHOTO_GALLERY, label: "detalle", createdAt: daysAgo(50 + vi) },
+      ],
+    } as Omit<Vehicle, "id">);
+  });
 
   // Work orders
   ts.orders.forEach((spec, i) => {
