@@ -14,6 +14,10 @@ import {
   ArrowLeft,
   Car,
   ExternalLink,
+  Bot,
+  User as UserIcon,
+  UserPlus,
+  Beaker,
 } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { EmptyState } from "@/components/base/EmptyState";
@@ -26,11 +30,12 @@ import {
   markConversationRead,
   type Conversation,
 } from "@/lib/inbox";
-import { addShopMessage, STATUS_LABELS } from "@/lib/orders";
+import { addShopMessage, addCustomerMessage, updateOrder, STATUS_LABELS } from "@/lib/orders";
+import { activeAgent, runAgentOnIncoming } from "@/lib/agents";
 import { formatTime, isToday } from "@/lib/format";
 import { relativeTime } from "@/lib/notifications";
 
-import { canEdit } from "@/lib/permissions";
+import { canEdit, isModuleEnabled } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/app/mensajes")({
