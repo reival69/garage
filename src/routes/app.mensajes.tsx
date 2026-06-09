@@ -157,6 +157,7 @@ function MessagesPage() {
                 conversation={active}
                 tenantId={tenantId}
                 writable={writable}
+                agentsEnabled={agentsEnabled && hasActiveAgent}
                 onBack={() => setActiveId(null)}
                 onSent={refresh}
               />
