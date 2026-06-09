@@ -235,7 +235,7 @@ function AgentsPage() {
       )}
 
       {/* Sandbox */}
-      {agents.length > 0 && <Sandbox agents={agents} />}
+      {agents.length > 0 && <Sandbox agents={agents} tenantId={tenantId} />}
 
       {/* Meta WhatsApp connection (simulated placeholder) */}
       <MetaConnectionCard />
