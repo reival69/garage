@@ -15,6 +15,7 @@ export type AppModule =
   | "servicios"
   | "stock"
   | "mensajes"
+  | "agentes"
   | "recordatorios"
   | "resenas"
   | "equipo"
