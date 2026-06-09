@@ -312,7 +312,7 @@ interface SandboxMessage {
   text: string;
 }
 
-function Sandbox({ agents }: { agents: Agent[] }) {
+function Sandbox({ agents, tenantId }: { agents: Agent[]; tenantId: string }) {
   const [agentId, setAgentId] = useState(agents[0].id);
   const [text, setText] = useState("");
   const [log, setLog] = useState<SandboxMessage[]>([]);
@@ -323,7 +323,7 @@ function Sandbox({ agents }: { agents: Agent[] }) {
   const send = () => {
     const t = text.trim();
     if (!t) return;
-    const result = agentReply(agent, t);
+    const result = agentReply(agent, t, { tenantId });
     setLog((prev) => [
       ...prev,
       { id: ++seq.n, from: "customer", text: t },
