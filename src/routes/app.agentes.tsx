@@ -180,7 +180,14 @@ function AgentsPage() {
                     )}
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       <Tag>Tono: {TONE_LABELS[a.tone] ?? a.tone}</Tag>
-                      <Tag>{SCHEDULE_LABELS[a.schedule]}</Tag>
+                      <Tag>
+                        {a.available247
+                          ? "24/7"
+                          : isAgentWithinHours(a)
+                            ? "En horario"
+                            : "Fuera de horario"}
+                      </Tag>
+                      {a.timezone && <Tag>{a.timezone}</Tag>}
                       <Tag>
                         {a.replies.length} intent
                         {a.replies.length === 1 ? "" : "s"}
