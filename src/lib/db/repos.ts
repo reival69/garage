@@ -3,6 +3,7 @@
 // without touching components.
 
 import type {
+  Agent,
   Appointment,
   Customer,
   Invoice,
