@@ -241,12 +241,14 @@ function Thread({
   conversation: c,
   tenantId,
   writable,
+  agentsEnabled,
   onBack,
   onSent,
 }: {
   conversation: Conversation;
   tenantId: string;
   writable: boolean;
+  agentsEnabled: boolean;
   onBack: () => void;
   onSent: () => void;
 }) {
@@ -254,6 +256,10 @@ function Thread({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const order = c.order;
+  // A thread is agent-handled when there's an active agent and it isn't taken
+  // over by a human. Default: 'agent' if agents available, else 'human'.
+  const handledBy: "agent" | "human" =
+    order.handledBy ?? (agentsEnabled ? "agent" : "human");
   const messages = useMemo(
     () =>
       [...order.messages].sort(
@@ -267,12 +273,36 @@ function Thread({
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
   }, [messages.length]);
 
+  // A human typing always takes over the thread from the agent.
   const send = () => {
     const t = text.trim();
     if (!t) return;
     addShopMessage(tenantId, order, t);
+    if (handledBy !== "human") updateOrder(tenantId, order.id, { handledBy: "human" });
     setText("");
     onSent();
+  };
+
+  const takeControl = () => {
+    updateOrder(tenantId, order.id, { handledBy: "human" });
+    onSent();
+  };
+  const returnToAgent = () => {
+    updateOrder(tenantId, order.id, { handledBy: "agent" });
+    onSent();
+  };
+
+  // Demo helper: insert a customer message and (if agent-handled) trigger the
+  // agent's reply after a short simulated delay.
+  const simulateCustomer = () => {
+    const updated = addCustomerMessage(tenantId, order, "Hola, ¿me podéis ayudar?");
+    onSent();
+    if (handledBy === "agent" && agentsEnabled && updated) {
+      setTimeout(() => {
+        runAgentOnIncoming(tenantId, updated, "Hola, ¿me podéis ayudar?");
+        onSent();
+      }, 900);
+    }
   };
 
   return (
@@ -313,6 +343,39 @@ function Thread({
         </Link>
       </div>
 
+      {/* Management bar: agent / human + take/return control */}
+      {agentsEnabled && (
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-card px-3 py-2">
+          <span
+            className={cn(
+              "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium",
+              handledBy === "agent"
+                ? "bg-primary/10 text-primary"
+                : "bg-background-muted text-muted-foreground",
+            )}
+          >
+            {handledBy === "agent" ? (
+              <Bot strokeWidth={1.5} className="h-3.5 w-3.5" />
+            ) : (
+              <UserIcon strokeWidth={1.5} className="h-3.5 w-3.5" />
+            )}
+            {handledBy === "agent" ? "Gestionado por agente" : "Gestionado por humano"}
+          </span>
+          {writable &&
+            (handledBy === "agent" ? (
+              <Button variant="outline" size="sm" onClick={takeControl}>
+                <UserPlus strokeWidth={1.5} />
+                Tomar el control
+              </Button>
+            ) : (
+              <Button variant="outline" size="sm" onClick={returnToAgent}>
+                <Bot strokeWidth={1.5} />
+                Devolver al agente
+              </Button>
+            ))}
+        </div>
+      )}
+
       {/* Messages */}
       <div
         ref={scrollRef}
@@ -320,6 +383,7 @@ function Thread({
       >
         {messages.map((m) => {
           const fromShop = m.from === "shop";
+          const byAgent = fromShop && m.sentByAgent;
           return (
             <div
               key={m.id}
@@ -333,6 +397,12 @@ function Thread({
                     : "rounded-bl-sm bg-secondary text-foreground",
                 )}
               >
+                {byAgent && (
+                  <span className="mb-0.5 flex items-center gap-1 text-[10px] font-medium text-primary-foreground/80">
+                    <Bot strokeWidth={1.5} className="h-3 w-3" />
+                    Agente
+                  </span>
+                )}
                 <p className="whitespace-pre-wrap break-words">{m.text}</p>
                 <p
                   className={cn(
@@ -349,6 +419,19 @@ function Thread({
           );
         })}
       </div>
+
+      {/* Demo: simulate an incoming customer message */}
+      {writable && (
+        <div className="flex justify-center border-t border-border bg-card px-3 py-1.5">
+          <button
+            onClick={simulateCustomer}
+            className="inline-flex items-center gap-1 text-[11px] text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <Beaker strokeWidth={1.5} className="h-3 w-3" />
+            Simular mensaje del cliente
+          </button>
+        </div>
+      )}
 
       {/* Composer */}
       {writable ? (
