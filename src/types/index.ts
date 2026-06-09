@@ -240,6 +240,9 @@ export interface WorkOrder {
   checkIn?: CheckIn;
   inspection?: Inspection;
   messages: OrderMessage[];
+  // Who currently attends this conversation: the Agent (auto-replies) or a
+  // human. Defaults to 'agent' when an active agent exists, else 'human'.
+  handledBy?: "agent" | "human";
   // Customer's signed decision on the quote (approval view).
   quoteApproval?: { signature: string; decidedAt: string };
   estimatedReadyAt?: string;
