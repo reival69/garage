@@ -43,9 +43,9 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import {
   agentReply,
   agentStats,
+  isAgentWithinHours,
   listAgents,
   removeAgent,
-  SCHEDULE_LABELS,
   TONE_LABELS,
   toggleAgentStatus,
 } from "@/lib/agents";
