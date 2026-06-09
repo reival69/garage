@@ -193,6 +193,35 @@ export interface OrderMessage {
   // Whether the recipient has read this message. In the shop inbox, "unread"
   // means customer messages (from: 'customer') with read falsy.
   read?: boolean;
+  // True when this shop message was produced automatically by an Agent (the
+  // simulated AI inbox assistant) rather than typed by a human.
+  sentByAgent?: boolean;
+}
+
+/** Single intent rule for an Agent: a trigger phrase → canned response. */
+export interface AgentReplyRule {
+  id: string;
+  trigger: string; // comma-separated keywords/phrases that fire this reply
+  response: string;
+}
+
+/**
+ * Agent — a simulated AI assistant that can attend the message inbox of a shop.
+ * In production its behaviour would be driven by an LLM using `instructions`;
+ * here it answers by local intent rules (`replies`). Everything is simulated.
+ */
+export interface Agent {
+  id: string;
+  tenantId: string;
+  name: string;
+  purpose: string; // role / purpose, e.g. "Recepción y primer contacto"
+  tone: string; // "cercano" | "profesional" | "formal" | "directo"
+  instructions: string; // free text — its behaviour in a real AI setup
+  status: "active" | "paused";
+  replies: AgentReplyRule[];
+  handoffMessage: string; // sent when no intent matches, then hands off to human
+  schedule: "always" | "after_hours";
+  createdAt: string;
 }
 
 export interface WorkOrder {
