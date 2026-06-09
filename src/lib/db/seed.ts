@@ -17,6 +17,7 @@ import type {
   VehicleDocument,
   WorkOrder,
   WorkOrderStatus,
+  Agent,
 } from "@/types";
 import {
   agentsRepo,
