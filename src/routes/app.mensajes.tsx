@@ -54,6 +54,8 @@ function MessagesPage() {
 
   const tenantId = tenant?.id;
   const writable = user ? canEdit(user.role, "mensajes") : false;
+  const agentsEnabled = isModuleEnabled(tenant, "agentes");
+  const hasActiveAgent = tenantId ? !!activeAgent(tenantId) : false;
 
   const conversations = useMemo(
     () => (tenantId ? listConversations(tenantId) : []),
