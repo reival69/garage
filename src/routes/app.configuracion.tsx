@@ -407,7 +407,9 @@ function ConfigPage() {
           <div className="space-y-2">
             {TOGGLEABLE_MODULES.map((m) => {
               const info = MODULE_INFO[m];
-              const on = enabledModules[m] ?? true;
+              const mensajesOff = (enabledModules["mensajes"] ?? true) === false;
+              const blockedByDep = m === "agentes" && mensajesOff;
+              const on = blockedByDep ? false : enabledModules[m] ?? true;
               return (
                 <div
                   key={m}
@@ -419,10 +421,12 @@ function ConfigPage() {
                     </p>
                     <p className="text-xs text-muted-foreground">
                       {info.description}
+                      {blockedByDep && " (Mensajes está desactivado)"}
                     </p>
                   </div>
                   <Switch
                     checked={on}
+                    disabled={blockedByDep}
                     onCheckedChange={(v) =>
                       setEnabledModules((prev) => ({ ...prev, [m]: v }))
                     }
