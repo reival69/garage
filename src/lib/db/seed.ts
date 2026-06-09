@@ -19,6 +19,7 @@ import type {
   WorkOrderStatus,
 } from "@/types";
 import {
+  agentsRepo,
   appointmentsRepo,
   customersRepo,
   invoicesRepo,
