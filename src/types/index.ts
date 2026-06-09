@@ -205,6 +205,34 @@ export interface AgentReplyRule {
   response: string;
 }
 
+// Weekly response schedule. day index 0 = Monday … 6 = Sunday.
+export interface AgentResponseHour {
+  day: number;
+  enabled: boolean;
+  from: string; // "HH:mm"
+  to: string; // "HH:mm"
+}
+
+// Which tenant data the agent may read to answer (all simulated / local).
+export interface AgentDataAccess {
+  vehiculos: boolean;
+  presupuestos: boolean;
+  servicios: boolean;
+  agenda: boolean;
+  ordenes: boolean;
+  facturas: boolean;
+}
+
+// A context document the agent can search by keyword. For .txt/.md we keep the
+// full `text`; other types store only name/type (processed fully in production).
+export interface AgentContextDoc {
+  id: string;
+  name: string;
+  type: string;
+  text?: string;
+  createdAt: string;
+}
+
 /**
  * Agent — a simulated AI assistant that can attend the message inbox of a shop.
  * In production its behaviour would be driven by an LLM using `instructions`;
@@ -220,7 +248,15 @@ export interface Agent {
   status: "active" | "paused";
   replies: AgentReplyRule[];
   handoffMessage: string; // sent when no intent matches, then hands off to human
-  schedule: "always" | "after_hours";
+  // Schedule & timezone (replaces the old simple `schedule`).
+  timezone?: string; // IANA, e.g. "Europe/Madrid"
+  available247?: boolean; // when true, responds at any hour
+  responseHours?: AgentResponseHour[]; // weekly schedule (index 0 = Monday)
+  offHoursMessage?: string; // optional message sent outside response hours
+  // What data the agent may read to build smart replies.
+  dataAccess?: AgentDataAccess;
+  // Context documents searched by keyword when no intent matches.
+  contextDocs?: AgentContextDoc[];
   createdAt: string;
 }
 
