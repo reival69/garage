@@ -685,6 +685,47 @@ function seedTenant(ts: TenantSeed): void {
       createdAt: hoursAgo(i * 5 + 1),
     } as Omit<AppNotification, "id">),
   );
+
+  // Agent — a simulated "Recepción IA" that attends the inbox by local intents.
+  agentsRepo.create(t, {
+    tenantId: t,
+    name: "Recepción IA",
+    purpose: "Recepción y primer contacto con el cliente",
+    tone: "cercano",
+    instructions:
+      "Atiende el inbox de WhatsApp. Responde dudas frecuentes sobre estado, horarios, precios y citas. Si no sabes algo, deriva a una persona del taller.",
+    status: "active",
+    replies: [
+      {
+        id: uid("rule"),
+        trigger: "estado, listo, cuándo, cuando, terminado",
+        response:
+          "¡Hola! Estamos revisando tu vehículo y te avisaremos en cuanto esté listo. ¿Quieres que te confirme una hora estimada?",
+      },
+      {
+        id: uid("rule"),
+        trigger: "horario, hora, abierto, abren, cierran",
+        response:
+          "Nuestro horario es de lunes a viernes y sábados por la mañana. ¿En qué te puedo ayudar?",
+      },
+      {
+        id: uid("rule"),
+        trigger: "precio, presupuesto, cuánto, cuanto, coste",
+        response:
+          "Te preparamos un presupuesto sin compromiso. Cuéntame qué necesita tu vehículo y te lo detallamos.",
+      },
+      {
+        id: uid("rule"),
+        trigger: "cita, reserva, agendar, hueco",
+        response:
+          "¡Claro! Puedes reservar online o decirme tu disponibilidad y buscamos un hueco.",
+      },
+    ],
+    handoffMessage:
+      "Gracias por tu mensaje. Un compañero del taller te atenderá enseguida para ayudarte mejor.",
+    schedule: "always",
+    createdAt: daysAgo(20),
+  } as Omit<Agent, "id">);
 }
 
 // Per-tenant sequential invoice number, scoped to the current year.
