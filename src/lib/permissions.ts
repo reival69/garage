@@ -36,6 +36,7 @@ const ACCESS: Record<Role, AppModule[] | "all"> = {
     "servicios",
     "stock",
     "mensajes",
+    "agentes",
     "recordatorios",
     "resenas",
   ],
