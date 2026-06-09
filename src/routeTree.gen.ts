@@ -33,6 +33,7 @@ import { Route as AppMensajesRouteImport } from './routes/app.mensajes'
 import { Route as AppEquipoRouteImport } from './routes/app.equipo'
 import { Route as AppConfiguracionRouteImport } from './routes/app.configuracion'
 import { Route as AppCitasRouteImport } from './routes/app.citas'
+import { Route as AppAgentesRouteImport } from './routes/app.agentes'
 import { Route as AdminTalleresRouteImport } from './routes/admin.talleres'
 import { Route as AdminPlanesRouteImport } from './routes/admin.planes'
 import { Route as AppVehiculosIndexRouteImport } from './routes/app.vehiculos.index'
@@ -164,6 +165,11 @@ const AppCitasRoute = AppCitasRouteImport.update({
   path: '/citas',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAgentesRoute = AppAgentesRouteImport.update({
+  id: '/agentes',
+  path: '/agentes',
+  getParentRoute: () => AppRoute,
+} as any)
 const AdminTalleresRoute = AdminTalleresRouteImport.update({
   id: '/talleres',
   path: '/talleres',
@@ -228,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/terminos': typeof TerminosRoute
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/talleres': typeof AdminTalleresRoute
+  '/app/agentes': typeof AppAgentesRoute
   '/app/citas': typeof AppCitasRoute
   '/app/configuracion': typeof AppConfiguracionRoute
   '/app/equipo': typeof AppEquipoRoute
@@ -262,6 +269,7 @@ export interface FileRoutesByTo {
   '/terminos': typeof TerminosRoute
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/talleres': typeof AdminTalleresRoute
+  '/app/agentes': typeof AppAgentesRoute
   '/app/citas': typeof AppCitasRoute
   '/app/configuracion': typeof AppConfiguracionRoute
   '/app/equipo': typeof AppEquipoRoute
@@ -299,6 +307,7 @@ export interface FileRoutesById {
   '/terminos': typeof TerminosRoute
   '/admin/planes': typeof AdminPlanesRoute
   '/admin/talleres': typeof AdminTalleresRoute
+  '/app/agentes': typeof AppAgentesRoute
   '/app/citas': typeof AppCitasRoute
   '/app/configuracion': typeof AppConfiguracionRoute
   '/app/equipo': typeof AppEquipoRoute
@@ -337,6 +346,7 @@ export interface FileRouteTypes {
     | '/terminos'
     | '/admin/planes'
     | '/admin/talleres'
+    | '/app/agentes'
     | '/app/citas'
     | '/app/configuracion'
     | '/app/equipo'
@@ -371,6 +381,7 @@ export interface FileRouteTypes {
     | '/terminos'
     | '/admin/planes'
     | '/admin/talleres'
+    | '/app/agentes'
     | '/app/citas'
     | '/app/configuracion'
     | '/app/equipo'
@@ -407,6 +418,7 @@ export interface FileRouteTypes {
     | '/terminos'
     | '/admin/planes'
     | '/admin/talleres'
+    | '/app/agentes'
     | '/app/citas'
     | '/app/configuracion'
     | '/app/equipo'
@@ -617,6 +629,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCitasRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/agentes': {
+      id: '/app/agentes'
+      path: '/agentes'
+      fullPath: '/app/agentes'
+      preLoaderRoute: typeof AppAgentesRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/admin/talleres': {
       id: '/admin/talleres'
       path: '/talleres'
@@ -705,6 +724,7 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface AppRouteChildren {
+  AppAgentesRoute: typeof AppAgentesRoute
   AppCitasRoute: typeof AppCitasRoute
   AppConfiguracionRoute: typeof AppConfiguracionRoute
   AppEquipoRoute: typeof AppEquipoRoute
@@ -726,6 +746,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppAgentesRoute: AppAgentesRoute,
   AppCitasRoute: AppCitasRoute,
   AppConfiguracionRoute: AppConfiguracionRoute,
   AppEquipoRoute: AppEquipoRoute,
