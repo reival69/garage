@@ -43,9 +43,9 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import {
   agentReply,
   agentStats,
+  isAgentWithinHours,
   listAgents,
   removeAgent,
-  SCHEDULE_LABELS,
   TONE_LABELS,
   toggleAgentStatus,
 } from "@/lib/agents";
@@ -180,7 +180,14 @@ function AgentsPage() {
                     )}
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       <Tag>Tono: {TONE_LABELS[a.tone] ?? a.tone}</Tag>
-                      <Tag>{SCHEDULE_LABELS[a.schedule]}</Tag>
+                      <Tag>
+                        {a.available247
+                          ? "24/7"
+                          : isAgentWithinHours(a)
+                            ? "En horario"
+                            : "Fuera de horario"}
+                      </Tag>
+                      {a.timezone && <Tag>{a.timezone}</Tag>}
                       <Tag>
                         {a.replies.length} intent
                         {a.replies.length === 1 ? "" : "s"}
@@ -228,7 +235,7 @@ function AgentsPage() {
       )}
 
       {/* Sandbox */}
-      {agents.length > 0 && <Sandbox agents={agents} />}
+      {agents.length > 0 && <Sandbox agents={agents} tenantId={tenantId} />}
 
       {/* Meta WhatsApp connection (simulated placeholder) */}
       <MetaConnectionCard />
@@ -305,7 +312,7 @@ interface SandboxMessage {
   text: string;
 }
 
-function Sandbox({ agents }: { agents: Agent[] }) {
+function Sandbox({ agents, tenantId }: { agents: Agent[]; tenantId: string }) {
   const [agentId, setAgentId] = useState(agents[0].id);
   const [text, setText] = useState("");
   const [log, setLog] = useState<SandboxMessage[]>([]);
@@ -316,7 +323,7 @@ function Sandbox({ agents }: { agents: Agent[] }) {
   const send = () => {
     const t = text.trim();
     if (!t) return;
-    const result = agentReply(agent, t);
+    const result = agentReply(agent, t, { tenantId });
     setLog((prev) => [
       ...prev,
       { id: ++seq.n, from: "customer", text: t },

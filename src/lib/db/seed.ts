@@ -40,7 +40,7 @@ import { quoteTotals } from "@/lib/orders";
 
 const SEED_FLAG = "seeded";
 // Bump when the seed shape changes to force a clean reseed of the demo.
-const SEED_VERSION = "12";
+const SEED_VERSION = "13";
 
 // Tiny base64 placeholder images (kept small to respect the ~5MB quota).
 const PHOTO_A =
@@ -686,22 +686,18 @@ function seedTenant(ts: TenantSeed): void {
     } as Omit<AppNotification, "id">),
   );
 
-  // Agent — a simulated "Recepción IA" that attends the inbox by local intents.
+  // Agent — a simulated "Recepción IA" that attends the inbox with manual
+  // intents, smart data-access intents and a context document.
+  const isMx = tenant.currency === "MXN";
   agentsRepo.create(t, {
     tenantId: t,
     name: "Recepción IA",
     purpose: "Recepción y primer contacto con el cliente",
     tone: "cercano",
     instructions:
-      "Atiende el inbox de WhatsApp. Responde dudas frecuentes sobre estado, horarios, precios y citas. Si no sabes algo, deriva a una persona del taller.",
+      "Atiende el inbox de WhatsApp. Responde dudas frecuentes sobre estado, horarios, precios y citas leyendo los datos del taller. Si no sabes algo, deriva a una persona del taller.",
     status: "active",
     replies: [
-      {
-        id: uid("rule"),
-        trigger: "estado, listo, cuándo, cuando, terminado",
-        response:
-          "¡Hola! Estamos revisando tu vehículo y te avisaremos en cuanto esté listo. ¿Quieres que te confirme una hora estimada?",
-      },
       {
         id: uid("rule"),
         trigger: "horario, hora, abierto, abren, cierran",
@@ -710,23 +706,56 @@ function seedTenant(ts: TenantSeed): void {
       },
       {
         id: uid("rule"),
-        trigger: "precio, presupuesto, cuánto, cuanto, coste",
+        trigger: "garantía, garantia, devolución, devolucion",
         response:
-          "Te preparamos un presupuesto sin compromiso. Cuéntame qué necesita tu vehículo y te lo detallamos.",
-      },
-      {
-        id: uid("rule"),
-        trigger: "cita, reserva, agendar, hueco",
-        response:
-          "¡Claro! Puedes reservar online o decirme tu disponibilidad y buscamos un hueco.",
+          "Nuestras reparaciones incluyen garantía. Cuéntame qué pieza o servicio y te doy los detalles.",
       },
     ],
     handoffMessage:
       "Gracias por tu mensaje. Un compañero del taller te atenderá enseguida para ayudarte mejor.",
-    schedule: "always",
+    timezone: isMx ? "America/Mexico_City" : "Europe/Madrid",
+    available247: false,
+    responseHours: [0, 1, 2, 3, 4, 5, 6].map((day) => ({
+      day,
+      enabled: day < 5,
+      from: day === 5 ? "10:00" : "09:00",
+      to: day === 5 ? "14:00" : "18:00",
+    })),
+    offHoursMessage:
+      "Ahora mismo estamos fuera de horario. Te responderemos en cuanto abramos. ¡Gracias por escribirnos!",
+    dataAccess: {
+      vehiculos: true,
+      presupuestos: true,
+      servicios: true,
+      agenda: true,
+      ordenes: true,
+      facturas: false,
+    },
+    contextDocs: [
+      {
+        id: uid("doc"),
+        name: "faq-garantias.md",
+        type: "text/markdown",
+        text: [
+          "# Preguntas frecuentes",
+          "",
+          "## Garantía",
+          "Todas nuestras reparaciones tienen garantía de 12 meses o 20.000 km.",
+          "Las piezas instaladas mantienen la garantía del fabricante.",
+          "",
+          "## Formas de pago",
+          "Aceptamos efectivo, tarjeta y transferencia. Pago al recoger el vehículo.",
+          "",
+          "## Vehículo de sustitución",
+          "Disponemos de vehículo de cortesía sujeto a disponibilidad para reparaciones largas.",
+        ].join("\n"),
+        createdAt: daysAgo(20),
+      },
+    ],
     createdAt: daysAgo(20),
   } as Omit<Agent, "id">);
 }
+
 
 // Per-tenant sequential invoice number, scoped to the current year.
 function nextNumber(tenantId: string): string {
