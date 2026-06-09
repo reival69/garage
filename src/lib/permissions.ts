@@ -72,6 +72,7 @@ export function canEdit(role: Role, module: AppModule): boolean {
 export type ToggleableModule =
   | "stock"
   | "mensajes"
+  | "agentes"
   | "recordatorios"
   | "resenas"
   | "reserva_online";
@@ -80,6 +81,7 @@ export type ToggleableModule =
 export const TOGGLEABLE_MODULES: ToggleableModule[] = [
   "stock",
   "mensajes",
+  "agentes",
   "recordatorios",
   "resenas",
   "reserva_online",
