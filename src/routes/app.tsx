@@ -17,6 +17,7 @@ import {
   Wrench,
   Boxes,
   MessageSquare,
+  Bot,
   BellRing,
   Star,
   UsersRound,
