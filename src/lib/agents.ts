@@ -295,7 +295,7 @@ function smartReply(
       .filter(
         (a) =>
           new Date(a.scheduledAt).getTime() >= now &&
-          a.status !== "cancelada" &&
+          a.status !== "no_show" &&
           (!customerId || a.customerId === customerId),
       )
       .sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt));
