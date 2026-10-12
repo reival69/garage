@@ -9,80 +9,45 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TerminosRouteImport } from './routes/terminos'
-import { Route as RecursosRouteImport } from './routes/recursos'
-import { Route as PrivacidadRouteImport } from './routes/privacidad'
-import { Route as PanelRouteImport } from './routes/panel'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as CookiesRouteImport } from './routes/cookies'
-import { Route as ContactoRouteImport } from './routes/contacto'
-import { Route as AppRouteImport } from './routes/app'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as ContactoRouteImport } from './routes/contacto'
+import { Route as CookiesRouteImport } from './routes/cookies'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PanelRouteImport } from './routes/panel'
+import { Route as PrivacidadRouteImport } from './routes/privacidad'
+import { Route as RecursosRouteImport } from './routes/recursos'
+import { Route as TerminosRouteImport } from './routes/terminos'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as VCodeRouteImport } from './routes/v.$code'
-import { Route as TSlugRouteImport } from './routes/t.$slug'
-import { Route as CCodeRouteImport } from './routes/c.$code'
-import { Route as AppStockRouteImport } from './routes/app.stock'
-import { Route as AppServiciosRouteImport } from './routes/app.servicios'
-import { Route as AppResenasRouteImport } from './routes/app.resenas'
-import { Route as AppRecordatoriosRouteImport } from './routes/app.recordatorios'
-import { Route as AppPresupuestosRouteImport } from './routes/app.presupuestos'
-import { Route as AppMensajesRouteImport } from './routes/app.mensajes'
-import { Route as AppEquipoRouteImport } from './routes/app.equipo'
-import { Route as AppConfiguracionRouteImport } from './routes/app.configuracion'
-import { Route as AppCitasRouteImport } from './routes/app.citas'
-import { Route as AppAgentesRouteImport } from './routes/app.agentes'
-import { Route as AdminTalleresRouteImport } from './routes/admin.talleres'
 import { Route as AdminPlanesRouteImport } from './routes/admin.planes'
-import { Route as AppVehiculosIndexRouteImport } from './routes/app.vehiculos.index'
-import { Route as AppOrdenesIndexRouteImport } from './routes/app.ordenes.index'
-import { Route as AppFacturacionIndexRouteImport } from './routes/app.facturacion.index'
+import { Route as AdminTalleresRouteImport } from './routes/admin.talleres'
+import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppAgentesRouteImport } from './routes/app.agentes'
+import { Route as AppCitasRouteImport } from './routes/app.citas'
+import { Route as AppConfiguracionRouteImport } from './routes/app.configuracion'
+import { Route as AppEquipoRouteImport } from './routes/app.equipo'
+import { Route as AppMensajesRouteImport } from './routes/app.mensajes'
+import { Route as AppPresupuestosRouteImport } from './routes/app.presupuestos'
+import { Route as AppRecordatoriosRouteImport } from './routes/app.recordatorios'
+import { Route as AppResenasRouteImport } from './routes/app.resenas'
+import { Route as AppServiciosRouteImport } from './routes/app.servicios'
+import { Route as AppStockRouteImport } from './routes/app.stock'
+import { Route as CCodeRouteImport } from './routes/c.$code'
+import { Route as TSlugRouteImport } from './routes/t.$slug'
+import { Route as VCodeRouteImport } from './routes/v.$code'
 import { Route as AppClientesIndexRouteImport } from './routes/app.clientes.index'
-import { Route as AppVehiculosIdRouteImport } from './routes/app.vehiculos.$id'
-import { Route as AppOrdenesIdRouteImport } from './routes/app.ordenes.$id'
-import { Route as AppFacturacionIdRouteImport } from './routes/app.facturacion.$id'
 import { Route as AppClientesIdRouteImport } from './routes/app.clientes.$id'
+import { Route as AppFacturacionIndexRouteImport } from './routes/app.facturacion.index'
+import { Route as AppFacturacionIdRouteImport } from './routes/app.facturacion.$id'
+import { Route as AppOrdenesIndexRouteImport } from './routes/app.ordenes.index'
+import { Route as AppOrdenesIdRouteImport } from './routes/app.ordenes.$id'
+import { Route as AppVehiculosIndexRouteImport } from './routes/app.vehiculos.index'
+import { Route as AppVehiculosIdRouteImport } from './routes/app.vehiculos.$id'
 
-const TerminosRoute = TerminosRouteImport.update({
-  id: '/terminos',
-  path: '/terminos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RecursosRoute = RecursosRouteImport.update({
-  id: '/recursos',
-  path: '/recursos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacidadRoute = PrivacidadRouteImport.update({
-  id: '/privacidad',
-  path: '/privacidad',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PanelRoute = PanelRouteImport.update({
-  id: '/panel',
-  path: '/panel',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CookiesRoute = CookiesRouteImport.update({
-  id: '/cookies',
-  path: '/cookies',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactoRoute = ContactoRouteImport.update({
-  id: '/contacto',
-  path: '/contacto',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppRoute = AppRouteImport.update({
-  id: '/app',
-  path: '/app',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -90,89 +55,49 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AppRoute = AppRouteImport.update({
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppIndexRoute = AppIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AppRoute,
+const ContactoRoute = ContactoRouteImport.update({
+  id: '/contacto',
+  path: '/contacto',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiesRoute = CookiesRouteImport.update({
+  id: '/cookies',
+  path: '/cookies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PanelRoute = PanelRouteImport.update({
+  id: '/panel',
+  path: '/panel',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacidadRoute = PrivacidadRouteImport.update({
+  id: '/privacidad',
+  path: '/privacidad',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecursosRoute = RecursosRouteImport.update({
+  id: '/recursos',
+  path: '/recursos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TerminosRoute = TerminosRouteImport.update({
+  id: '/terminos',
+  path: '/terminos',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const VCodeRoute = VCodeRouteImport.update({
-  id: '/v/$code',
-  path: '/v/$code',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TSlugRoute = TSlugRouteImport.update({
-  id: '/t/$slug',
-  path: '/t/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CCodeRoute = CCodeRouteImport.update({
-  id: '/c/$code',
-  path: '/c/$code',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AppStockRoute = AppStockRouteImport.update({
-  id: '/stock',
-  path: '/stock',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppServiciosRoute = AppServiciosRouteImport.update({
-  id: '/servicios',
-  path: '/servicios',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppResenasRoute = AppResenasRouteImport.update({
-  id: '/resenas',
-  path: '/resenas',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppRecordatoriosRoute = AppRecordatoriosRouteImport.update({
-  id: '/recordatorios',
-  path: '/recordatorios',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppPresupuestosRoute = AppPresupuestosRouteImport.update({
-  id: '/presupuestos',
-  path: '/presupuestos',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppMensajesRoute = AppMensajesRouteImport.update({
-  id: '/mensajes',
-  path: '/mensajes',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppEquipoRoute = AppEquipoRouteImport.update({
-  id: '/equipo',
-  path: '/equipo',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppConfiguracionRoute = AppConfiguracionRouteImport.update({
-  id: '/configuracion',
-  path: '/configuracion',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppCitasRoute = AppCitasRouteImport.update({
-  id: '/citas',
-  path: '/citas',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppAgentesRoute = AppAgentesRouteImport.update({
-  id: '/agentes',
-  path: '/agentes',
-  getParentRoute: () => AppRoute,
-} as any)
-const AdminTalleresRoute = AdminTalleresRouteImport.update({
-  id: '/talleres',
-  path: '/talleres',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminPlanesRoute = AdminPlanesRouteImport.update({
@@ -180,14 +105,89 @@ const AdminPlanesRoute = AdminPlanesRouteImport.update({
   path: '/planes',
   getParentRoute: () => AdminRoute,
 } as any)
-const AppVehiculosIndexRoute = AppVehiculosIndexRouteImport.update({
-  id: '/vehiculos/',
-  path: '/vehiculos/',
+const AdminTalleresRoute = AdminTalleresRouteImport.update({
+  id: '/talleres',
+  path: '/talleres',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => AppRoute,
 } as any)
-const AppOrdenesIndexRoute = AppOrdenesIndexRouteImport.update({
-  id: '/ordenes/',
-  path: '/ordenes/',
+const AppAgentesRoute = AppAgentesRouteImport.update({
+  id: '/agentes',
+  path: '/agentes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCitasRoute = AppCitasRouteImport.update({
+  id: '/citas',
+  path: '/citas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppConfiguracionRoute = AppConfiguracionRouteImport.update({
+  id: '/configuracion',
+  path: '/configuracion',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppEquipoRoute = AppEquipoRouteImport.update({
+  id: '/equipo',
+  path: '/equipo',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMensajesRoute = AppMensajesRouteImport.update({
+  id: '/mensajes',
+  path: '/mensajes',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPresupuestosRoute = AppPresupuestosRouteImport.update({
+  id: '/presupuestos',
+  path: '/presupuestos',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppRecordatoriosRoute = AppRecordatoriosRouteImport.update({
+  id: '/recordatorios',
+  path: '/recordatorios',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppResenasRoute = AppResenasRouteImport.update({
+  id: '/resenas',
+  path: '/resenas',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppServiciosRoute = AppServiciosRouteImport.update({
+  id: '/servicios',
+  path: '/servicios',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStockRoute = AppStockRouteImport.update({
+  id: '/stock',
+  path: '/stock',
+  getParentRoute: () => AppRoute,
+} as any)
+const CCodeRoute = CCodeRouteImport.update({
+  id: '/c/$code',
+  path: '/c/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TSlugRoute = TSlugRouteImport.update({
+  id: '/t/$slug',
+  path: '/t/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VCodeRoute = VCodeRouteImport.update({
+  id: '/v/$code',
+  path: '/v/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppClientesIndexRoute = AppClientesIndexRouteImport.update({
+  id: '/clientes/',
+  path: '/clientes/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppClientesIdRoute = AppClientesIdRouteImport.update({
+  id: '/clientes/$id',
+  path: '/clientes/$id',
   getParentRoute: () => AppRoute,
 } as any)
 const AppFacturacionIndexRoute = AppFacturacionIndexRouteImport.update({
@@ -195,14 +195,14 @@ const AppFacturacionIndexRoute = AppFacturacionIndexRouteImport.update({
   path: '/facturacion/',
   getParentRoute: () => AppRoute,
 } as any)
-const AppClientesIndexRoute = AppClientesIndexRouteImport.update({
-  id: '/clientes/',
-  path: '/clientes/',
+const AppFacturacionIdRoute = AppFacturacionIdRouteImport.update({
+  id: '/facturacion/$id',
+  path: '/facturacion/$id',
   getParentRoute: () => AppRoute,
 } as any)
-const AppVehiculosIdRoute = AppVehiculosIdRouteImport.update({
-  id: '/vehiculos/$id',
-  path: '/vehiculos/$id',
+const AppOrdenesIndexRoute = AppOrdenesIndexRouteImport.update({
+  id: '/ordenes/',
+  path: '/ordenes/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppOrdenesIdRoute = AppOrdenesIdRouteImport.update({
@@ -210,14 +210,14 @@ const AppOrdenesIdRoute = AppOrdenesIdRouteImport.update({
   path: '/ordenes/$id',
   getParentRoute: () => AppRoute,
 } as any)
-const AppFacturacionIdRoute = AppFacturacionIdRouteImport.update({
-  id: '/facturacion/$id',
-  path: '/facturacion/$id',
+const AppVehiculosIndexRoute = AppVehiculosIndexRouteImport.update({
+  id: '/vehiculos/',
+  path: '/vehiculos/',
   getParentRoute: () => AppRoute,
 } as any)
-const AppClientesIdRoute = AppClientesIdRouteImport.update({
-  id: '/clientes/$id',
-  path: '/clientes/$id',
+const AppVehiculosIdRoute = AppVehiculosIdRouteImport.update({
+  id: '/vehiculos/$id',
+  path: '/vehiculos/$id',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -461,60 +461,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/terminos': {
-      id: '/terminos'
-      path: '/terminos'
-      fullPath: '/terminos'
-      preLoaderRoute: typeof TerminosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/recursos': {
-      id: '/recursos'
-      path: '/recursos'
-      fullPath: '/recursos'
-      preLoaderRoute: typeof RecursosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacidad': {
-      id: '/privacidad'
-      path: '/privacidad'
-      fullPath: '/privacidad'
-      preLoaderRoute: typeof PrivacidadRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/panel': {
-      id: '/panel'
-      path: '/panel'
-      fullPath: '/panel'
-      preLoaderRoute: typeof PanelRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cookies': {
-      id: '/cookies'
-      path: '/cookies'
-      fullPath: '/cookies'
-      preLoaderRoute: typeof CookiesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contacto': {
-      id: '/contacto'
-      path: '/contacto'
-      fullPath: '/contacto'
-      preLoaderRoute: typeof ContactoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app': {
-      id: '/app'
-      path: '/app'
-      fullPath: '/app'
-      preLoaderRoute: typeof AppRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -524,123 +475,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/app/': {
-      id: '/app/'
-      path: '/'
-      fullPath: '/app/'
-      preLoaderRoute: typeof AppIndexRouteImport
-      parentRoute: typeof AppRoute
+    '/contacto': {
+      id: '/contacto'
+      path: '/contacto'
+      fullPath: '/contacto'
+      preLoaderRoute: typeof ContactoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cookies': {
+      id: '/cookies'
+      path: '/cookies'
+      fullPath: '/cookies'
+      preLoaderRoute: typeof CookiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/panel': {
+      id: '/panel'
+      path: '/panel'
+      fullPath: '/panel'
+      preLoaderRoute: typeof PanelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacidad': {
+      id: '/privacidad'
+      path: '/privacidad'
+      fullPath: '/privacidad'
+      preLoaderRoute: typeof PrivacidadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recursos': {
+      id: '/recursos'
+      path: '/recursos'
+      fullPath: '/recursos'
+      preLoaderRoute: typeof RecursosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terminos': {
+      id: '/terminos'
+      path: '/terminos'
+      fullPath: '/terminos'
+      preLoaderRoute: typeof TerminosRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/v/$code': {
-      id: '/v/$code'
-      path: '/v/$code'
-      fullPath: '/v/$code'
-      preLoaderRoute: typeof VCodeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/t/$slug': {
-      id: '/t/$slug'
-      path: '/t/$slug'
-      fullPath: '/t/$slug'
-      preLoaderRoute: typeof TSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/c/$code': {
-      id: '/c/$code'
-      path: '/c/$code'
-      fullPath: '/c/$code'
-      preLoaderRoute: typeof CCodeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/app/stock': {
-      id: '/app/stock'
-      path: '/stock'
-      fullPath: '/app/stock'
-      preLoaderRoute: typeof AppStockRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/servicios': {
-      id: '/app/servicios'
-      path: '/servicios'
-      fullPath: '/app/servicios'
-      preLoaderRoute: typeof AppServiciosRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/resenas': {
-      id: '/app/resenas'
-      path: '/resenas'
-      fullPath: '/app/resenas'
-      preLoaderRoute: typeof AppResenasRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/recordatorios': {
-      id: '/app/recordatorios'
-      path: '/recordatorios'
-      fullPath: '/app/recordatorios'
-      preLoaderRoute: typeof AppRecordatoriosRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/presupuestos': {
-      id: '/app/presupuestos'
-      path: '/presupuestos'
-      fullPath: '/app/presupuestos'
-      preLoaderRoute: typeof AppPresupuestosRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/mensajes': {
-      id: '/app/mensajes'
-      path: '/mensajes'
-      fullPath: '/app/mensajes'
-      preLoaderRoute: typeof AppMensajesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/equipo': {
-      id: '/app/equipo'
-      path: '/equipo'
-      fullPath: '/app/equipo'
-      preLoaderRoute: typeof AppEquipoRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/configuracion': {
-      id: '/app/configuracion'
-      path: '/configuracion'
-      fullPath: '/app/configuracion'
-      preLoaderRoute: typeof AppConfiguracionRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/citas': {
-      id: '/app/citas'
-      path: '/citas'
-      fullPath: '/app/citas'
-      preLoaderRoute: typeof AppCitasRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/app/agentes': {
-      id: '/app/agentes'
-      path: '/agentes'
-      fullPath: '/app/agentes'
-      preLoaderRoute: typeof AppAgentesRouteImport
-      parentRoute: typeof AppRoute
-    }
-    '/admin/talleres': {
-      id: '/admin/talleres'
-      path: '/talleres'
-      fullPath: '/admin/talleres'
-      preLoaderRoute: typeof AdminTalleresRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/planes': {
@@ -650,18 +545,123 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPlanesRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/app/vehiculos/': {
-      id: '/app/vehiculos/'
-      path: '/vehiculos'
-      fullPath: '/app/vehiculos/'
-      preLoaderRoute: typeof AppVehiculosIndexRouteImport
+    '/admin/talleres': {
+      id: '/admin/talleres'
+      path: '/talleres'
+      fullPath: '/admin/talleres'
+      preLoaderRoute: typeof AdminTalleresRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/ordenes/': {
-      id: '/app/ordenes/'
-      path: '/ordenes'
-      fullPath: '/app/ordenes/'
-      preLoaderRoute: typeof AppOrdenesIndexRouteImport
+    '/app/agentes': {
+      id: '/app/agentes'
+      path: '/agentes'
+      fullPath: '/app/agentes'
+      preLoaderRoute: typeof AppAgentesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/citas': {
+      id: '/app/citas'
+      path: '/citas'
+      fullPath: '/app/citas'
+      preLoaderRoute: typeof AppCitasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/configuracion': {
+      id: '/app/configuracion'
+      path: '/configuracion'
+      fullPath: '/app/configuracion'
+      preLoaderRoute: typeof AppConfiguracionRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/equipo': {
+      id: '/app/equipo'
+      path: '/equipo'
+      fullPath: '/app/equipo'
+      preLoaderRoute: typeof AppEquipoRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/mensajes': {
+      id: '/app/mensajes'
+      path: '/mensajes'
+      fullPath: '/app/mensajes'
+      preLoaderRoute: typeof AppMensajesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/presupuestos': {
+      id: '/app/presupuestos'
+      path: '/presupuestos'
+      fullPath: '/app/presupuestos'
+      preLoaderRoute: typeof AppPresupuestosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/recordatorios': {
+      id: '/app/recordatorios'
+      path: '/recordatorios'
+      fullPath: '/app/recordatorios'
+      preLoaderRoute: typeof AppRecordatoriosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/resenas': {
+      id: '/app/resenas'
+      path: '/resenas'
+      fullPath: '/app/resenas'
+      preLoaderRoute: typeof AppResenasRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/servicios': {
+      id: '/app/servicios'
+      path: '/servicios'
+      fullPath: '/app/servicios'
+      preLoaderRoute: typeof AppServiciosRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/stock': {
+      id: '/app/stock'
+      path: '/stock'
+      fullPath: '/app/stock'
+      preLoaderRoute: typeof AppStockRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/c/$code': {
+      id: '/c/$code'
+      path: '/c/$code'
+      fullPath: '/c/$code'
+      preLoaderRoute: typeof CCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/t/$slug': {
+      id: '/t/$slug'
+      path: '/t/$slug'
+      fullPath: '/t/$slug'
+      preLoaderRoute: typeof TSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/v/$code': {
+      id: '/v/$code'
+      path: '/v/$code'
+      fullPath: '/v/$code'
+      preLoaderRoute: typeof VCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/clientes/': {
+      id: '/app/clientes/'
+      path: '/clientes'
+      fullPath: '/app/clientes/'
+      preLoaderRoute: typeof AppClientesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/clientes/$id': {
+      id: '/app/clientes/$id'
+      path: '/clientes/$id'
+      fullPath: '/app/clientes/$id'
+      preLoaderRoute: typeof AppClientesIdRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/facturacion/': {
@@ -671,18 +671,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppFacturacionIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/clientes/': {
-      id: '/app/clientes/'
-      path: '/clientes'
-      fullPath: '/app/clientes/'
-      preLoaderRoute: typeof AppClientesIndexRouteImport
+    '/app/facturacion/$id': {
+      id: '/app/facturacion/$id'
+      path: '/facturacion/$id'
+      fullPath: '/app/facturacion/$id'
+      preLoaderRoute: typeof AppFacturacionIdRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/vehiculos/$id': {
-      id: '/app/vehiculos/$id'
-      path: '/vehiculos/$id'
-      fullPath: '/app/vehiculos/$id'
-      preLoaderRoute: typeof AppVehiculosIdRouteImport
+    '/app/ordenes/': {
+      id: '/app/ordenes/'
+      path: '/ordenes'
+      fullPath: '/app/ordenes/'
+      preLoaderRoute: typeof AppOrdenesIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/ordenes/$id': {
@@ -692,18 +692,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppOrdenesIdRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/facturacion/$id': {
-      id: '/app/facturacion/$id'
-      path: '/facturacion/$id'
-      fullPath: '/app/facturacion/$id'
-      preLoaderRoute: typeof AppFacturacionIdRouteImport
+    '/app/vehiculos/': {
+      id: '/app/vehiculos/'
+      path: '/vehiculos'
+      fullPath: '/app/vehiculos/'
+      preLoaderRoute: typeof AppVehiculosIndexRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/clientes/$id': {
-      id: '/app/clientes/$id'
-      path: '/clientes/$id'
-      fullPath: '/app/clientes/$id'
-      preLoaderRoute: typeof AppClientesIdRouteImport
+    '/app/vehiculos/$id': {
+      id: '/app/vehiculos/$id'
+      path: '/vehiculos/$id'
+      fullPath: '/app/vehiculos/$id'
+      preLoaderRoute: typeof AppVehiculosIdRouteImport
       parentRoute: typeof AppRoute
     }
   }
