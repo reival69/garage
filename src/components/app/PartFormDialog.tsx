@@ -1,4 +1,4 @@
-// Talleo — create/edit part dialog. All writes go through partsRepo.
+// Garage — create/edit part dialog. All writes go through partsRepo.
 
 import { useEffect, useState } from "react";
 import {

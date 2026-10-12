@@ -1,4 +1,4 @@
-// Talleo — create work order dialog. Lets you pick existing customer + vehicle
+// Garage — create work order dialog. Lets you pick existing customer + vehicle
 // (with search) or create them inline. Creates the order via the orders helper
 // so the access code, notification and initial message are all generated.
 

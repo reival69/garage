@@ -1,4 +1,4 @@
-// Talleo — create/edit appointment dialog. Customer + vehicle are optional and
+// Garage — create/edit appointment dialog. Customer + vehicle are optional and
 // reuse the searchable EntityCombobox. Services are a multi-select from the
 // catalog. Date & time use native inputs (mobile-first, predictable in dialogs).
 

@@ -47,7 +47,7 @@ function AdminDashboard() {
     <div>
       <PageHeader
         title="Dashboard"
-        description="Visión global del SaaS Talleo (todos los talleres)."
+        description="Visión global del SaaS Garage (todos los talleres)."
       />
 
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">

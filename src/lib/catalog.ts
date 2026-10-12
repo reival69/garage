@@ -1,4 +1,4 @@
-// Talleo — Catálogo (servicios y repuestos) domain helpers. All data access
+// Garage — Catálogo (servicios y repuestos) domain helpers. All data access
 // goes through the repos. Everything is local & simulated.
 
 import type { Service, Part } from "@/types";

@@ -40,7 +40,7 @@ export function LegalPage({ title, intro, updated, sections }: LegalPageProps) {
 
         <p className="mt-12 rounded-xl border border-border bg-background-subtle p-4 text-xs text-muted-foreground">
           Este texto es una plantilla genérica de ejemplo y no constituye asesoramiento legal ni
-          tiene validez jurídica. Talleo es una demo local y simulada; ningún dato sale de tu
+          tiene validez jurídica. Garage es una demo local y simulada; ningún dato sale de tu
           navegador.
         </p>
       </article>

@@ -1,4 +1,4 @@
-// Talleo — appointment (agenda) domain logic. All data access goes through the
+// Garage — appointment (agenda) domain logic. All data access goes through the
 // repos. Centralizes status transitions, duration estimation and the bridge
 // that turns an appointment into a work order. Everything is local & simulated.
 

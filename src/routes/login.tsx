@@ -10,8 +10,8 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/login")({
   head: () => ({
     meta: [
-      { title: "Acceder · Talleo" },
-      { name: "description", content: "Accede a tu cuenta de Talleo." },
+      { title: "Acceder · Garage" },
+      { name: "description", content: "Accede a tu cuenta de Garage." },
     ],
   }),
   component: LoginPage,
@@ -60,7 +60,7 @@ function LoginPage() {
               Inicia sesión
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Accede con tu cuenta de Talleo.
+              Accede con tu cuenta de Garage.
             </p>
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-3">

@@ -1,4 +1,4 @@
-// Talleo — Reseñas. Valoración media del taller y listado de reseñas de los
+// Garage — Reseñas. Valoración media del taller y listado de reseñas de los
 // clientes (estrellas, comentario, cliente, vehículo y fecha). Acceso owner/staff
 // (gestionado por el guard de permisos). Todo local y simulado.
 

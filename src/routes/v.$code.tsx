@@ -1,4 +1,4 @@
-// Talleo — cartilla permanente del vehículo (/v/:code). Acceso público estable
+// Garage — cartilla permanente del vehículo (/v/:code). Acceso público estable
 // por vehículo, independiente de la orden: cabecera del coche, orden en curso
 // con enlace a la vista en vivo, historial completo (vía VehicleHistory),
 // próximas revisiones y garantías vigentes. Read-only, todo local y simulado.

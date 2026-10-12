@@ -1,4 +1,4 @@
-// Talleo — stock / inventory domain logic. Extends the parts catalog with
+// Garage — stock / inventory domain logic. Extends the parts catalog with
 // inventory: current units, minimum desired units and warehouse location.
 // Connects to the order flow (decrement on invoice) and the notification
 // center (low-stock alerts). All access goes through partsRepo; everything is

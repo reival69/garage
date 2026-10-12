@@ -1,4 +1,4 @@
-// Talleo — shared vehicle service-history list. Used by both the order view
+// Garage — shared vehicle service-history list. Used by both the order view
 // (/c/:code) and the permanent cartilla (/v/:code) so the expandable history,
 // quote lines, DVI summary, warranty tags and printable invoices live in one
 // place. Read-only; all data comes through the repos/helpers.

@@ -1,4 +1,4 @@
-// Talleo — Facturación (listado). Buscador por número/cliente/matrícula, filtro
+// Garage — Facturación (listado). Buscador por número/cliente/matrícula, filtro
 // por estado de cobro. Tarjetas en móvil, tabla en escritorio. Todo local.
 
 import { useMemo, useState } from "react";

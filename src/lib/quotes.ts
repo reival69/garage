@@ -1,4 +1,4 @@
-// Talleo — quote (presupuesto) domain logic. Centralizes adding/editing/removing
+// Garage — quote (presupuesto) domain logic. Centralizes adding/editing/removing
 // quote lines and the simulated "send quote to customer" flow. All persistence
 // goes through the repos; no component touches localStorage directly.
 

@@ -1,4 +1,4 @@
-// Talleo — create/edit customer dialog. All writes go through customersRepo.
+// Garage — create/edit customer dialog. All writes go through customersRepo.
 
 import { useEffect, useState } from "react";
 import {

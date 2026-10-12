@@ -1,4 +1,4 @@
-// Talleo — low-level storage layer.
+// Garage — low-level storage layer.
 // The ONLY place that touches localStorage. Components must never read/write
 // localStorage directly; they go through repositories built on top of this.
 //
@@ -41,7 +41,7 @@ export function write<T>(
     );
   } catch (err) {
     // Likely quota exceeded (base64 photos/signatures).
-    console.error("Talleo storage write failed", err);
+    console.error("Garage storage write failed", err);
   }
 }
 
@@ -56,7 +56,7 @@ export function writeRaw(key: string, value: string): void {
   window.localStorage.setItem(`${PREFIX}:${key}`, value);
 }
 
-/** Remove every Talleo key. Used by resetDemo(). */
+/** Remove every Garage key. Used by resetDemo(). */
 export function clearAll(): void {
   if (!storageAvailable()) return;
   const toRemove: string[] = [];

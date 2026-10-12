@@ -1,4 +1,4 @@
-// Talleo — entity repositories. The single API surface components use to read
+// Garage — entity repositories. The single API surface components use to read
 // and write domain data. Swap storage.ts internals to migrate to a real DB
 // without touching components.
 

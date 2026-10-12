@@ -1,4 +1,4 @@
-// Talleo — Domain model types.
+// Garage — Domain model types.
 // Identifiers and type names in English; product copy lives in the UI in Spanish.
 
 export type Role = "superadmin" | "owner" | "staff" | "mechanic";
@@ -43,7 +43,7 @@ export interface Tenant {
   taxId?: string; // NIF / CIF / RFC — used on invoices
   email?: string;
   phone?: string;
-  logoUrl?: string; // base64 image; falls back to the "Talleo" wordmark
+  logoUrl?: string; // base64 image; falls back to the "Garage" wordmark
   businessHours?: BusinessDay[]; // length 7, Monday → Sunday
   googleReviewUrl?: string; // public Google review link offered to happy customers
   // Optional modules enabled/disabled per shop (Configuración → Módulos).

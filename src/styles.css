@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Talleo design system — monochromatic, minimal, mobile-first.
+ * Garage design system — monochromatic, minimal, mobile-first.
  * Single brand accent via --talleo-accent (override per tenant on a wrapper).
  * Functional colors reserved strictly for states.
  */

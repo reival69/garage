@@ -36,7 +36,7 @@ function AdminPlanes() {
     <div>
       <PageHeader
         title="Planes"
-        description="Planes de suscripción de Talleo y su uso."
+        description="Planes de suscripción de Garage y su uso."
       />
 
       <div className="grid gap-4 sm:grid-cols-3">

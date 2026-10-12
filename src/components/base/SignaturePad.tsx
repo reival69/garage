@@ -1,4 +1,4 @@
-// Talleo — shared signature pad. A <canvas> capturing a signature via pointer
+// Garage — shared signature pad. A <canvas> capturing a signature via pointer
 // events (touch + mouse), exporting to a base64 PNG. Used by the reception
 // check-in and the customer quote approval. Browser-only.
 

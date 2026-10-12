@@ -1,4 +1,4 @@
-// Talleo — Mensajes. A WhatsApp-style inbox where each conversation is the
+// Garage — Mensajes. A WhatsApp-style inbox where each conversation is the
 // message thread of a work order (OrderMessage, bidirectional shop↔customer).
 // Desktop: two columns (conversation list + thread). Mobile: list, then the
 // thread full-screen with a back button. Monochrome aesthetic — shop bubbles

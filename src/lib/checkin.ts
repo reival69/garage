@@ -1,4 +1,4 @@
-// Talleo — check-in (recepción) domain logic. Persists the reception snapshot
+// Garage — check-in (recepción) domain logic. Persists the reception snapshot
 // into order.checkIn and keeps the vehicle's odometer in sync. All access goes
 // through the repos; no component touches localStorage directly.
 

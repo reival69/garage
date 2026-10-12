@@ -1,12 +1,12 @@
-# Talleo
+# Garage
 
-Talleo — Prompt 1: Fundación
+Garage — Prompt 1: Fundación
 
-Vamos a construir Talleo, un SaaS multitenant para talleres mecánicos. Este es el primer prompt: construye SOLO la fundación descrita aquí. No construyas todavía la lógica interna de los módulos (vendrá en prompts posteriores).
+Vamos a construir Garage, un SaaS multitenant para talleres mecánicos. Este es el primer prompt: construye SOLO la fundación descrita aquí. No construyas todavía la lógica interna de los módulos (vendrá en prompts posteriores).
 
 Contexto del producto
 
-Talleo tiene tres tipos de usuario, cada uno con su vista:
+Garage tiene tres tipos de usuario, cada uno con su vista:
 
 Superadmin — el dueño del SaaS. Gestiona talleres (tenants), planes y métricas globales.
 
@@ -44,7 +44,7 @@ Un único color de acento de marca, definido como variable CSS --talleo-accent e
 
 Colores funcionales reservados exclusivamente para estados (no decorativos): verde #16A34A = ok, ámbar #D97706 = atención, rojo #DC2626 = crítico. Se usarán en el semáforo del DVI y en los badges de estado.
 
-Logo: wordmark de texto «Talleo» en Plus Jakarta Sans 700, monocromo. Crea un componente <Logo /> reutilizable.
+Logo: wordmark de texto «Garage» en Plus Jakarta Sans 700, monocromo. Crea un componente <Logo /> reutilizable.
 
 Crea un set de componentes base reutilizables: PageHeader, EmptyState, StatCard, StatusBadge, DataCard. El StatusBadge recibe un estado y pinta color + etiqueta en español.
 
@@ -301,7 +301,7 @@ Rutas y shells de navegación
 
 Configura el router con estas rutas. Cada página de módulo es por ahora un placeholder con su PageHeader y un EmptyState («Próximamente»). NO implementes la lógica interna todavía.
 
-/ — Landing pública de Talleo: hero con el wordmark, propuesta de valor en 1 frase, 3 features destacadas (gestión de órdenes, comunicación con el cliente por código, inspección digital), un bloque «Pedir cita» (solo maqueta visual por ahora) y botón «Acceder» que va a /login. Mobile-first.
+/ — Landing pública de Garage: hero con el wordmark, propuesta de valor en 1 frase, 3 features destacadas (gestión de órdenes, comunicación con el cliente por código, inspección digital), un bloque «Pedir cita» (solo maqueta visual por ahora) y botón «Acceder» que va a /login. Mobile-first.
 
 /login — descrita arriba.
 

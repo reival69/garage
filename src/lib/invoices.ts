@@ -1,4 +1,4 @@
-// Talleo — invoice (facturación) domain logic. Generates invoices from a work
+// Garage — invoice (facturación) domain logic. Generates invoices from a work
 // order's approved quote lines, assigns a per-tenant sequential number and
 // manages the simulated payment status. All persistence goes through the repos;
 // no component touches localStorage directly. 100% local & simulated.

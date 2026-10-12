@@ -1,4 +1,4 @@
-// Talleo — Catálogo (Servicios y Repuestos). Two tabs, each with a search box,
+// Garage — Catálogo (Servicios y Repuestos). Two tabs, each with a search box,
 // a desktop table / mobile cards layout and full CRUD. Prices are formatted in
 // the active tenant's currency. Deleting a service handles orphaned appointment
 // references gracefully (the agenda shows "Servicio eliminado"). Everything is

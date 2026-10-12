@@ -4,15 +4,15 @@ import { LegalPage } from "@/components/marketing/LegalPage";
 export const Route = createFileRoute("/privacidad")({
   head: () => ({
     meta: [
-      { title: "Política de privacidad · Talleo" },
+      { title: "Política de privacidad · Garage" },
       {
         name: "description",
-        content: "Cómo Talleo trata y protege los datos personales. Plantilla de ejemplo.",
+        content: "Cómo Garage trata y protege los datos personales. Plantilla de ejemplo.",
       },
-      { property: "og:title", content: "Política de privacidad · Talleo" },
+      { property: "og:title", content: "Política de privacidad · Garage" },
       {
         property: "og:description",
-        content: "Cómo Talleo trata y protege los datos personales. Plantilla de ejemplo.",
+        content: "Cómo Garage trata y protege los datos personales. Plantilla de ejemplo.",
       },
     ],
   }),
@@ -24,13 +24,13 @@ function PrivacyPage() {
     <LegalPage
       title="Política de privacidad"
       updated="31 de mayo de 2026"
-      intro="Tu privacidad nos importa. Este documento explica, de forma general, qué datos se tratan al usar Talleo y con qué finalidad."
+      intro="Tu privacidad nos importa. Este documento explica, de forma general, qué datos se tratan al usar Garage y con qué finalidad."
       sections={[
         {
           heading: "Responsable del tratamiento",
           body: (
             <p>
-              Talleo actúa como responsable del tratamiento de los datos facilitados a través de su
+              Garage actúa como responsable del tratamiento de los datos facilitados a través de su
               sitio y de la aplicación. Puedes contactarnos en cualquier momento desde la página de
               contacto.
             </p>

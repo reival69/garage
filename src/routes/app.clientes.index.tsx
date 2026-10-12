@@ -1,4 +1,4 @@
-// Talleo — Clientes (listado). Buscador en tiempo real por nombre, teléfono,
+// Garage — Clientes (listado). Buscador en tiempo real por nombre, teléfono,
 // email o matrícula de sus vehículos. Tarjetas en móvil, tabla en escritorio.
 
 import { useMemo, useState } from "react";

@@ -1,4 +1,4 @@
-// Talleo — client-side image compression. Photos are stored as small base64
+// Garage — client-side image compression. Photos are stored as small base64
 // JPEGs inside localStorage, so we downscale and re-encode aggressively to
 // avoid blowing the storage quota. Browser-only (uses canvas/DOM).
 

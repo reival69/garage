@@ -1,4 +1,4 @@
-// Talleo — create/edit team member dialog. Writes go through usersRepo.
+// Garage — create/edit team member dialog. Writes go through usersRepo.
 // The superadmin role is never assignable here. Local & simulated.
 
 import { useEffect, useState } from "react";

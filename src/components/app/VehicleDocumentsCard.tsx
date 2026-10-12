@@ -1,4 +1,4 @@
-// Talleo — vehicle documents & expiries manager (ficha de vehículo). Lists the
+// Garage — vehicle documents & expiries manager (ficha de vehículo). Lists the
 // vehicle's documents with a traffic-light expiry badge and lets the shop
 // add / edit / delete them (including an optional compressed image). All writes
 // go through the documents helpers; everything is local & simulated.

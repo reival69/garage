@@ -1,4 +1,4 @@
-// Talleo — create/edit agent dialog. All writes go through the agents helpers.
+// Garage — create/edit agent dialog. All writes go through the agents helpers.
 // The agent is a simulated AI inbox assistant: it answers by intent rules
 // (trigger → response), smart intents (data access) and context docs.
 // Everything is local & simulated.

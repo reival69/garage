@@ -1,4 +1,4 @@
-// Talleo — Superadmin (SaaS) global aggregation logic. Reads across every
+// Garage — Superadmin (SaaS) global aggregation logic. Reads across every
 // tenant namespace via the repos and exposes platform-wide metrics plus the
 // CRUD used by the Superadmin panel. 100% local & simulated; no component
 // touches localStorage directly.

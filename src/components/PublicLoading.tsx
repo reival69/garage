@@ -1,4 +1,4 @@
-// Talleo — branded loading state for public routes (/t/:slug, /c/:code,
+// Garage — branded loading state for public routes (/t/:slug, /c/:code,
 // /v/:code). Shown until the client has mounted and the localStorage lookup
 // has run, so we never flash the "not found" error during SSR/hydration.
 

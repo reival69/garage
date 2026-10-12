@@ -1,4 +1,4 @@
-// Talleo — vehicle-level photo gallery editor (ficha de vehículo). Lets the shop
+// Garage — vehicle-level photo gallery editor (ficha de vehículo). Lets the shop
 // upload (compressed), label, delete and pick a cover photo for the cartilla.
 // All writes go through vehicles.ts helpers; everything is local & simulated.
 

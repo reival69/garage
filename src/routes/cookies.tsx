@@ -4,15 +4,15 @@ import { LegalPage } from "@/components/marketing/LegalPage";
 export const Route = createFileRoute("/cookies")({
   head: () => ({
     meta: [
-      { title: "Política de cookies · Talleo" },
+      { title: "Política de cookies · Garage" },
       {
         name: "description",
-        content: "Información sobre el uso de cookies en Talleo. Plantilla de ejemplo.",
+        content: "Información sobre el uso de cookies en Garage. Plantilla de ejemplo.",
       },
-      { property: "og:title", content: "Política de cookies · Talleo" },
+      { property: "og:title", content: "Política de cookies · Garage" },
       {
         property: "og:description",
-        content: "Información sobre el uso de cookies en Talleo. Plantilla de ejemplo.",
+        content: "Información sobre el uso de cookies en Garage. Plantilla de ejemplo.",
       },
     ],
   }),
@@ -24,7 +24,7 @@ function CookiesPage() {
     <LegalPage
       title="Política de cookies"
       updated="31 de mayo de 2026"
-      intro="Esta política explica, de forma general, qué son las cookies y cómo se utilizan en Talleo."
+      intro="Esta política explica, de forma general, qué son las cookies y cómo se utilizan en Garage."
       sections={[
         {
           heading: "¿Qué son las cookies?",
@@ -48,7 +48,7 @@ function CookiesPage() {
           heading: "Almacenamiento local",
           body: (
             <p>
-              Esta demo de Talleo guarda datos en el almacenamiento local de tu navegador para
+              Esta demo de Garage guarda datos en el almacenamiento local de tu navegador para
               simular la aplicación. Esa información no sale de tu dispositivo.
             </p>
           ),

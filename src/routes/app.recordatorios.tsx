@@ -1,4 +1,4 @@
-// Talleo — Recordatorios de mantenimiento. Lista de recordatorios vencidos y
+// Garage — Recordatorios de mantenimiento. Lista de recordatorios vencidos y
 // próximos (por fecha y/o kilómetros), con acciones por item. Solo lectura para
 // roles sin permiso de edición; el owner siempre tiene acceso total.
 

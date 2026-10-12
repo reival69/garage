@@ -4,15 +4,15 @@ import { LegalPage } from "@/components/marketing/LegalPage";
 export const Route = createFileRoute("/terminos")({
   head: () => ({
     meta: [
-      { title: "Términos y condiciones · Talleo" },
+      { title: "Términos y condiciones · Garage" },
       {
         name: "description",
-        content: "Condiciones generales de uso del servicio Talleo. Plantilla de ejemplo.",
+        content: "Condiciones generales de uso del servicio Garage. Plantilla de ejemplo.",
       },
-      { property: "og:title", content: "Términos y condiciones · Talleo" },
+      { property: "og:title", content: "Términos y condiciones · Garage" },
       {
         property: "og:description",
-        content: "Condiciones generales de uso del servicio Talleo. Plantilla de ejemplo.",
+        content: "Condiciones generales de uso del servicio Garage. Plantilla de ejemplo.",
       },
     ],
   }),
@@ -24,13 +24,13 @@ function TermsPage() {
     <LegalPage
       title="Términos y condiciones"
       updated="31 de mayo de 2026"
-      intro="Estas condiciones regulan, de forma general, el acceso y uso del servicio Talleo."
+      intro="Estas condiciones regulan, de forma general, el acceso y uso del servicio Garage."
       sections={[
         {
           heading: "Objeto",
           body: (
             <p>
-              Talleo es un software de gestión para talleres mecánicos que permite administrar
+              Garage es un software de gestión para talleres mecánicos que permite administrar
               órdenes, inspecciones, presupuestos, citas y la comunicación con los clientes.
             </p>
           ),

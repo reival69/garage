@@ -1,4 +1,4 @@
-// Talleo — searchable single-select combobox. Lightweight (no cmdk) so it is
+// Garage — searchable single-select combobox. Lightweight (no cmdk) so it is
 // predictable inside dialogs. Optionally offers a "create new" action.
 
 import { useState } from "react";

@@ -1,4 +1,4 @@
-// Talleo — ficha de vehículo. Datos, dueño, historial de servicio y galería de
+// Garage — ficha de vehículo. Datos, dueño, historial de servicio y galería de
 // fotos acumuladas (de todas sus órdenes). Botón «Nueva orden» precargado.
 
 import { useMemo, useState } from "react";

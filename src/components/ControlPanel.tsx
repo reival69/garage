@@ -27,7 +27,7 @@ type View = "menu" | "taller" | "cliente" | "cartilla" | "publica";
 
 /**
  * Hidden internal control panel for presentations. No visible trigger.
- * Open via: Ctrl/Cmd + Shift + K, long-press on the Talleo logo, or /panel.
+ * Open via: Ctrl/Cmd + Shift + K, long-press on the Garage logo, or /panel.
  */
 export function ControlPanel() {
   const { ready, login, refresh } = useAuth();

@@ -1,4 +1,4 @@
-// Talleo — Equipo. Lista los usuarios del taller activo, permite crear/editar,
+// Garage — Equipo. Lista los usuarios del taller activo, permite crear/editar,
 // activar/desactivar, eliminar (con guardas) e «iniciar sesión como» para
 // demostrar permisos en clase. Todo local y simulado.
 

@@ -6,16 +6,16 @@ import { Reveal } from "@/components/marketing/Reveal";
 export const Route = createFileRoute("/recursos")({
   head: () => ({
     meta: [
-      { title: "Recursos · Talleo" },
+      { title: "Recursos · Garage" },
       {
         name: "description",
         content:
-          "Centro de ayuda, documentación, blog y contacto de Talleo. Todo lo que necesitas para sacar partido al software de tu taller.",
+          "Centro de ayuda, documentación, blog y contacto de Garage. Todo lo que necesitas para sacar partido al software de tu taller.",
       },
-      { property: "og:title", content: "Recursos · Talleo" },
+      { property: "og:title", content: "Recursos · Garage" },
       {
         property: "og:description",
-        content: "Centro de ayuda, documentación, blog y contacto de Talleo.",
+        content: "Centro de ayuda, documentación, blog y contacto de Garage.",
       },
     ],
   }),
@@ -62,7 +62,7 @@ function ResourcesPage() {
             Recursos
           </span>
           <h1 className="mt-5 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            Aprende a sacar partido a Talleo
+            Aprende a sacar partido a Garage
           </h1>
           <p className="mt-4 text-muted-foreground">
             Ayuda, documentación, novedades y contacto, todo en un solo sitio. Esta es una demo:

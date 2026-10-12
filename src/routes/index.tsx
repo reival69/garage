@@ -35,13 +35,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Talleo — Gestiona tu taller y mantén al cliente informado" },
+      { title: "Garage — Gestiona tu taller y mantén al cliente informado" },
       {
         name: "description",
         content:
-          "Talleo reúne órdenes, inspección digital, presupuestos con aprobación, reserva online y facturación. Tus clientes siguen su coche en tiempo real con un código.",
+          "Garage reúne órdenes, inspección digital, presupuestos con aprobación, reserva online y facturación. Tus clientes siguen su coche en tiempo real con un código.",
       },
-      { property: "og:title", content: "Talleo — Software para talleres mecánicos" },
+      { property: "og:title", content: "Garage — Software para talleres mecánicos" },
       {
         property: "og:description",
         content:
@@ -60,7 +60,7 @@ const PAINS = [
   {
     icon: PhoneOff,
     title: "El teléfono no para",
-    body: "«¿Está listo mi coche?» Talleo informa al cliente en tiempo real y bajan las llamadas.",
+    body: "«¿Está listo mi coche?» Garage informa al cliente en tiempo real y bajan las llamadas.",
   },
   {
     icon: ClipboardList,
@@ -159,7 +159,7 @@ const PLANS = [
 const TESTIMONIALS = [
   {
     quote:
-      "Desde que usamos Talleo, las llamadas de «¿está listo?» han bajado a la mitad. El cliente lo ve todo.",
+      "Desde que usamos Garage, las llamadas de «¿está listo?» han bajado a la mitad. El cliente lo ve todo.",
     name: "Marta Ruiz",
     role: "Garaje Norte",
   },
@@ -179,7 +179,7 @@ const TESTIMONIALS = [
 const FAQ = [
   {
     q: "¿Necesito instalar algo?",
-    a: "No. Talleo funciona en el navegador, desde el ordenador del taller o el móvil. Esta es una demo local y simulada que se guarda en tu navegador.",
+    a: "No. Garage funciona en el navegador, desde el ordenador del taller o el móvil. Esta es una demo local y simulada que se guarda en tu navegador.",
   },
   {
     q: "¿Cómo ve el cliente su coche?",
@@ -227,7 +227,7 @@ function Landing() {
               El cliente, informado.
             </h1>
             <p className="mt-5 max-w-lg text-base text-muted-foreground sm:text-lg">
-              Talleo reúne órdenes, inspección digital, presupuestos con aprobación, reserva online
+              Garage reúne órdenes, inspección digital, presupuestos con aprobación, reserva online
               y facturación. Tus clientes siguen su coche en tiempo real con un código.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -262,7 +262,7 @@ function Landing() {
       <section className="border-y border-border bg-background-subtle">
         <div className="mx-auto max-w-6xl px-6 py-8">
           <p className="text-center text-xs uppercase tracking-wide text-muted-foreground">
-            Talleres que confían en Talleo
+            Talleres que confían en Garage
           </p>
           <div className="mt-5 grid grid-cols-2 items-center gap-6 opacity-60 sm:grid-cols-3 lg:grid-cols-6">
             {TRUST.map((name) => (
@@ -286,7 +286,7 @@ function Landing() {
               El día a día del taller, sin caos
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Talleo sustituye papeles, llamadas y mensajes sueltos por un flujo claro que tu equipo
+              Garage sustituye papeles, llamadas y mensajes sueltos por un flujo claro que tu equipo
               y tus clientes entienden a la primera.
             </p>
           </Reveal>
@@ -517,7 +517,7 @@ function Landing() {
               Ordena tu taller esta semana
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-background/70">
-              Pide una demo y descubre cómo Talleo reduce llamadas, acelera entregas y mejora la
+              Pide una demo y descubre cómo Garage reduce llamadas, acelera entregas y mejora la
               experiencia de tus clientes.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">

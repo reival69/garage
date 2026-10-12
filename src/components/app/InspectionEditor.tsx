@@ -1,4 +1,4 @@
-// Talleo — módulo de inspección digital (DVI) dentro de la ficha de orden.
+// Garage — módulo de inspección digital (DVI) dentro de la ficha de orden.
 // Plantilla multipunto con selector semáforo (ok / atención / crítico), nota y
 // foto opcional por punto, puntos personalizables y resumen de recuento. Todo
 // pasa por src/lib/inspection.ts; mobile-first, monocromático salvo el semáforo.

@@ -80,14 +80,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Talleo — Software para talleres mecánicos" },
+      { title: "Garage — Software para talleres mecánicos" },
       {
         name: "description",
         content:
-          "Talleo es el software multitaller para gestionar órdenes, citas y la comunicación con tus clientes.",
+          "Garage es el software multitaller para gestionar órdenes, citas y la comunicación con tus clientes.",
       },
-      { name: "author", content: "Talleo" },
-      { property: "og:title", content: "Talleo — Software para talleres mecánicos" },
+      { name: "author", content: "Garage" },
+      { property: "og:title", content: "Garage — Software para talleres mecánicos" },
       {
         property: "og:description",
         content:
@@ -95,13 +95,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Talleo" },
-      { name: "twitter:title", content: "Talleo — Software para talleres mecánicos" },
-      { name: "description", content: "Talleo es un asistente digital SaaS para talleres mecánicos que gestiona citas, clientes, órdenes de reparación y facturación." },
-      { property: "og:description", content: "Talleo es un asistente digital SaaS para talleres mecánicos que gestiona citas, clientes, órdenes de reparación y facturación." },
-      { name: "twitter:description", content: "Talleo es un asistente digital SaaS para talleres mecánicos que gestiona citas, clientes, órdenes de reparación y facturación." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/66e4df13-9cdf-4e5a-bea0-9b60af3d8fe4/id-preview-5555b5a6--7e6f5a7a-4b80-4bc9-bc1b-68eb160178c1.lovable.app-1780312705979.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/66e4df13-9cdf-4e5a-bea0-9b60af3d8fe4/id-preview-5555b5a6--7e6f5a7a-4b80-4bc9-bc1b-68eb160178c1.lovable.app-1780312705979.png" },
+      { name: "twitter:site", content: "@Garage" },
+      { name: "twitter:title", content: "Garage — Software para talleres mecánicos" },
+      { name: "description", content: "Garage es un asistente digital SaaS para talleres mecánicos que gestiona citas, clientes, órdenes de reparación y facturación." },
+      { property: "og:description", content: "Garage es un asistente digital SaaS para talleres mecánicos que gestiona citas, clientes, órdenes de reparación y facturación." },
+      { name: "twitter:description", content: "Garage es un asistente digital SaaS para talleres mecánicos que gestiona citas, clientes, órdenes de reparación y facturación." },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },

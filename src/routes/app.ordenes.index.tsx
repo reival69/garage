@@ -1,4 +1,4 @@
-// Talleo — Órdenes (listado). Toggle Lista / Tablero. Filtro por estado (chips),
+// Garage — Órdenes (listado). Toggle Lista / Tablero. Filtro por estado (chips),
 // buscador por matrícula/cliente/código. Tarjetas en móvil, tabla en escritorio.
 
 import { useMemo, useState } from "react";

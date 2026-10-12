@@ -1,4 +1,4 @@
-// Talleo — create/edit maintenance reminder dialog. All writes go through the
+// Garage — create/edit maintenance reminder dialog. All writes go through the
 // reminders helpers (remindersRepo under the hood). A reminder must have a label
 // plus at least one trigger: a due date and/or a target odometer reading.
 

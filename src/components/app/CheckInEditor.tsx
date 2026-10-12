@@ -1,4 +1,4 @@
-// Talleo — módulo de check-in de recepción dentro de la ficha de orden.
+// Garage — módulo de check-in de recepción dentro de la ficha de orden.
 // Km (sincroniza con el vehículo), nivel de combustible tipo gauge, diagrama
 // de daños interactivo (marcas con coordenadas relativas) y firma del cliente
 // en canvas (puntero táctil + ratón). Todo pasa por src/lib/checkin.ts.

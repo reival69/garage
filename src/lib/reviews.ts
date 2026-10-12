@@ -1,4 +1,4 @@
-// Talleo — post-delivery reviews domain logic. Customers leave a 1–5 rating
+// Garage — post-delivery reviews domain logic. Customers leave a 1–5 rating
 // (with optional comment) from the guest view once their order is delivered.
 // Each review emits a `resena` notification to the shop. All access goes
 // through reviewsRepo; everything is local & simulated.

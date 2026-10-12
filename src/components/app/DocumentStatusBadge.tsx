@@ -1,4 +1,4 @@
-// Talleo — traffic-light badge for a vehicle document's expiry status
+// Garage — traffic-light badge for a vehicle document's expiry status
 // (vigente / por vencer / vencido). Shared between the management view and the
 // public cartilla so the colours stay consistent.
 

@@ -1,4 +1,4 @@
-// Talleo — notification center. A bell with an unread badge that opens a panel
+// Garage — notification center. A bell with an unread badge that opens a panel
 // listing notifications newest-first. Each item shows a type icon, title, body
 // and relative time; unread items are visually distinct. Clicking one marks it
 // read and navigates to its source entity. Desktop uses a popover; mobile uses

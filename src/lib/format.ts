@@ -1,4 +1,4 @@
-// Talleo — formatting helpers (display only).
+// Garage — formatting helpers (display only).
 // Currency formatting is centralized here: every amount in the app must pass
 // through formatCurrency / formatCurrencyCents with the active tenant's currency
 // so a MXN shop shows pesos and an EUR shop shows euros, etc.

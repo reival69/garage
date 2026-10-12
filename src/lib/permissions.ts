@@ -1,4 +1,4 @@
-// Talleo — role-based permissions for the Taller (shop) views.
+// Garage — role-based permissions for the Taller (shop) views.
 // Golden rule: the owner always has full access and is never restricted, so a
 // teacher can never get locked out during a class demo.
 

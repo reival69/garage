@@ -1,4 +1,4 @@
-// Talleo — Vehículos (listado). Buscador por matrícula, marca, modelo o dueño.
+// Garage — Vehículos (listado). Buscador por matrícula, marca, modelo o dueño.
 // Tarjetas en móvil, tabla en escritorio.
 
 import { useMemo, useState } from "react";

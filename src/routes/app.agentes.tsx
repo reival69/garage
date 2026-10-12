@@ -1,4 +1,4 @@
-// Talleo — Agentes. Manage simulated AI assistants that attend the message
+// Garage — Agentes. Manage simulated AI assistants that attend the message
 // inbox. List agents with status + simulated stats (derived from sentByAgent
 // messages), create/edit them, test them in a sandbox, and a placeholder card
 // for the (simulated) Meta WhatsApp connection. Everything is local & simulated.

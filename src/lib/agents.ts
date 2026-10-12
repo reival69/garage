@@ -1,4 +1,4 @@
-// Talleo — Agentes. A simulated AI assistant that can attend the message inbox
+// Garage — Agentes. A simulated AI assistant that can attend the message inbox
 // of a shop. No real LLM, no backend: the agent answers by local intent rules
 // (trigger → response) plus a few "smart" intents that read tenant data, and a
 // keyword search over its context documents. In production `instructions` would

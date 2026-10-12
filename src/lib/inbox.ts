@@ -1,4 +1,4 @@
-// Talleo — Mensajes / bandeja de conversaciones. Each conversation is the
+// Garage — Mensajes / bandeja de conversaciones. Each conversation is the
 // message thread of a work order (OrderMessage, bidirectional shop↔customer).
 // These helpers turn the orders into a WhatsApp-style inbox view. Everything is
 // local & simulated (no backend), data accessed via repos.

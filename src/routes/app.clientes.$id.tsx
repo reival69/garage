@@ -1,4 +1,4 @@
-// Talleo — ficha de cliente. Datos editables, sus vehículos (con alta vinculada)
+// Garage — ficha de cliente. Datos editables, sus vehículos (con alta vinculada)
 // y su historial de órdenes. Eliminar bloqueado si tiene órdenes asociadas.
 
 import { useMemo, useState } from "react";

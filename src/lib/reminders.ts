@@ -1,4 +1,4 @@
-// Talleo — maintenance reminders domain logic. Reminders are tied to a vehicle
+// Garage — maintenance reminders domain logic. Reminders are tied to a vehicle
 // and become "due" by date and/or odometer. When a shop view loads,
 // evaluateReminders() emits a `recordatorio` notification (once) for every
 // overdue pending reminder so it surfaces in the existing notification center.

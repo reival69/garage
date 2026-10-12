@@ -1,4 +1,4 @@
-// Talleo — demo seed data. Everything is local and simulated.
+// Garage — demo seed data. Everything is local and simulated.
 
 import type {
   Appointment,

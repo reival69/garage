@@ -1,4 +1,4 @@
-// Talleo — team helpers (shop users). All access goes through usersRepo.
+// Garage — team helpers (shop users). All access goes through usersRepo.
 // Guards live here so the UI can stay declarative. Local & simulated.
 
 import { usersRepo, workOrdersRepo } from "@/lib/db";

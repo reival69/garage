@@ -1,4 +1,4 @@
-// Talleo — public per-shop online booking page (/t/:slug). No login. Branded
+// Garage — public per-shop online booking page (/t/:slug). No login. Branded
 // with the tenant's logo, accent color, name, address/phone and opening hours.
 // The booking is a multi-step wizard (services → vehicle → date → details →
 // summary). Submitting reuses/creates the customer (by phone) and vehicle, then

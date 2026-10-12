@@ -1,4 +1,4 @@
-// Talleo — work order domain logic. All access goes through the repos; this
+// Garage — work order domain logic. All access goes through the repos; this
 // module centralizes pipeline rules, access-code generation and the simulated
 // notifications/messages so every view (shop + customer) stays in sync.
 

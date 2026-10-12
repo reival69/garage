@@ -1,4 +1,4 @@
-// Talleo — create/edit vehicle document dialog. Captures the document type,
+// Garage — create/edit vehicle document dialog. Captures the document type,
 // optional custom name (for "otro"), expiry date, note and an optional
 // compressed image. All writes go through the documents helpers; everything is
 // local & simulated.

@@ -1,4 +1,4 @@
-// Talleo — editor de presupuestos dentro de la ficha de orden. Permite añadir
+// Garage — editor de presupuestos dentro de la ficha de orden. Permite añadir
 // líneas desde el catálogo (servicios/repuestos) o personalizadas, editarlas,
 // eliminarlas, ver totales en vivo con el IVA del taller y enviar el
 // presupuesto al cliente (simulado). Todo pasa por src/lib/quotes.ts.

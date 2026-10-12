@@ -1,4 +1,4 @@
-// Talleo — ficha de orden (hub central). Cabecera, control de pipeline, notas,
+// Garage — ficha de orden (hub central). Cabecera, control de pipeline, notas,
 // mensajes al cliente, fotos y resumen de presupuesto (solo lectura), compartir.
 // Inspección y Check-in quedan como placeholders para el siguiente prompt.
 

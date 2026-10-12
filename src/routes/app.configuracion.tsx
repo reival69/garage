@@ -1,4 +1,4 @@
-// Talleo — Configuración del taller. Edita datos generales, fiscales, moneda/IVA,
+// Garage — Configuración del taller. Edita datos generales, fiscales, moneda/IVA,
 // marca (acento + logo) y horario de atención del tenant activo. Guarda vía
 // tenantsRepo.update y refresca la sesión para que el cambio se propague a
 // cabecera, factura y vista cliente. Todo local y simulado.
@@ -352,7 +352,7 @@ function ConfigPage() {
                     className="h-full w-full object-contain"
                   />
                 ) : (
-                  <span className="text-xs text-muted-foreground">Talleo</span>
+                  <span className="text-xs text-muted-foreground">Garage</span>
                 )}
               </div>
               <div className="flex flex-col gap-2">

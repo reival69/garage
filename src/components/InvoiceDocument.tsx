@@ -1,4 +1,4 @@
-// Talleo — Shared printable invoice document. Renders the fiscal sheet (tenant
+// Garage — Shared printable invoice document. Renders the fiscal sheet (tenant
 // fiscal data, customer, vehicle, lines, subtotal, IVA, total and payment
 // status) plus the scoped print CSS. Reused by the shop's /app/facturacion/:id
 // route and by the customer view /c/:code so the customer can also print / save

@@ -1,4 +1,4 @@
-// Talleo — vehicle domain logic. Centralizes the stable public access code used
+// Garage — vehicle domain logic. Centralizes the stable public access code used
 // by the permanent cartilla (/v/:code), the cross-tenant lookup helpers and the
 // "vigent warranty" computation. All access goes through the repos; everything
 // is local & simulated.

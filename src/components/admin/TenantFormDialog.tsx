@@ -1,4 +1,4 @@
-// Talleo — create/edit tenant dialog for the Superadmin panel. Mirrors the
+// Garage — create/edit tenant dialog for the Superadmin panel. Mirrors the
 // seed shape: name, slug, currency, tax rate, plan, accent color and a single
 // location. 100% local & simulated.
 

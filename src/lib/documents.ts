@@ -1,4 +1,4 @@
-// Talleo — vehicle documents & expiry logic. Centralizes CRUD over a vehicle's
+// Garage — vehicle documents & expiry logic. Centralizes CRUD over a vehicle's
 // documents (ITV, insurance, road tax, …), the traffic-light expiry status and
 // the notification sweep that surfaces upcoming/expired documents in the
 // existing notification center. All access goes through the repos; everything

@@ -1,4 +1,4 @@
-// Talleo — create/edit vehicle dialog. Writes go through vehiclesRepo.
+// Garage — create/edit vehicle dialog. Writes go through vehiclesRepo.
 // The owner can be locked (when adding from a customer profile).
 
 import { useEffect, useMemo, useState } from "react";

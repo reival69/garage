@@ -1,4 +1,4 @@
-// Talleo — Ficha de factura. Reutiliza el componente compartido InvoiceDocument
+// Garage — Ficha de factura. Reutiliza el componente compartido InvoiceDocument
 // para el cuerpo imprimible (datos fiscales/cliente/vehículo/líneas/totales) y
 // añade el control de estado de cobro. Botón «Imprimir / Guardar PDF» aísla la
 // hoja con printInvoiceDocument. Todo local y simulado.

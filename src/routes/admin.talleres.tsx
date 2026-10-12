@@ -80,7 +80,7 @@ function AdminTalleres() {
     <div>
       <PageHeader
         title="Talleres"
-        description="Tenants suscritos a Talleo."
+        description="Tenants suscritos a Garage."
         actions={
           <Button onClick={openCreate}>
             <Plus strokeWidth={1.5} />

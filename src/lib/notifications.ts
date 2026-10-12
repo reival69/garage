@@ -1,4 +1,4 @@
-// Talleo — notifications domain logic. Centralizes the creation and reading of
+// Garage — notifications domain logic. Centralizes the creation and reading of
 // AppNotification records so every part of the app emits notifications the same
 // way (with an optional `link` back to the source entity). All data access goes
 // through notificationsRepo. Everything is local & simulated.

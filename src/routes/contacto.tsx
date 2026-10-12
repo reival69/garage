@@ -11,16 +11,16 @@ import { Textarea } from "@/components/ui/textarea";
 export const Route = createFileRoute("/contacto")({
   head: () => ({
     meta: [
-      { title: "Solicitar demo · Talleo" },
+      { title: "Solicitar demo · Garage" },
       {
         name: "description",
         content:
-          "Pide una demo de Talleo. Cuéntanos sobre tu taller y te mostramos cómo ordenar el trabajo y mantener al cliente informado.",
+          "Pide una demo de Garage. Cuéntanos sobre tu taller y te mostramos cómo ordenar el trabajo y mantener al cliente informado.",
       },
-      { property: "og:title", content: "Solicitar demo · Talleo" },
+      { property: "og:title", content: "Solicitar demo · Garage" },
       {
         property: "og:description",
-        content: "Pide una demo de Talleo y descubre cómo ordenar tu taller.",
+        content: "Pide una demo de Garage y descubre cómo ordenar tu taller.",
       },
     ],
   }),
@@ -74,7 +74,7 @@ function ContactPage() {
                 Solicita una demo
               </h1>
               <p className="mt-4 text-muted-foreground">
-                Cuéntanos sobre tu taller y te enseñamos Talleo en acción. Sin compromiso.
+                Cuéntanos sobre tu taller y te enseñamos Garage en acción. Sin compromiso.
               </p>
             </Reveal>
 

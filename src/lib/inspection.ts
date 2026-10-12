@@ -1,4 +1,4 @@
-// Talleo — digital vehicle inspection (DVI) domain logic. Centralizes the
+// Garage — digital vehicle inspection (DVI) domain logic. Centralizes the
 // default multi-point template, the traffic-light summary and persistence of
 // the inspection into order.inspection. All access goes through the repos and
 // reuses the photo helpers; no component touches localStorage directly.

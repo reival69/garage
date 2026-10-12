@@ -184,7 +184,7 @@ function MarketingFooter() {
           ))}
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-sm text-muted-foreground sm:flex-row">
-          <span>© {new Date().getFullYear()} Talleo. Todos los derechos reservados.</span>
+          <span>© {new Date().getFullYear()} Garage. Todos los derechos reservados.</span>
           <span>Hecho para talleres. Demo local y simulada.</span>
         </div>
       </div>

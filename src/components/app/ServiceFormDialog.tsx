@@ -1,4 +1,4 @@
-// Talleo — create/edit service dialog. All writes go through servicesRepo.
+// Garage — create/edit service dialog. All writes go through servicesRepo.
 
 import { useEffect, useState } from "react";
 import {

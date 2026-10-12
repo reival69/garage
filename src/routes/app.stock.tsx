@@ -1,4 +1,4 @@
-// Talleo — Stock / Inventario. Extends the parts catalog with inventory
+// Garage — Stock / Inventario. Extends the parts catalog with inventory
 // management: current units, minimum stock, warehouse location, a "Bajo stock"
 // badge, search + low-stock filter, inline inventory editing and quick
 // entrada/salida adjustments. Catalog CRUD (name/price/SKU) stays in /app/servicios.

@@ -1,4 +1,4 @@
-// Talleo — edit plan dialog for the Superadmin panel. Name, tier, monthly price
+// Garage — edit plan dialog for the Superadmin panel. Name, tier, monthly price
 // and limits (orders, users, photos per order). 100% local & simulated.
 
 import { useEffect, useState } from "react";
