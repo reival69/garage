@@ -339,3 +339,15 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## Publicar en un servidor propio (Clouding.io, talleo.es)
+
+Como root en un servidor Ubuntu 24.04 nuevo:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/reival69/garage/main/deploy/clouding-setup.sh | EMAIL=tu@correo.com bash
+```
+
+El script instala Node.js 22 y Nginx, compila la app (`deploy/build.sh`), la deja corriendo como servicio
+(`systemctl status garage`), revisa GitHub cada 10 minutos y recompila si hay cambios (`deploy/update.sh`,
+registro en `/var/log/garage-update.log`) y activa HTTPS cuando talleo.es ya apunta al servidor.
