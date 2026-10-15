@@ -112,7 +112,8 @@ curl -fsS -o /dev/null "http://127.0.0.1:$PORT/" && echo "La app responde en el 
 
 echo "==> HTTPS"
 SERVER_IP="$(curl -4 -fsS https://ifconfig.me || true)"
-DOMAIN_IPS="$( (dig +short A "$DOMAIN"; dig +short A "www.$DOMAIN") | sort -u | grep -v '^$' || true)"
+# Solo las IP: si www es un CNAME, dig también devuelve el nombre al que apunta
+DOMAIN_IPS="$( (dig +short A "$DOMAIN"; dig +short A "www.$DOMAIN") | grep -E '^[0-9.]+$' | sort -u || true)"
 if [ -n "$SERVER_IP" ] && [ "$DOMAIN_IPS" = "$SERVER_IP" ]; then
   if [ -n "${EMAIL:-}" ]; then
     certbot --nginx -n --agree-tos -m "$EMAIL" --redirect -d "$DOMAIN" -d "www.$DOMAIN"
