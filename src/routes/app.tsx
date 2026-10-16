@@ -22,10 +22,10 @@ import {
   Star,
   UsersRound,
   Settings,
-  LogOut,
   MoreHorizontal,
   Home,
 } from "lucide-react";
+import { AccountMenu } from "@/components/AccountMenu";
 import { Logo } from "@/components/Logo";
 import { NotificationBell } from "@/components/app/NotificationBell";
 import { useAuth } from "@/lib/auth/AuthContext";
@@ -68,7 +68,7 @@ const BOTTOM = [
 ] as const;
 
 function AppLayout() {
-  const { ready, user, tenant, logout } = useAuth();
+  const { ready, user, tenant } = useAuth();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -171,14 +171,7 @@ function AppLayout() {
           })}
         </nav>
         <div className="border-t border-border p-3">
-          <Link
-            to="/login"
-            onClick={logout}
-            className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
-          >
-            <LogOut strokeWidth={1.5} className="h-4 w-4" />
-            Salir
-          </Link>
+          <AccountMenu />
         </div>
       </aside>
 
@@ -193,6 +186,7 @@ function AppLayout() {
               </span>
             )}
             <NotificationBell variant="sheet" />
+            <AccountMenu variant="icon" />
           </div>
         </header>
 

@@ -15,7 +15,6 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as ContactoRouteImport } from './routes/contacto'
 import { Route as CookiesRouteImport } from './routes/cookies'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as PanelRouteImport } from './routes/panel'
 import { Route as PrivacidadRouteImport } from './routes/privacidad'
 import { Route as RecursosRouteImport } from './routes/recursos'
 import { Route as TerminosRouteImport } from './routes/terminos'
@@ -73,11 +72,6 @@ const CookiesRoute = CookiesRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PanelRoute = PanelRouteImport.update({
-  id: '/panel',
-  path: '/panel',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacidadRoute = PrivacidadRouteImport.update({
@@ -228,7 +222,6 @@ export interface FileRoutesByFullPath {
   '/contacto': typeof ContactoRoute
   '/cookies': typeof CookiesRoute
   '/login': typeof LoginRoute
-  '/panel': typeof PanelRoute
   '/privacidad': typeof PrivacidadRoute
   '/recursos': typeof RecursosRoute
   '/terminos': typeof TerminosRoute
@@ -263,7 +256,6 @@ export interface FileRoutesByTo {
   '/contacto': typeof ContactoRoute
   '/cookies': typeof CookiesRoute
   '/login': typeof LoginRoute
-  '/panel': typeof PanelRoute
   '/privacidad': typeof PrivacidadRoute
   '/recursos': typeof RecursosRoute
   '/terminos': typeof TerminosRoute
@@ -301,7 +293,6 @@ export interface FileRoutesById {
   '/contacto': typeof ContactoRoute
   '/cookies': typeof CookiesRoute
   '/login': typeof LoginRoute
-  '/panel': typeof PanelRoute
   '/privacidad': typeof PrivacidadRoute
   '/recursos': typeof RecursosRoute
   '/terminos': typeof TerminosRoute
@@ -340,7 +331,6 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/cookies'
     | '/login'
-    | '/panel'
     | '/privacidad'
     | '/recursos'
     | '/terminos'
@@ -375,7 +365,6 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/cookies'
     | '/login'
-    | '/panel'
     | '/privacidad'
     | '/recursos'
     | '/terminos'
@@ -412,7 +401,6 @@ export interface FileRouteTypes {
     | '/contacto'
     | '/cookies'
     | '/login'
-    | '/panel'
     | '/privacidad'
     | '/recursos'
     | '/terminos'
@@ -450,7 +438,6 @@ export interface RootRouteChildren {
   ContactoRoute: typeof ContactoRoute
   CookiesRoute: typeof CookiesRoute
   LoginRoute: typeof LoginRoute
-  PanelRoute: typeof PanelRoute
   PrivacidadRoute: typeof PrivacidadRoute
   RecursosRoute: typeof RecursosRoute
   TerminosRoute: typeof TerminosRoute
@@ -501,13 +488,6 @@ declare module '@tanstack/react-router' {
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/panel': {
-      id: '/panel'
-      path: '/panel'
-      fullPath: '/panel'
-      preLoaderRoute: typeof PanelRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacidad': {
@@ -776,7 +756,6 @@ const rootRouteChildren: RootRouteChildren = {
   ContactoRoute: ContactoRoute,
   CookiesRoute: CookiesRoute,
   LoginRoute: LoginRoute,
-  PanelRoute: PanelRoute,
   PrivacidadRoute: PrivacidadRoute,
   RecursosRoute: RecursosRoute,
   TerminosRoute: TerminosRoute,

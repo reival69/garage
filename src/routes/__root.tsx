@@ -12,7 +12,6 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "../lib/auth/AuthContext";
-import { ControlPanel } from "../components/ControlPanel";
 import { Toaster } from "../components/ui/sonner";
 
 function NotFoundComponent() {
@@ -146,7 +145,6 @@ function RootComponent() {
       <AuthProvider>
         {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
-        <ControlPanel />
         <Toaster />
       </AuthProvider>
     </QueryClientProvider>

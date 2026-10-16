@@ -2,9 +2,8 @@
 // with the tenant's logo, accent color, name, address/phone and opening hours.
 // The booking is a multi-step wizard (services → vehicle → date → details →
 // summary). Submitting reuses/creates the customer (by phone) and vehicle, then
-// creates an online appointment with a notification via requestOnlineAppointment.
-// The shop location is shown as a keyless Google Maps embed. Everything else is
-// local & simulated.
+// creates an online appointment with a notification, on the server (bookOnline).
+// The shop location is shown as a keyless Google Maps embed.
 
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
@@ -27,7 +26,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { findTenantBySlug, servicesRepo } from "@/lib/db";
-import { requestOnlineAppointment } from "@/lib/appointments";
+import { bookOnline } from "@/lib/api/data.functions";
+import { toast } from "sonner";
 import { isModuleEnabled } from "@/lib/permissions";
 import { cn } from "@/lib/utils";
 import type { Service, Tenant } from "@/types";
@@ -56,8 +56,8 @@ function PublicBookingPage() {
     [ready, slug],
   );
 
-  // Until the client is mounted and the localStorage lookup has run (after
-  // seedIfEmpty, signalled by `ready`), show a branded loading state instead
+  // Until the workshop's public data has been loaded from the server
+  // (signalled by `ready`), show a branded loading state instead
   // of flashing the "not found" error during SSR/hydration.
   if (!ready) {
     return <PublicLoading />;
@@ -153,7 +153,9 @@ function BookingFlow({ tenant }: { tenant: Tenant }) {
     setStep((s) => Math.max(s - 1, 0));
   };
 
-  const submit = () => {
+  const [sending, setSending] = useState(false);
+
+  const submit = async () => {
     // Re-validate the required steps before sending.
     for (let s = 0; s < 4; s++) {
       if (!validateStep(s)) {
@@ -162,18 +164,33 @@ function BookingFlow({ tenant }: { tenant: Tenant }) {
       }
     }
     const scheduledAt = new Date(`${date}T${time}`).toISOString();
-    requestOnlineAppointment(tenant, {
-      name,
-      phone,
-      email: email || undefined,
-      plate: plate || undefined,
-      make: make || undefined,
-      model: model || undefined,
-      serviceIds,
-      scheduledAt,
-      notes: notes || undefined,
-    });
-    setDone(true);
+    setSending(true);
+    try {
+      // The server matches the customer and vehicle: visitors never see the shop's data
+      const result = await bookOnline({
+        data: {
+          slug: tenant.slug,
+          name,
+          phone,
+          email: email || undefined,
+          plate: plate || undefined,
+          make: make || undefined,
+          model: model || undefined,
+          serviceIds,
+          scheduledAt,
+          notes: notes || undefined,
+        },
+      });
+      if (!result.ok) {
+        toast.error(result.error ?? "No se pudo enviar la reserva.");
+        return;
+      }
+      setDone(true);
+    } catch {
+      toast.error("No se pudo enviar la reserva. Revisa tu conexión e inténtalo de nuevo.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -286,7 +303,7 @@ function BookingFlow({ tenant }: { tenant: Tenant }) {
                     <ArrowRight strokeWidth={1.5} className="h-4 w-4" />
                   </Button>
                 ) : (
-                  <Button className="flex-1" onClick={submit}>
+                  <Button className="flex-1" onClick={() => void submit()} disabled={sending}>
                     Solicitar cita
                   </Button>
                 )}

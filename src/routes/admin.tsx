@@ -6,7 +6,8 @@ import {
   useNavigate,
   useRouterState,
 } from "@tanstack/react-router";
-import { LayoutDashboard, Building2, CreditCard, LogOut } from "lucide-react";
+import { LayoutDashboard, Building2, CreditCard } from "lucide-react";
+import { AccountMenu } from "@/components/AccountMenu";
 import { Logo } from "@/components/Logo";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { cn } from "@/lib/utils";
@@ -22,7 +23,7 @@ const NAV = [
 ] as const;
 
 function AdminLayout() {
-  const { ready, user, logout } = useAuth();
+  const { ready, user } = useAuth();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -77,20 +78,14 @@ function AdminLayout() {
           })}
         </nav>
         <div className="border-t border-border p-3">
-          <Link
-            to="/login"
-            onClick={logout}
-            className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
-          >
-            <LogOut strokeWidth={1.5} className="h-4 w-4" />
-            Salir
-          </Link>
+          <AccountMenu />
         </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Mobile top bar */}
         <header className="flex items-center gap-3 overflow-x-auto border-b border-border px-4 py-3 md:hidden">
+          <AccountMenu variant="icon" />
           <Logo className="text-base" />
           {NAV.map((item) => {
             const active = item.exact

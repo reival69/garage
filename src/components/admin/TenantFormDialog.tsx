@@ -1,6 +1,6 @@
 // Garage — create/edit tenant dialog for the Superadmin panel. Mirrors the
 // seed shape: name, slug, currency, tax rate, plan, accent color and a single
-// location. 100% local & simulated.
+// location. When creating, it also sets up the owner's login (email + password).
 
 import { useEffect, useState } from "react";
 import {
@@ -21,7 +21,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createTenant, updateTenant, type TenantInput } from "@/lib/admin";
+import { createTenant, ownerUserForTenant, updateTenant, type TenantInput } from "@/lib/admin";
+import { setPassword } from "@/lib/api/data.functions";
+import { flush } from "@/lib/db/storage";
 import type { Plan, Tenant } from "@/types";
 import { toast } from "sonner";
 
@@ -71,6 +73,10 @@ export function TenantFormDialog({
   const [locationName, setLocationName] = useState("");
   const [locationAddress, setLocationAddress] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
+  const [ownerName, setOwnerName] = useState("");
+  const [ownerEmail, setOwnerEmail] = useState("");
+  const [ownerPassword, setOwnerPassword] = useState("");
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -95,6 +101,9 @@ export function TenantFormDialog({
       setAccentColor(ACCENTS[0]);
       setLocationName("");
       setLocationAddress("");
+      setOwnerName("");
+      setOwnerEmail("");
+      setOwnerPassword("");
       setSlugTouched(false);
     }
   }, [open, tenant, plans]);
@@ -104,12 +113,19 @@ export function TenantFormDialog({
     if (!slugTouched) setSlug(slugify(value));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!name.trim()) return setError("El nombre es obligatorio.");
     if (!slug.trim()) return setError("El slug es obligatorio.");
     if (!planId) return setError("Selecciona un plan.");
     if (!locationName.trim())
       return setError("La ubicación es obligatoria.");
+    if (!isEdit) {
+      if (!ownerName.trim()) return setError("Indica el nombre del responsable.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ownerEmail.trim()))
+        return setError("Indica un email válido para el responsable.");
+      if (ownerPassword.length < 10)
+        return setError("La contraseña debe tener al menos 10 caracteres.");
+    }
 
     const taxRate = Math.max(0, Math.min(100, Number(taxPct) || 0)) / 100;
     const input: TenantInput = {
@@ -121,17 +137,37 @@ export function TenantFormDialog({
       accentColor,
       locationName,
       locationAddress,
+      ownerName,
+      ownerEmail,
     };
 
     if (isEdit && tenant) {
       updateTenant(tenant.id, input);
       toast.success("Taller actualizado");
-    } else {
-      createTenant(input);
-      toast.success("Taller creado");
+      onOpenChange(false);
+      onSaved?.();
+      return;
     }
-    onOpenChange(false);
-    onSaved?.();
+
+    setSaving(true);
+    try {
+      const created = createTenant(input);
+      const owner = ownerUserForTenant(created.id);
+      // The owner must exist on the server before it can get a password
+      await flush();
+      const result = owner
+        ? await setPassword({ data: { userId: owner.id, password: ownerPassword } })
+        : { ok: false, error: "No se creó el usuario responsable." };
+      if (result.ok) {
+        toast.success("Taller creado. El responsable ya puede iniciar sesión.");
+      } else {
+        toast.error(`Taller creado, pero falta la contraseña: ${result.error}`);
+      }
+      onOpenChange(false);
+      onSaved?.();
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -249,6 +285,45 @@ export function TenantFormDialog({
             </div>
           </div>
 
+          {!isEdit && (
+            <div className="space-y-3 rounded-md border p-3">
+              <p className="text-sm font-medium">Acceso del responsable del taller</p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-1.5">
+                  <Label>Nombre</Label>
+                  <Input
+                    value={ownerName}
+                    onChange={(e) => setOwnerName(e.target.value)}
+                    placeholder="Juan Reyes"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <Label>Email</Label>
+                  <Input
+                    type="email"
+                    autoComplete="off"
+                    value={ownerEmail}
+                    onChange={(e) => setOwnerEmail(e.target.value)}
+                    placeholder="juan@tallerreyes.es"
+                  />
+                </div>
+              </div>
+              <div className="space-y-1.5">
+                <Label>Contraseña inicial</Label>
+                <Input
+                  type="password"
+                  autoComplete="new-password"
+                  value={ownerPassword}
+                  onChange={(e) => setOwnerPassword(e.target.value)}
+                  placeholder="Mínimo 10 caracteres"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Dásela al responsable; podrá cambiarla en Configuración.
+                </p>
+              </div>
+            </div>
+          )}
+
           {error && <p className="text-sm text-[var(--destructive)]">{error}</p>}
         </div>
 
@@ -256,8 +331,8 @@ export function TenantFormDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancelar
           </Button>
-          <Button onClick={handleSubmit}>
-            {isEdit ? "Guardar cambios" : "Crear taller"}
+          <Button onClick={() => void handleSubmit()} disabled={saving}>
+            {isEdit ? "Guardar cambios" : saving ? "Creando…" : "Crear taller"}
           </Button>
         </DialogFooter>
       </DialogContent>

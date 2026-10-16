@@ -40,6 +40,15 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      // Uploaded photos, signatures and logos (see src/lib/server/files.server.ts)
+      const { pathname } = new URL(request.url);
+      if (
+        pathname.startsWith("/files/") &&
+        (request.method === "GET" || request.method === "HEAD")
+      ) {
+        const { serveFile } = await import("./lib/server/files.server");
+        return (await serveFile(pathname)) ?? new Response("Not found", { status: 404 });
+      }
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);

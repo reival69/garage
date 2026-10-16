@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { usersRepo } from "@/lib/db";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -18,28 +17,31 @@ export const Route = createFileRoute("/login")({
 });
 
 function LoginPage() {
-  const { login } = useAuth();
+  const { signIn } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const match = usersRepo.list().find((u) => u.email === email.trim());
-    if (match && match.active === false) {
-      toast.error("Esta cuenta está desactivada. Contacta con el taller.");
-      return;
+    setError(null);
+    setBusy(true);
+    try {
+      const problem = await signIn(email.trim(), password);
+      if (problem) {
+        setError(problem);
+        return;
+      }
+      // The superadmin lands on the SaaS panel; workshop users on their workshop
+      const me = usersRepo.list().find((u) => u.email.toLowerCase() === email.trim().toLowerCase());
+      navigate({ to: me?.role === "superadmin" ? "/admin" : "/app" });
+    } catch {
+      setError("No se pudo conectar con el servidor. Inténtalo de nuevo.");
+    } finally {
+      setBusy(false);
     }
-    if (match && match.role !== "superadmin") {
-      login(match);
-      navigate({ to: "/app" });
-      return;
-    }
-    const owner = usersRepo
-      .list()
-      .find((u) => u.role === "owner" && u.active !== false);
-    if (owner) login(owner);
-    navigate({ to: "/app" });
   };
 
   return (
@@ -70,6 +72,8 @@ function LoginPage() {
                 </label>
                 <Input
                   type="email"
+                  autoComplete="email"
+                  required
                   placeholder="tu@taller.es"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -81,14 +85,24 @@ function LoginPage() {
                 </label>
                 <Input
                   type="password"
+                  autoComplete="current-password"
+                  required
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <Button type="submit" className="w-full">
-                Acceder
+              {error && (
+                <p role="alert" className="text-sm text-destructive">
+                  {error}
+                </p>
+              )}
+              <Button type="submit" className="w-full" disabled={busy}>
+                {busy ? "Accediendo…" : "Acceder"}
               </Button>
+              <p className="text-xs text-muted-foreground">
+                ¿Olvidaste tu contraseña? Pide al responsable de tu taller que te asigne una nueva.
+              </p>
             </form>
           </div>
         </div>

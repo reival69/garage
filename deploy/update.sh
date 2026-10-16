@@ -11,6 +11,12 @@ fi
 
 echo "$(date -Is) Actualizando a $(git rev-parse --short origin/main)"
 git reset -q --hard origin/main
-bash deploy/build.sh
-systemctl restart garage
+if [ ! -f /etc/garage.env ]; then
+  # Primera versión con base de datos: instala PostgreSQL y prepara el servicio
+  echo "$(date -Is) Falta la base de datos: ejecutando clouding-setup.sh"
+  bash deploy/clouding-setup.sh
+else
+  bash deploy/build.sh
+  systemctl restart garage
+fi
 echo "$(date -Is) Listo"

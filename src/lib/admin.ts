@@ -104,6 +104,9 @@ export interface TenantInput {
   accentColor: string;
   locationName: string;
   locationAddress?: string;
+  /** Only when creating: the workshop owner's name and login email. */
+  ownerName?: string;
+  ownerEmail?: string;
 }
 
 /**
@@ -136,8 +139,8 @@ export function createTenant(input: TenantInput): Tenant {
 
   usersRepo.create({
     tenantId: id,
-    name: `Owner ${tenant.name}`,
-    email: `owner@${tenant.slug}.app`,
+    name: input.ownerName?.trim() || `Owner ${tenant.name}`,
+    email: input.ownerEmail?.trim().toLowerCase() || `owner@${tenant.slug}.app`,
     role: "owner",
     locationId: locId,
   });

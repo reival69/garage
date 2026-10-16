@@ -99,8 +99,9 @@ const STATUS_CUSTOMER_MESSAGE: Partial<Record<WorkOrderStatus, string>> = {
 function code6(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let out = "";
-  for (let i = 0; i < 6; i++)
-    out += chars[Math.floor(Math.random() * chars.length)];
+  // Customers open their page with this code alone, so it must not be guessable
+  for (const b of crypto.getRandomValues(new Uint8Array(6)))
+    out += chars[b % chars.length];
   return out;
 }
 

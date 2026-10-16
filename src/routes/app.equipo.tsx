@@ -3,13 +3,12 @@
 // demostrar permisos en clase. Todo local y simulado.
 
 import { useMemo, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import {
   UsersRound,
   Plus,
   MoreHorizontal,
   Pencil,
-  LogIn,
   Power,
   Trash2,
 } from "lucide-react";
@@ -51,8 +50,7 @@ export const Route = createFileRoute("/app/equipo")({
 });
 
 function TeamPage() {
-  const { user, tenant, login } = useAuth();
-  const navigate = useNavigate();
+  const { user, tenant } = useAuth();
   const [version, setVersion] = useState(0);
   const bump = () => setVersion((v) => v + 1);
 
@@ -89,16 +87,6 @@ function TeamPage() {
   const openEdit = (m: User) => {
     setEditing(m);
     setFormOpen(true);
-  };
-
-  const loginAs = (m: User) => {
-    if (m.active === false) {
-      toast.error("No puedes iniciar sesión como un usuario inactivo.");
-      return;
-    }
-    login(m);
-    toast.success(`Sesión iniciada como ${m.name} (${ROLE_LABELS[m.role]})`);
-    navigate({ to: "/app" });
   };
 
   const toggleActive = (m: User) => {
@@ -234,13 +222,6 @@ function TeamPage() {
                       <Pencil strokeWidth={1.5} className="h-4 w-4" />
                       Editar
                     </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => loginAs(m)}
-                      disabled={inactive || isSelf}
-                    >
-                      <LogIn strokeWidth={1.5} className="h-4 w-4" />
-                      Iniciar sesión como
-                    </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => toggleActive(m)}>
                       <Power strokeWidth={1.5} className="h-4 w-4" />
                       {inactive ? "Activar" : "Desactivar"}
@@ -266,6 +247,7 @@ function TeamPage() {
         tenantId={tenant.id}
         locations={locations}
         member={editing}
+        currentUserId={user.id}
         onSaved={bump}
       />
 

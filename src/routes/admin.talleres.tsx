@@ -66,13 +66,13 @@ function AdminTalleres() {
     refresh();
   };
 
-  const enterAs = (tenant: Tenant) => {
+  const enterAs = async (tenant: Tenant) => {
     const owner = ownerUserForTenant(tenant.id);
     if (!owner) {
       toast.error("Este taller no tiene un usuario asociado.");
       return;
     }
-    login(owner);
+    await login(owner);
     navigate({ to: "/app" });
   };
 
@@ -156,7 +156,7 @@ function AdminTalleres() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => enterAs(tenant)}
+                        onClick={() => void enterAs(tenant)}
                         title="Entrar como este taller"
                       >
                         <LogIn strokeWidth={1.5} />

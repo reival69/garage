@@ -100,7 +100,7 @@ function daysAgo(d: number): string {
 
 // ---- Plans -----------------------------------------------------------------
 
-const PLANS: Plan[] = [
+export const PLANS: Plan[] = [
   {
     id: "plan_basico",
     name: "Básico",

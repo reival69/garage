@@ -351,3 +351,21 @@ curl -fsSL https://raw.githubusercontent.com/reival69/garage/main/deploy/cloudin
 El script instala Node.js 22 y Nginx, compila la app (`deploy/build.sh`), la deja corriendo como servicio
 (`systemctl status garage`), revisa GitHub cada 10 minutos y recompila si hay cambios (`deploy/update.sh`,
 registro en `/var/log/garage-update.log`) y activa HTTPS cuando talleo.es ya apunta al servidor.
+
+### Base de datos, usuarios y copias de seguridad
+
+- Los datos se guardan en PostgreSQL en el mismo servidor (base `garage`). La conexión está en
+  `/etc/garage.env` (solo lo lee root), junto con `UPLOAD_DIR`, la carpeta de fotos y firmas
+  (`/var/lib/garage/uploads`).
+- Crear el superadmin, o cambiarle la contraseña:
+
+  ```bash
+  sudo bash /opt/garage/deploy/create-superadmin.sh tu@email.com "Tu nombre"
+  ```
+
+- El superadmin crea cada taller con el email y la contraseña inicial de su responsable; el
+  responsable da de alta a su equipo en «Equipo». Cada persona cambia su contraseña desde su nombre,
+  abajo en el menú lateral.
+- Cada noche se guarda una copia de la base de datos y de las fotos en `/var/backups/garage`
+  (se conservan 14 días).
+- Para probar en local: `DATABASE_URL=postgres://usuario:clave@127.0.0.1:5432/garage npm run dev`.
