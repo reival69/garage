@@ -6,7 +6,7 @@
 // 5 MB browser limit. File names are long random tokens: knowing the URL is
 // what grants access, the same way the order access codes work.
 import { randomBytes } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 
@@ -80,4 +80,11 @@ export async function serveFile(pathname: string): Promise<Response | null> {
   } catch {
     return null;
   }
+}
+
+/** Deletes every photo, signature and logo of a workshop. */
+export async function deleteTenantFiles(tenantId: string) {
+  const safeTenant = tenantId.replace(/[^a-zA-Z0-9_-]/g, "_");
+  if (!safeTenant || safeTenant === "." || safeTenant === "..") return;
+  await rm(path.join(uploadDir(), safeTenant), { recursive: true, force: true });
 }

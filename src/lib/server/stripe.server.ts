@@ -44,7 +44,7 @@ function encode(params: Record<string, unknown>, prefix = "", out = new URLSearc
 }
 
 async function stripe<T = Record<string, unknown>>(
-  method: "GET" | "POST",
+  method: "GET" | "POST" | "DELETE",
   path: string,
   params: Record<string, unknown> = {},
 ): Promise<T> {
@@ -127,6 +127,18 @@ function priceData(plan: Plan) {
 }
 
 // ---- Actions ---------------------------------------------------------------
+
+/** Stops charging a workshop right away (used when the workshop is deleted). */
+export async function cancelSubscriptionNow(tenant: Tenant) {
+  const subId = tenant.billing?.stripeSubscriptionId;
+  if (!subId || tenant.billing?.status === "canceled" || !stripeConfigured()) return;
+  try {
+    await stripe("DELETE", `subscriptions/${subId}`);
+  } catch (err) {
+    // Already cancelled in Stripe: nothing left to stop
+    if (!/No such subscription|canceled/i.test((err as Error).message)) throw err;
+  }
+}
 
 /** Card payment page for a new subscription. Unused trial days are kept. */
 export async function createCheckout(tenant: Tenant, plan: Plan, email: string): Promise<string> {

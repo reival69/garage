@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Building2, Plus, Pencil, LogIn, Power, KeyRound } from "lucide-react";
+import { Building2, Plus, Pencil, LogIn, Power, KeyRound, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { StatusBadge } from "@/components/base/StatusBadge";
 import { EmptyState } from "@/components/base/EmptyState";
@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DeleteTenantDialog } from "@/components/admin/DeleteTenantDialog";
 import { OwnerAccessDialog } from "@/components/admin/OwnerAccessDialog";
 import { TenantFormDialog } from "@/components/admin/TenantFormDialog";
 import { useAuth } from "@/lib/auth/AuthContext";
@@ -33,13 +34,14 @@ export const Route = createFileRoute("/admin/talleres")({
 });
 
 function AdminTalleres() {
-  const { ready, login } = useAuth();
+  const { ready, login, reload } = useAuth();
   const navigate = useNavigate();
   const [metrics, setMetrics] = useState<TenantMetrics[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Tenant | null>(null);
   const [accessFor, setAccessFor] = useState<Tenant | null>(null);
+  const [deleting, setDeleting] = useState<Tenant | null>(null);
 
   const refresh = () => {
     setMetrics(tenantMetrics());
@@ -196,6 +198,15 @@ function AdminTalleres() {
                       >
                         <Power strokeWidth={1.5} />
                       </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setDeleting(tenant)}
+                        title="Eliminar taller"
+                        className="text-[var(--destructive)] hover:text-[var(--destructive)]"
+                      >
+                        <Trash2 strokeWidth={1.5} />
+                      </Button>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -211,6 +222,14 @@ function AdminTalleres() {
         plans={plans}
         tenant={editing}
         onSaved={refresh}
+      />
+      <DeleteTenantDialog
+        tenant={deleting}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        onDeleted={async () => {
+          await reload();
+          refresh();
+        }}
       />
       <OwnerAccessDialog
         open={!!accessFor}
