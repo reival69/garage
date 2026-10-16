@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Building2, Plus, Pencil, LogIn, Power } from "lucide-react";
+import { Building2, Plus, Pencil, LogIn, Power, KeyRound } from "lucide-react";
 import { PageHeader } from "@/components/base/PageHeader";
 import { StatusBadge } from "@/components/base/StatusBadge";
 import { EmptyState } from "@/components/base/EmptyState";
@@ -13,6 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { OwnerAccessDialog } from "@/components/admin/OwnerAccessDialog";
 import { TenantFormDialog } from "@/components/admin/TenantFormDialog";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { plansRepo } from "@/lib/db";
@@ -37,6 +38,7 @@ function AdminTalleres() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Tenant | null>(null);
+  const [accessFor, setAccessFor] = useState<Tenant | null>(null);
 
   const refresh = () => {
     setMetrics(tenantMetrics());
@@ -132,6 +134,8 @@ function AdminTalleres() {
                         </p>
                         <p className="truncate text-xs text-muted-foreground">
                           {tenant.locations[0]?.name ?? "—"}
+                          {" · "}
+                          {ownerUserForTenant(tenant.id)?.email ?? "sin responsable"}
                         </p>
                       </div>
                     </div>
@@ -165,6 +169,14 @@ function AdminTalleres() {
                       <Button
                         variant="ghost"
                         size="sm"
+                        onClick={() => setAccessFor(tenant)}
+                        title="Email y contraseña del responsable"
+                      >
+                        <KeyRound strokeWidth={1.5} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={() => openEdit(tenant)}
                         title="Editar"
                       >
@@ -194,6 +206,12 @@ function AdminTalleres() {
         onOpenChange={setDialogOpen}
         plans={plans}
         tenant={editing}
+        onSaved={refresh}
+      />
+      <OwnerAccessDialog
+        open={!!accessFor}
+        onOpenChange={(o) => !o && setAccessFor(null)}
+        tenant={accessFor}
         onSaved={refresh}
       />
     </div>
