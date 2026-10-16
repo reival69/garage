@@ -34,11 +34,15 @@ export const bootstrap = createServerFn({ method: "POST" })
   .inputValidator(z.object({ path: z.string().max(300) }))
   .handler(async ({ data }): Promise<BootstrapResult> => {
     const { currentSession, clientIp, rateLimit } = await import("@/lib/server/auth.server");
-    const { docsForGuest, docsForUser, guestScopeFromPath } =
+    const { blockedTenant, docsForGuest, docsForUser, guestScopeFromPath } =
       await import("@/lib/server/access.server");
 
     const session = await currentSession();
-    const docs = session ? await docsForUser(session.user) : [];
+    let docs = session ? await docsForUser(session.user) : [];
+    if (session && (await blockedTenant(session.user, !!session.impersonatorId))) {
+      // Subscription not active: only what the payment screen needs
+      docs = docs.filter((d) => d.t === "global");
+    }
     let guestFound = false;
     const scope = guestScopeFromPath(data.path);
     if (scope) {
@@ -64,7 +68,7 @@ export const syncDocs = createServerFn({ method: "POST" })
   .inputValidator(z.object({ path: z.string().max(300), ops: z.array(opSchema).max(50) }))
   .handler(async ({ data }) => {
     const { currentSession } = await import("@/lib/server/auth.server");
-    const { AccessError, checkUnique, checkWrite, docsForGuest, guestScopeFromPath } =
+    const { AccessError, blockedTenant, checkUnique, checkWrite, docsForGuest, guestScopeFromPath } =
       await import("@/lib/server/access.server");
     const { db } = await import("@/lib/server/db.server");
     const { extractImages } = await import("@/lib/server/files.server");
@@ -72,6 +76,14 @@ export const syncDocs = createServerFn({ method: "POST" })
     const session = await currentSession();
     const scope = session ? null : guestScopeFromPath(data.path);
     const guest = scope && scope.kind !== "booking" ? await docsForGuest(scope) : null;
+
+    if (session && (await blockedTenant(session.user, !!session.impersonatorId))) {
+      return {
+        ok: false as const,
+        error: "La suscripción del taller no está activa. Actívala en «Suscripción» para seguir trabajando.",
+        saved: [] as DocOut[],
+      };
+    }
 
     try {
       for (const op of data.ops) {

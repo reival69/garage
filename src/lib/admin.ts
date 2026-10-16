@@ -12,6 +12,7 @@ import {
   usersRepo,
   workOrdersRepo,
 } from "@/lib/db";
+import { TRIAL_DAYS } from "@/lib/billing";
 
 export interface TenantMetrics {
   tenant: Tenant;
@@ -107,6 +108,10 @@ export interface TenantInput {
   /** Only when creating: the workshop owner's name and login email. */
   ownerName?: string;
   ownerEmail?: string;
+  /** Never asked to pay (superadmin courtesy). */
+  freeForever?: boolean;
+  /** Edit only: new end of the free trial (ISO). */
+  trialEndsAt?: string;
 }
 
 /**
@@ -135,6 +140,10 @@ export function createTenant(input: TenantInput): Tenant {
       },
     ],
     createdAt: new Date().toISOString(),
+    billing: {
+      exempt: !!input.freeForever,
+      trialEndsAt: new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000).toISOString(),
+    },
   });
 
   usersRepo.create({
@@ -157,6 +166,11 @@ export function updateTenant(
   if (!current) return undefined;
   const loc = current.locations[0];
   return tenantsRepo.update(id, {
+    billing: {
+      ...current.billing,
+      exempt: !!input.freeForever,
+      ...(input.trialEndsAt ? { trialEndsAt: input.trialEndsAt } : {}),
+    },
     name: input.name.trim(),
     slug: input.slug.trim(),
     currency: input.currency,

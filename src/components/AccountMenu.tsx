@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { KeyRound, LogOut, UserRound } from "lucide-react";
+import { CreditCard, KeyRound, LogOut, UserRound } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -70,6 +70,12 @@ export function AccountMenu({ variant = "sidebar" }: AccountMenuProps) {
             <span className="block truncate text-xs text-muted-foreground">{user.email}</span>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
+          {user.role === "owner" && (
+            <DropdownMenuItem onClick={() => navigate({ to: "/app/suscripcion" })}>
+              <CreditCard strokeWidth={1.5} className="h-4 w-4" />
+              Suscripción
+            </DropdownMenuItem>
+          )}
           {!impersonating && (
             <DropdownMenuItem onClick={() => setPasswordOpen(true)}>
               <KeyRound strokeWidth={1.5} className="h-4 w-4" />

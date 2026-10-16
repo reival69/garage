@@ -14,6 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { trialEnd } from "@/lib/billing";
 import {
   Select,
   SelectContent,
@@ -73,6 +75,8 @@ export function TenantFormDialog({
   const [locationName, setLocationName] = useState("");
   const [locationAddress, setLocationAddress] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
+  const [freeForever, setFreeForever] = useState(false);
+  const [trialDate, setTrialDate] = useState("");
   const [ownerName, setOwnerName] = useState("");
   const [ownerEmail, setOwnerEmail] = useState("");
   const [ownerPassword, setOwnerPassword] = useState("");
@@ -88,6 +92,8 @@ export function TenantFormDialog({
       setCurrency(tenant.currency);
       setTaxPct(String(Math.round(tenant.taxRate * 100)));
       setPlanId(tenant.planId);
+      setFreeForever(!!tenant.billing?.exempt);
+      setTrialDate(trialEnd(tenant).slice(0, 10));
       setAccentColor(tenant.accentColor);
       setLocationName(tenant.locations[0]?.name ?? "");
       setLocationAddress(tenant.locations[0]?.address ?? "");
@@ -101,6 +107,8 @@ export function TenantFormDialog({
       setAccentColor(ACCENTS[0]);
       setLocationName("");
       setLocationAddress("");
+      setFreeForever(false);
+      setTrialDate("");
       setOwnerName("");
       setOwnerEmail("");
       setOwnerPassword("");
@@ -139,6 +147,8 @@ export function TenantFormDialog({
       locationAddress,
       ownerName,
       ownerEmail,
+      freeForever,
+      trialEndsAt: trialDate ? new Date(`${trialDate}T23:59:59`).toISOString() : undefined,
     };
 
     if (isEdit && tenant) {
@@ -283,6 +293,36 @@ export function TenantFormDialog({
                 placeholder="Av. Insurgentes Sur 1234"
               />
             </div>
+          </div>
+
+          <div className="space-y-3 rounded-md border p-3">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-medium">Gratis siempre</p>
+                <p className="text-xs text-muted-foreground">
+                  No se le pedirá pagar nunca (cortesía).
+                </p>
+              </div>
+              <Switch checked={freeForever} onCheckedChange={setFreeForever} />
+            </div>
+            {isEdit && !freeForever && (
+              <div className="space-y-1.5">
+                <Label>Fin de la prueba gratis</Label>
+                <Input
+                  type="date"
+                  value={trialDate}
+                  onChange={(e) => setTrialDate(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Cámbiala para dar más días de prueba. Si ya paga con tarjeta, no afecta.
+                </p>
+              </div>
+            )}
+            {!isEdit && !freeForever && (
+              <p className="text-xs text-muted-foreground">
+                Tendrá 14 días de prueba gratis; después tendrá que pagar con tarjeta.
+              </p>
+            )}
           </div>
 
           {!isEdit && (

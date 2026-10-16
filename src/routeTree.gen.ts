@@ -32,6 +32,7 @@ import { Route as AppRecordatoriosRouteImport } from './routes/app.recordatorios
 import { Route as AppResenasRouteImport } from './routes/app.resenas'
 import { Route as AppServiciosRouteImport } from './routes/app.servicios'
 import { Route as AppStockRouteImport } from './routes/app.stock'
+import { Route as AppSuscripcionRouteImport } from './routes/app.suscripcion'
 import { Route as CCodeRouteImport } from './routes/c.$code'
 import { Route as TSlugRouteImport } from './routes/t.$slug'
 import { Route as VCodeRouteImport } from './routes/v.$code'
@@ -159,6 +160,11 @@ const AppStockRoute = AppStockRouteImport.update({
   path: '/stock',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSuscripcionRoute = AppSuscripcionRouteImport.update({
+  id: '/suscripcion',
+  path: '/suscripcion',
+  getParentRoute: () => AppRoute,
+} as any)
 const CCodeRoute = CCodeRouteImport.update({
   id: '/c/$code',
   path: '/c/$code',
@@ -237,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/app/resenas': typeof AppResenasRoute
   '/app/servicios': typeof AppServiciosRoute
   '/app/stock': typeof AppStockRoute
+  '/app/suscripcion': typeof AppSuscripcionRoute
   '/c/$code': typeof CCodeRoute
   '/t/$slug': typeof TSlugRoute
   '/v/$code': typeof VCodeRoute
@@ -271,6 +278,7 @@ export interface FileRoutesByTo {
   '/app/resenas': typeof AppResenasRoute
   '/app/servicios': typeof AppServiciosRoute
   '/app/stock': typeof AppStockRoute
+  '/app/suscripcion': typeof AppSuscripcionRoute
   '/c/$code': typeof CCodeRoute
   '/t/$slug': typeof TSlugRoute
   '/v/$code': typeof VCodeRoute
@@ -308,6 +316,7 @@ export interface FileRoutesById {
   '/app/resenas': typeof AppResenasRoute
   '/app/servicios': typeof AppServiciosRoute
   '/app/stock': typeof AppStockRoute
+  '/app/suscripcion': typeof AppSuscripcionRoute
   '/c/$code': typeof CCodeRoute
   '/t/$slug': typeof TSlugRoute
   '/v/$code': typeof VCodeRoute
@@ -346,6 +355,7 @@ export interface FileRouteTypes {
     | '/app/resenas'
     | '/app/servicios'
     | '/app/stock'
+    | '/app/suscripcion'
     | '/c/$code'
     | '/t/$slug'
     | '/v/$code'
@@ -380,6 +390,7 @@ export interface FileRouteTypes {
     | '/app/resenas'
     | '/app/servicios'
     | '/app/stock'
+    | '/app/suscripcion'
     | '/c/$code'
     | '/t/$slug'
     | '/v/$code'
@@ -416,6 +427,7 @@ export interface FileRouteTypes {
     | '/app/resenas'
     | '/app/servicios'
     | '/app/stock'
+    | '/app/suscripcion'
     | '/c/$code'
     | '/t/$slug'
     | '/v/$code'
@@ -609,6 +621,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppStockRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/suscripcion': {
+      id: '/app/suscripcion'
+      path: '/suscripcion'
+      fullPath: '/app/suscripcion'
+      preLoaderRoute: typeof AppSuscripcionRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/c/$code': {
       id: '/c/$code'
       path: '/c/$code'
@@ -714,6 +733,7 @@ interface AppRouteChildren {
   AppResenasRoute: typeof AppResenasRoute
   AppServiciosRoute: typeof AppServiciosRoute
   AppStockRoute: typeof AppStockRoute
+  AppSuscripcionRoute: typeof AppSuscripcionRoute
   AppIndexRoute: typeof AppIndexRoute
   AppClientesIdRoute: typeof AppClientesIdRoute
   AppFacturacionIdRoute: typeof AppFacturacionIdRoute
@@ -736,6 +756,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppResenasRoute: AppResenasRoute,
   AppServiciosRoute: AppServiciosRoute,
   AppStockRoute: AppStockRoute,
+  AppSuscripcionRoute: AppSuscripcionRoute,
   AppIndexRoute: AppIndexRoute,
   AppClientesIdRoute: AppClientesIdRoute,
   AppFacturacionIdRoute: AppFacturacionIdRoute,

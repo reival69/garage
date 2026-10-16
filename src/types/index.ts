@@ -49,6 +49,23 @@ export interface Tenant {
   // Optional modules enabled/disabled per shop (Configuración → Módulos).
   // Missing key = enabled by default. Core modules are always on.
   enabledModules?: Partial<Record<string, boolean>>;
+  // Subscription (only the superadmin and Stripe change it).
+  billing?: TenantBilling;
+}
+
+export interface TenantBilling {
+  /** Free forever: never asked to pay (set by the superadmin). */
+  exempt?: boolean;
+  /** End of the free trial (ISO date). */
+  trialEndsAt?: string;
+  /** Stripe subscription status: active, trialing, past_due, canceled, unpaid… */
+  status?: string;
+  stripeCustomerId?: string;
+  stripeSubscriptionId?: string;
+  /** Next charge / end of the paid period (ISO date). */
+  currentPeriodEnd?: string;
+  /** The subscription will end at currentPeriodEnd (cancelled by the owner). */
+  cancelAtPeriodEnd?: boolean;
 }
 
 export interface User {

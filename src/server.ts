@@ -49,6 +49,11 @@ export default {
         const { serveFile } = await import("./lib/server/files.server");
         return (await serveFile(pathname)) ?? new Response("Not found", { status: 404 });
       }
+      // Stripe notifies payments and subscription changes here
+      if (pathname === "/api/stripe/webhook" && request.method === "POST") {
+        const { handleWebhook } = await import("./lib/server/stripe.server");
+        return await handleWebhook(request);
+      }
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);

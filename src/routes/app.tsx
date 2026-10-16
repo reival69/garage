@@ -22,6 +22,7 @@ import {
   Star,
   UsersRound,
   Settings,
+  CreditCard,
   MoreHorizontal,
   Home,
 } from "lucide-react";
@@ -29,6 +30,7 @@ import { AccountMenu } from "@/components/AccountMenu";
 import { Logo } from "@/components/Logo";
 import { NotificationBell } from "@/components/app/NotificationBell";
 import { useAuth } from "@/lib/auth/AuthContext";
+import { billingState } from "@/lib/billing";
 import { can, moduleForPath, isModuleEnabled } from "@/lib/permissions";
 import { evaluateReminders } from "@/lib/reminders";
 import { evaluateDocumentExpiries } from "@/lib/documents";
@@ -68,7 +70,7 @@ const BOTTOM = [
 ] as const;
 
 function AppLayout() {
-  const { ready, user, tenant } = useAuth();
+  const { ready, user, tenant, impersonating } = useAuth();
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
@@ -92,10 +94,20 @@ function AppLayout() {
     }
   }, [ready, user, tenant, pathname, navigate]);
 
+  // Trial ended or payment failed: only the subscription screen is open
+  // (the superadmin, also in support mode, can always look around)
+  const bill = tenant ? billingState(tenant) : null;
+  const blocked = !!user && user.role !== "superadmin" && !impersonating && bill?.kind === "blocked";
+  useEffect(() => {
+    if (ready && blocked && pathname !== "/app/suscripcion") {
+      navigate({ to: "/app/suscripcion" });
+    }
+  }, [ready, blocked, pathname, navigate]);
+
   // Maintenance sweeps on shop load: only run for modules that are enabled, so
   // a disabled module never generates fresh notifications.
   useEffect(() => {
-    if (!ready || !tenant) return;
+    if (!ready || !tenant || blocked) return;
     if (isModuleEnabled(tenant, "recordatorios")) {
       evaluateReminders(tenant.id);
       evaluateDocumentExpiries(tenant.id);
@@ -103,7 +115,7 @@ function AppLayout() {
     if (isModuleEnabled(tenant, "stock")) {
       evaluateLowStock(tenant.id);
     }
-  }, [ready, tenant]);
+  }, [ready, tenant, blocked]);
 
   if (!ready) {
     return (
@@ -114,12 +126,13 @@ function AppLayout() {
 
   // A module shows in the nav if the role can access it AND the shop has it
   // enabled (optional modules can be turned off in Configuración).
-  const navItems = NAV.filter(
-    (item) => can(user.role, item.module) && isModuleEnabled(tenant, item.module),
-  );
-  const bottomItems = BOTTOM.filter(
-    (item) => can(user.role, item.module) && isModuleEnabled(tenant, item.module),
-  );
+  const navItems = blocked
+    ? []
+    : NAV.filter((item) => can(user.role, item.module) && isModuleEnabled(tenant, item.module));
+  const bottomItems = blocked
+    ? []
+    : BOTTOM.filter((item) => can(user.role, item.module) && isModuleEnabled(tenant, item.module));
+  const showSubscription = user.role === "owner" || blocked;
 
   // Unread customer messages badge (recomputed on every navigation).
   const unreadMessages = unreadMessagesCount(tenant.id);
@@ -169,6 +182,20 @@ function AppLayout() {
               </Link>
             );
           })}
+          {showSubscription && (
+            <Link
+              to="/app/suscripcion"
+              className={cn(
+                "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                pathname.startsWith("/app/suscripcion")
+                  ? "bg-sidebar-accent text-foreground"
+                  : "text-muted-foreground hover:bg-sidebar-accent hover:text-foreground",
+              )}
+            >
+              <CreditCard strokeWidth={1.5} className="h-4 w-4" />
+              <span className="flex-1">Suscripción</span>
+            </Link>
+          )}
         </nav>
         <div className="border-t border-border p-3">
           <AccountMenu />
@@ -191,6 +218,16 @@ function AppLayout() {
         </header>
 
 
+        {bill?.kind === "trial" && user.role === "owner" && !pathname.startsWith("/app/suscripcion") && (
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 border-b border-border bg-sidebar px-4 py-2 text-xs text-foreground">
+            <span>
+              Prueba gratis: {bill.daysLeft === 1 ? "queda 1 día" : `quedan ${bill.daysLeft} días`}.
+            </span>
+            <Link to="/app/suscripcion" className="font-semibold underline">
+              Elegir plan
+            </Link>
+          </div>
+        )}
         <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 pb-24 sm:px-6 md:pb-8">
           <Outlet />
         </main>

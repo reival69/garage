@@ -23,6 +23,7 @@ import {
   toggleTenantStatus,
   type TenantMetrics,
 } from "@/lib/admin";
+import { billingState } from "@/lib/billing";
 import { formatDate } from "@/lib/format";
 import type { Plan, Tenant } from "@/types";
 import { toast } from "sonner";
@@ -145,6 +146,9 @@ function AdminTalleres() {
                   </TableCell>
                   <TableCell>
                     <StatusBadge status={tenant.status} />
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {billingLabel(tenant)}
+                    </p>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground">
                     {tenant.currency}
@@ -216,4 +220,19 @@ function AdminTalleres() {
       />
     </div>
   );
+}
+
+/** Short payment state for the workshops list. */
+function billingLabel(tenant: Tenant): string {
+  const state = billingState(tenant);
+  switch (state.kind) {
+    case "exempt":
+      return "Gratis siempre";
+    case "paid":
+      return state.cancelAtPeriodEnd ? "Pagando (cancelado)" : "Pagando con tarjeta";
+    case "trial":
+      return `Prueba: ${state.daysLeft} ${state.daysLeft === 1 ? "día" : "días"}`;
+    case "blocked":
+      return state.reason === "payment_failed" ? "Pago fallido" : "Sin pagar (bloqueado)";
+  }
 }

@@ -369,3 +369,22 @@ registro en `/var/log/garage-update.log`) y activa HTTPS cuando talleo.es ya apu
 - Cada noche se guarda una copia de la base de datos y de las fotos en `/var/backups/garage`
   (se conservan 14 días).
 - Para probar en local: `DATABASE_URL=postgres://usuario:clave@127.0.0.1:5432/garage npm run dev`.
+
+### Suscripciones con Stripe
+
+- Cada taller nuevo tiene **14 días de prueba**. Después, si no paga (o si falla el cobro), la app
+  queda bloqueada y solo muestra la pantalla «Suscripción»; sus datos no se borran. Las páginas de
+  sus clientes siguen funcionando.
+- En el panel de superadmin (Talleres → Editar) se puede marcar un taller como **«Gratis siempre»**
+  o alargar su prueba.
+- El responsable paga en **Suscripción** (página segura de Stripe). Los precios de los planes llevan
+  el IVA incluido y se cobran cada mes.
+- Configuración, una sola vez:
+  1. En Stripe → Desarrolladores → Webhooks, añade el destino `https://talleo.es/api/stripe/webhook`
+     con los eventos `checkout.session.completed`, `customer.subscription.created`,
+     `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.paid` e
+     `invoice.payment_failed`.
+  2. En Stripe → Configuración → Portal de clientes, guarda la configuración (permite cambiar la
+     tarjeta, ver facturas y cancelar).
+  3. En el servidor: `sudo bash /opt/garage/deploy/set-stripe-keys.sh` y pega la clave secreta y el
+     secreto del webhook.

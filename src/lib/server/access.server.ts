@@ -161,7 +161,7 @@ async function existingDoc(t: string, c: string, id: string) {
   return rows[0]?.data ?? null;
 }
 
-const SUBSCRIPTION_FIELDS = ["planId", "status", "id"];
+const SUBSCRIPTION_FIELDS = ["planId", "status", "id", "billing"];
 const PROTECTED_ORDER_FIELDS = ["id", "tenantId", "customerId", "vehicleId", "accessCode"];
 
 /** Throws AccessError unless `user` (or the guest) may apply `op`. */
@@ -195,9 +195,12 @@ export async function checkWrite(op: WriteOp, user: User | null, guest: Resolved
         if (doc.id !== own) deny();
         const before = await existingDoc(GLOBAL_TENANT, "tenants", own);
         if (!before) deny();
-        for (const f of SUBSCRIPTION_FIELDS)
-          if (doc[f] !== before[f])
-            deny("Solo el administrador puede cambiar el plan o el estado del taller.");
+        // Plan, status and payments are kept as the server has them: only the
+        // superadmin and Stripe change them (the browser copy may be out of date)
+        for (const f of SUBSCRIPTION_FIELDS) {
+          if (before[f] === undefined) delete doc[f];
+          else doc[f] = before[f];
+        }
       }
       return;
     }
@@ -276,4 +279,16 @@ export async function checkUnique(op: WriteOp) {
       if (clash.length) throw new AccessError(`La dirección /t/${doc.slug} ya la usa otro taller.`);
     }
   }
+}
+
+/**
+ * Workshops whose trial ended or whose payment failed can't use the app: their
+ * users only receive the workshop, plan and team documents (enough to show the
+ * payment screen) and can't save changes. Customer pages keep working.
+ */
+export async function blockedTenant(user: User, impersonated: boolean): Promise<boolean> {
+  if (user.role === "superadmin" || impersonated || !user.tenantId) return false;
+  const { isBlocked } = await import("@/lib/billing");
+  const tenant = await existingDoc(GLOBAL_TENANT, "tenants", user.tenantId);
+  return !!tenant && isBlocked(tenant as never);
 }
