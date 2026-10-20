@@ -5,7 +5,7 @@
 
 import { useRef, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Upload, Trash2, Check } from "lucide-react";
+import { Upload, Trash2, Check, Copy, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/base/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -226,6 +226,8 @@ function ConfigPage() {
       />
 
       <div className="space-y-5">
+        <BookingLinkSection slug={tenant.slug} enabled={isModuleEnabled(tenant, "reserva_online")} />
+
         <Section title="Datos del taller">
           <Field label="Nombre">
             <Input value={name} onChange={(e) => setName(e.target.value)} />
@@ -502,5 +504,42 @@ function ConfigPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+/** The public page where customers book an appointment, ready to copy and share. */
+function BookingLinkSection({ slug, enabled }: { slug: string; enabled: boolean }) {
+  const url = typeof window === "undefined" ? `/t/${slug}` : `${window.location.origin}/t/${slug}`;
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Enlace copiado");
+    } catch {
+      toast.error("No se pudo copiar. Selecciona el enlace y cópialo a mano.");
+    }
+  };
+  return (
+    <Section
+      title="Tu página de reservas"
+      description="Comparte este enlace con tus clientes (web, WhatsApp, Google, redes sociales) para que pidan cita sin registrarse."
+    >
+      {enabled ? (
+        <div className="flex flex-wrap items-center gap-2">
+          <Input readOnly value={url} className="min-w-0 flex-1" onFocus={(e) => e.currentTarget.select()} />
+          <Button type="button" variant="outline" onClick={() => void copy()}>
+            <Copy strokeWidth={1.5} /> Copiar
+          </Button>
+          <Button type="button" variant="outline" asChild>
+            <a href={url} target="_blank" rel="noreferrer">
+              <ExternalLink strokeWidth={1.5} /> Abrir
+            </a>
+          </Button>
+        </div>
+      ) : (
+        <p className="text-sm text-muted-foreground">
+          La reserva online está desactivada. Actívala en «Módulos» (más abajo) para que tus clientes puedan pedir cita.
+        </p>
+      )}
+    </Section>
   );
 }
