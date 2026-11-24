@@ -20,6 +20,7 @@ export const TENANT_COLLECTIONS = new Set([
   "reminders",
   "reviews",
   "agents",
+  "library",
 ]);
 export const GLOBAL_COLLECTIONS = new Set(["plans", "tenants", "users"]);
 

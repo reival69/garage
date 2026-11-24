@@ -65,6 +65,7 @@ const MODULE_INFO: Record<
   agentes: { label: "Agentes", description: "Asistente que atiende la bandeja automáticamente. Requiere Mensajes." },
   recordatorios: { label: "Recordatorios", description: "Mantenimientos y vencimientos de documentos." },
   resenas: { label: "Reseñas", description: "Valoraciones de clientes tras la entrega." },
+  biblioteca: { label: "Biblioteca técnica", description: "PDFs técnicos del taller con buscador por página." },
   reserva_online: { label: "Reserva online", description: "Asistente de cita en la página pública del taller." },
 };
 

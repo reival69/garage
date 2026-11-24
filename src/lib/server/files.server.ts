@@ -23,7 +23,7 @@ const CONTENT_TYPES: Record<string, string> = Object.fromEntries(
   Object.entries(TYPES).map(([type, ext]) => [ext, type]),
 );
 
-function uploadDir() {
+export function uploadDir() {
   return process.env.UPLOAD_DIR ?? path.resolve(".data/uploads");
 }
 

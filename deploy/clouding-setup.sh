@@ -121,8 +121,8 @@ server {
 }
 NGINX
 fi
-# Las fotos se envían en el cuerpo de la petición
-echo "client_max_body_size 30m;" > /etc/nginx/conf.d/garage-uploads.conf
+# Las fotos y los PDF de la Biblioteca (hasta 60 MB + su texto) se envían en el cuerpo de la petición
+echo "client_max_body_size 100m;" > /etc/nginx/conf.d/garage-uploads.conf
 ln -sf "$SITE" /etc/nginx/sites-enabled/garage
 rm -f /etc/nginx/sites-enabled/default
 nginx -t

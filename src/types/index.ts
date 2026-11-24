@@ -394,3 +394,36 @@ export interface MaintenanceReminder {
   notified?: boolean; // true once it has emitted its overdue notification
   createdAt: string;
 }
+
+// ---- Biblioteca técnica ----------------------------------------------------
+// PDFs the shop uploads (its own licensed manuals, bulletins, notes). Metadata
+// is the tenant collection `library`; the PDF itself and its extracted page
+// text are files on the server (see src/lib/server/library.server.ts).
+
+export type LibraryCategory =
+  | "manual_taller"
+  | "boletin"
+  | "esquema"
+  | "manual_propietario"
+  | "notas"
+  | "otro";
+
+export interface LibraryDocument {
+  id: string;
+  tenantId: string;
+  title: string;
+  category: LibraryCategory;
+  fileName: string;
+  sizeBytes: number;
+  pageCount: number;
+  /** Pages with extractable text (0 = scanned PDF without OCR). */
+  textPages: number;
+  // Optional vehicle tags used to suggest the document inside a work order.
+  make?: string;
+  model?: string;
+  engine?: string; // free text, e.g. "1.6 HDi", "K9K"
+  yearFrom?: number;
+  yearTo?: number;
+  uploadedAt: string;
+  uploadedBy?: string;
+}

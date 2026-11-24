@@ -19,7 +19,8 @@ export type AppModule =
   | "recordatorios"
   | "resenas"
   | "equipo"
-  | "configuracion";
+  | "configuracion"
+  | "biblioteca";
 
 // Modules each role can access. "all" = unrestricted (owner / superadmin).
 const ACCESS: Record<Role, AppModule[] | "all"> = {
@@ -39,8 +40,17 @@ const ACCESS: Record<Role, AppModule[] | "all"> = {
     "agentes",
     "recordatorios",
     "resenas",
+    "biblioteca",
   ],
-  mechanic: ["dashboard", "ordenes", "citas", "clientes", "vehiculos", "recordatorios"],
+  mechanic: [
+    "dashboard",
+    "ordenes",
+    "citas",
+    "clientes",
+    "vehiculos",
+    "recordatorios",
+    "biblioteca",
+  ],
 };
 
 // Modules a role can see but only read (no create/edit/delete).
@@ -75,6 +85,7 @@ export type ToggleableModule =
   | "agentes"
   | "recordatorios"
   | "resenas"
+  | "biblioteca"
   | "reserva_online";
 
 /** Optional modules the owner can enable/disable per shop. */
@@ -84,6 +95,7 @@ export const TOGGLEABLE_MODULES: ToggleableModule[] = [
   "agentes",
   "recordatorios",
   "resenas",
+  "biblioteca",
   "reserva_online",
 ];
 
@@ -136,6 +148,7 @@ export function moduleForPath(pathname: string): AppModule | null {
   if (p.startsWith("/app/agentes")) return "agentes";
   if (p.startsWith("/app/recordatorios")) return "recordatorios";
   if (p.startsWith("/app/resenas")) return "resenas";
+  if (p.startsWith("/app/biblioteca")) return "biblioteca";
   if (p.startsWith("/app/equipo")) return "equipo";
   if (p.startsWith("/app/configuracion")) return "configuracion";
   return null;

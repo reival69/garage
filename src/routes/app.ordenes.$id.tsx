@@ -50,13 +50,14 @@ import { QuoteEditor } from "@/components/app/QuoteEditor";
 import { InspectionEditor } from "@/components/app/InspectionEditor";
 import { CheckInEditor } from "@/components/app/CheckInEditor";
 import { ReminderFormDialog } from "@/components/app/ReminderFormDialog";
+import { OrderTechInfoCard } from "@/components/app/OrderTechInfoCard";
 import {
   generateInvoiceFromOrder,
   getInvoiceByWorkOrderId,
 } from "@/lib/invoices";
 import { compressImage } from "@/lib/image";
 import { formatDateTime } from "@/lib/format";
-import { can, canEdit } from "@/lib/permissions";
+import { can, canEdit, isModuleEnabled } from "@/lib/permissions";
 import type { Photo, Tenant, WorkOrder } from "@/types";
 import { toast } from "sonner";
 
@@ -216,6 +217,11 @@ function OrderDetail() {
           </DataCard>
 
           <ProblemNotes order={order} tenantId={tenant.id} onSaved={bump} />
+          {vehicle &&
+            can(user.role, "biblioteca") &&
+            isModuleEnabled(tenant, "biblioteca") && (
+              <OrderTechInfoCard tenantId={tenant.id} vehicle={vehicle} />
+            )}
           <Messages order={order} tenantId={tenant.id} onSaved={bump} />
           <Photos order={order} tenantId={tenant.id} onSaved={bump} />
 

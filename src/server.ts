@@ -49,6 +49,12 @@ export default {
         const { serveFile } = await import("./lib/server/files.server");
         return (await serveFile(pathname)) ?? new Response("Not found", { status: 404 });
       }
+      // Biblioteca técnica: PDFs and search, signed-in users only (src/lib/server/library.server.ts)
+      if (pathname.startsWith("/api/library/")) {
+        const { handleLibraryRequest } = await import("./lib/server/library.server");
+        const response = await handleLibraryRequest(request, pathname);
+        if (response) return response;
+      }
       // Stripe notifies payments and subscription changes here
       if (pathname === "/api/stripe/webhook" && request.method === "POST") {
         const { handleWebhook } = await import("./lib/server/stripe.server");

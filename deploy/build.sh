@@ -18,6 +18,14 @@ if [ ${#pins[@]} -gt 0 ]; then
   npm install --no-audit --no-fund --no-package-lock --legacy-peer-deps --no-save "${pins[@]}"
 fi
 
+# Servidores instalados antes de la Biblioteca tenían un límite de subida de 30 MB en Nginx:
+# lo subimos a 100 MB para los PDF (solo como root, en el servidor; en local no hace nada).
+UPLOADS_CONF=/etc/nginx/conf.d/garage-uploads.conf
+if [ "$(id -u)" = 0 ] && [ -f "$UPLOADS_CONF" ] && ! grep -q "100m" "$UPLOADS_CONF"; then
+  echo "client_max_body_size 100m;" > "$UPLOADS_CONF"
+  nginx -t && systemctl reload nginx || echo "Aviso: no se pudo recargar Nginx" >&2
+fi
+
 NITRO_PRESET=node-server npx vite build
 [ -f .output/server/index.mjs ] || { echo "La compilación no generó .output/server/index.mjs" >&2; exit 1; }
 echo "Compilación lista: $(git rev-parse --short HEAD)"

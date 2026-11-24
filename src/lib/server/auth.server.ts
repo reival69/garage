@@ -121,7 +121,22 @@ export interface CurrentSession {
 }
 
 export async function currentSession(): Promise<CurrentSession | null> {
-  const token = getCookie(COOKIE);
+  return sessionForToken(getCookie(COOKIE));
+}
+
+/** Session for a raw Request handled outside TanStack Start (see src/server.ts). */
+export async function sessionFromRequest(request: Request): Promise<CurrentSession | null> {
+  const cookies = request.headers.get("cookie") ?? "";
+  for (const part of cookies.split(";")) {
+    const eq = part.indexOf("=");
+    if (eq !== -1 && part.slice(0, eq).trim() === COOKIE) {
+      return sessionForToken(decodeURIComponent(part.slice(eq + 1).trim()));
+    }
+  }
+  return null;
+}
+
+async function sessionForToken(token: string | undefined): Promise<CurrentSession | null> {
   if (!token) return null;
   const sql = await db();
   const rows = await sql<{ user_id: string; impersonator_id: string | null }[]>`

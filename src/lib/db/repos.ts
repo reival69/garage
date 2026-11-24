@@ -7,6 +7,7 @@ import type {
   Appointment,
   Customer,
   Invoice,
+  LibraryDocument,
   MaintenanceReminder,
   Part,
   Plan,
@@ -115,6 +116,7 @@ export const notificationsRepo = tenantRepo<AppNotification>("notifications");
 export const remindersRepo = tenantRepo<MaintenanceReminder>("reminders");
 export const reviewsRepo = tenantRepo<Review>("reviews");
 export const agentsRepo = tenantRepo<Agent>("agents");
+export const libraryRepo = tenantRepo<LibraryDocument>("library");
 
 /** Find a work order across ALL tenants by its 6-char access code (guest view). */
 export function findWorkOrderByAccessCode(
